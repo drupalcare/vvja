@@ -10,126 +10,186 @@
   'use strict';
 
   Drupal.behaviors.VVJAccordion = {
-    attach: function(context, settings) {
-      // Utility function to get elements by ID
-      const getElementsById = (id) => {
-        const wrapper = context.querySelectorAll(`#${id} > .accordion-item`);
-        const minusButton = context.querySelector(`#${id} > .global-toggle > button.b-minus`);
-        const plusButton = context.querySelector(`#${id} > .global-toggle > button.b-plus`);
-        return [wrapper, minusButton, plusButton];
-      };
+    attach: function (context, settings) {
+      // Function to smoothly open an accordion pane
+      function openPane(pane) {
+        const panePadding = 32; // Total vertical padding (top + bottom)
+        pane.style.maxHeight = `${pane.scrollHeight + panePadding}px`; // Add padding to maxHeight
+        pane.style.padding = '16px'; // Apply padding when pane is open
+        pane.setAttribute('aria-hidden', 'false');
+      }
 
-      // Function to update the tabindex based on visibility
-      const updateTabindex = (button) => {
-        if (window.getComputedStyle(button).display === 'none') {
-          button.setAttribute('tabindex', '-1');
-        } else {
-          button.removeAttribute('tabindex');
+      // Function to smoothly close an accordion pane
+      function closePane(pane) {
+        pane.style.maxHeight = '0';
+        pane.style.padding = '0 16px';
+        pane.setAttribute('aria-hidden', 'true');
+      }
+
+      // Function to deactivate a button
+      function deactivateButton(button) {
+        button.classList.remove('active');
+        button.setAttribute('tabindex', '-1');
+        button.setAttribute('aria-selected', 'false');
+        button.setAttribute('aria-expanded', 'false');
+        updateToggleIndicator(button, false);
+        button.parentElement.classList.remove('opened');
+        button.parentElement.classList.add('closed');
+      }
+
+      // Function to activate a button
+      function activateButton(button) {
+        button.classList.add('active');
+        button.removeAttribute('tabindex');
+        button.setAttribute('aria-selected', 'true');
+        button.setAttribute('aria-expanded', 'true');
+        updateToggleIndicator(button, true);
+        button.parentElement.classList.remove('closed');
+        button.parentElement.classList.add('opened');
+      }
+
+      // Function to update the single toggle indicator
+      function updateToggleIndicator(button, isOpen) {
+        const toggle = button.querySelector('.single-toggle');
+        if (toggle) {
+          const plus = toggle.querySelector('.b-plus');
+          const minus = toggle.querySelector('.b-minus');
+          if (isOpen) {
+            if (plus) plus.style.display = 'none';
+            if (minus) minus.style.display = 'block';
+          } else {
+            if (plus) plus.style.display = 'block';
+            if (minus) minus.style.display = 'none';
+          }
         }
-      };
+      }
 
-      const toggleClassAndDisplay = (buttonSelector, addClass, removeClass, hideIndex, showIndex) => {
-        once('toggleClassAndDisplay', buttonSelector, context).forEach((button) => {
-          button.addEventListener('click', function(event) {
-            const classId = event.target.closest('.accordion-inner').id;
-            const [wrapper, minusButton, plusButton] = getElementsById(classId);
-            wrapper.forEach((element) => {
-              element.classList.remove(removeClass);
-              element.classList.add(addClass);
-              const isExpand = addClass === 'active';
-              const toggleButton = element.querySelector('.accordion-button');
-              const contentPane = element.querySelector('.accordion-pane');
-              if (toggleButton) {
-                toggleButton.setAttribute('aria-expanded', isExpand);
-              }
-              if (contentPane) {
-                contentPane.setAttribute('aria-hidden', !isExpand);
-              }
-            });
+      // Function to handle individual accordion clicks
+      function handleAccordionClick(event) {
+        const button = event.currentTarget;
+        const pane = button.nextElementSibling;
 
-            if (minusButton) {
-              minusButton.style.display = hideIndex === 1 ? "none" : "block";
-              updateTabindex(minusButton);
+        const isOpen = pane.style.maxHeight && pane.style.maxHeight !== '0px';
+
+        if (isOpen) {
+          closePane(pane);
+          deactivateButton(button);
+        } else {
+          openPane(pane);
+          activateButton(button);
+        }
+      }
+
+      // Function to handle global toggle actions
+      function handleGlobalToggle(container, action) {
+        const panes = container.querySelectorAll('.accordion-pane');
+        const buttons = container.querySelectorAll('.accordion-button');
+        if (action === 'expand') {
+          buttons.forEach(button => {
+            const pane = button.nextElementSibling;
+            if (pane) {
+              openPane(pane);
+              activateButton(button);
             }
-            if (plusButton) {
-              plusButton.style.display = showIndex === 1 ? "none" : "block";
-              updateTabindex(plusButton);
+          });
+        } else if (action === 'collapse') {
+          panes.forEach(pane => closePane(pane));
+          buttons.forEach(button => deactivateButton(button));
+        }
+      }
+
+      // Function to handle keyboard navigation
+      function handleKeyboardNavigation(accordionButtons) {
+        accordionButtons.forEach((button, index) => {
+          button.addEventListener('keydown', (event) => {
+            const currentIndex = index;
+            let newIndex;
+
+            switch (event.key) {
+              case 'ArrowDown':
+                newIndex = (currentIndex + 1) % accordionButtons.length;
+                break;
+              case 'ArrowUp':
+                newIndex = (currentIndex - 1 + accordionButtons.length) % accordionButtons.length;
+                break;
+              case 'Home':
+                newIndex = 0;
+                break;
+              case 'End':
+                newIndex = accordionButtons.length - 1;
+                break;
+              default:
+                return;
             }
+
+            accordionButtons.forEach(b => b.setAttribute('tabindex', '-1'));
+            accordionButtons[newIndex].setAttribute('tabindex', '0');
+            accordionButtons[newIndex].focus();
+            event.preventDefault();
           });
         });
-      };
+      }
 
-      const toggleActiveState = (buttonSelector, activeClass, inactiveClass) => {
-        once('toggleActiveState', buttonSelector, context).forEach((button) => {
-          button.addEventListener('click', function(event) {
-            const element = event.target.closest('.accordion-item');
-            const section = event.target.closest('.accordion-inner'); // It should reference the individual panel's parent, not just any ancestor.
-            const toggleButton = element.querySelector('.accordion-button');
-            const contentPane = element.querySelector('.accordion-pane');
-
-            const isCurrentlyActive = toggleButton.getAttribute('aria-expanded') === 'true';
-
-            if (isCurrentlyActive) {
-              element.classList.replace(activeClass, inactiveClass);
-              toggleButton.setAttribute('aria-expanded', 'false');
-              contentPane.setAttribute('aria-hidden', 'true');
-            } else {
-              element.classList.replace(inactiveClass, activeClass);
-              toggleButton.setAttribute('aria-expanded', 'true');
-              contentPane.setAttribute('aria-hidden', 'false');
-            }
-
-            // Ensure the correct display of expand/collapse all buttons
-            const [_, minusButton, plusButton] = getElementsById(section.id);
-            if (plusButton) {
-              plusButton.style.display = isCurrentlyActive ? "block" : "none";
-              updateTabindex(plusButton);
-            }
-            if (minusButton) {
-              minusButton.style.display = isCurrentlyActive ? "none" : "block";
-              updateTabindex(minusButton);
-            }
-          });
-        });
-      };
-
-      once('expand-collapse-all', '.global-toggle > button', context).forEach((button) => {
-        button.addEventListener('click', () => {
-          const isExpand = button.classList.contains('b-plus');
-          const accId = button.getAttribute('aria-controls');
-          const elements = context.querySelectorAll(`#${accId} .accordion-item`);
-
-          elements.forEach(element => {
-            const toggleButton = element.querySelector('.accordion-button');
-            if (toggleButton) {
-              toggleButton.setAttribute('aria-expanded', isExpand);
-            }
-            const contentPane = element.querySelector('.accordion-pane');
-            if (contentPane) {
-              contentPane.setAttribute('aria-hidden', !isExpand);
-            }
-            element.classList.toggle('active', isExpand);
-            element.classList.toggle('inactive', !isExpand);
-          });
-
-          // Update the display states of the global expand/collapse buttons
-          const plusButton = context.querySelector(`#${accId} .b-plus`);
-          const minusButton = context.querySelector(`#${accId} .b-minus`);
-          if (plusButton) {
-            plusButton.style.display = isExpand ? 'none' : 'block';
-            updateTabindex(plusButton);
-          }
-          if (minusButton) {
-            minusButton.style.display = isExpand ? 'block' : 'none';
-            updateTabindex(minusButton);
+      // Function to update aria-labels for accordion buttons based on image alt text
+      function updateAriaLabelsForAccordionButtons(accordionButtons) {
+        accordionButtons.forEach(button => {
+          const img = button.querySelector('img');
+          if (img && img.alt) {
+            button.setAttribute('aria-label', img.alt);
+          } else {
+            // If no image or alt, use button text as aria-label
+            button.setAttribute('aria-label', button.textContent.trim() || 'Accordion Button');
           }
         });
+      }
+
+      const accordionContainers = once('vvjaAccordion', '.accordion-inner', context);
+      accordionContainers.forEach(container => {
+        const accordionButtons = container.querySelectorAll('.accordion-button');
+
+        // Initialize tabindex and ARIA attributes
+        accordionButtons.forEach((button) => {
+          if (!button.classList.contains('active')) {
+            button.setAttribute('tabindex', '-1');
+          }
+
+          // Attach click event listener
+          button.addEventListener('click', handleAccordionClick);
+        });
+
+        // Handle keyboard navigation
+        handleKeyboardNavigation(accordionButtons);
+
+        // Handle global toggle buttons
+        const globalTogglePlus = container.querySelector('.global-toggle .b-plus');
+        const globalToggleMinus = container.querySelector('.global-toggle .b-minus');
+
+        if (globalTogglePlus && globalToggleMinus) {
+          globalTogglePlus.addEventListener('click', () => {
+            handleGlobalToggle(container, 'expand');
+            globalTogglePlus.style.display = 'none';
+            globalToggleMinus.style.display = 'block';
+          });
+
+          globalToggleMinus.addEventListener('click', () => {
+            handleGlobalToggle(container, 'collapse');
+            globalTogglePlus.style.display = 'block';
+            globalToggleMinus.style.display = 'none';
+          });
+        }
+
+        // Open the first item if first_toggle is true
+        const firstToggle = container.closest('.vvja').dataset.firstToggle === 'true';
+        if (firstToggle) {
+          const firstButton = accordionButtons[0];
+          const firstPane = firstButton.nextElementSibling;
+          openPane(firstPane);
+          activateButton(firstButton);
+        }
+
+        // Update aria-labels for accordion buttons based on content
+        updateAriaLabelsForAccordionButtons(accordionButtons);
       });
-
-      // Initialize toggle functions
-      toggleActiveState('.accordion-button', 'active', 'inactive');
-      toggleClassAndDisplay('.global-toggle>button.b-plus', 'active', 'inactive', 2, 1);
-      toggleClassAndDisplay('.global-toggle>button.b-minus', 'inactive', 'active', 1, 2);
     }
   };
 })(Drupal, drupalSettings, once);

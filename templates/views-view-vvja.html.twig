@@ -13,7 +13,10 @@
   - single_toggle: Whether to display toggle indicators for each section.
   - first_toggle: Whether to have the first section open by default.
   - animation: Animation type for the accordion panels.
+  - transition_speed: allows users to select different speeds for the accordion.
 #}
+
+
 
 {# Set unique ID for the accordion instance #}
 {% set unique_id = options.unique_id %}
@@ -30,30 +33,27 @@
 {% set single_toggle = options.single_toggle %}
 {% set first_toggle = options.first_toggle %}
 {% set vvja_animation = options.animation %}
+{% set transition_speed = options.transition_speed %}
 {% set acc_id = 'accordion-inner-' ~ unique_id %}
 
 {# Render the accordion. #}
-<div {{ attributes.addClass(classes).setAttribute('id', vvja_id) }}>
+<div {{ attributes.addClass(classes).setAttribute('id', vvja_id) }} data-first-toggle="{{ first_toggle ? 'true' : 'false' }}">
   <div id="{{ acc_id }}" class="accordion-inner">
 
     {# Render global expand/collapse buttons if enabled #}
     {% if global_toggle %}
-    <div class="global-toggle">
-      <button class="button b-plus" aria-expanded="false" aria-controls="{{ vvja_id }}" aria-label="{{ 'Expand all sections'|t }}" tabindex="0">
-        <span class="visually-hidden">{{ 'Expand all sections'|t }}</span>
-        &#x0229E;
-      </button>
-      <button class="button b-minus" aria-expanded="true" aria-controls="{{ vvja_id }}" aria-label="{{ 'Collapse all sections'|t }}" tabindex="-1">
-        <span class="visually-hidden">{{ 'Collapse all sections'|t }}</span>
-        &#x0229F;
-      </button>
-    </div>
+      <div class="global-toggle">
+        <button class="button b-plus" aria-expanded="false" aria-controls="{{ vvja_id }}" aria-label="{{ 'Expand all sections'|t }}" tabindex="0">
+          <span class="visually-hidden">{{ 'Expand all sections'|t }}</span>&#x0229E;
+        </button>
+        <button class="button b-minus" aria-expanded="true" aria-controls="{{ vvja_id }}" aria-label="{{ 'Collapse all sections'|t }}" tabindex="-1">
+          <span class="visually-hidden">{{ 'Collapse all sections'|t }}</span>&#x0229F;
+        </button>
+      </div>
     {% endif %}
 
     {# Loop through each row and render the accordion structure #}
-    {% set total_panels = 0 %}
     {% for key, row in rows %}
-      {% set total_panels = total_panels + 1 %}
       {% set row_content = row.content|render %}
 
       {# Use the unique tag or CSS class to split the content #}
@@ -61,12 +61,12 @@
       {% set button_content = split_content[0] %}
       {% set pane_content = split_content[1]|default('') %}
 
-      <div id="accordion-item-{{ unique_id }}-{{ loop.index }}" class="accordion-item {% if loop.first and first_toggle %} active {% else %} inactive {% endif %}">
+      <div id="accordion-item-{{ unique_id }}-{{ key + 1 }}" class="accordion-item closed">
 
         {# Render the button #}
         <button id="{{ acc_id }}-{{ key + 1 }}" class="button accordion-button"
         aria-label="{{ button_content|striptags|trim|t }}"
-        aria-expanded="{% if key == 0 and first_toggle %}true{% else %}false{% endif %}"
+        aria-expanded="false"
         aria-controls="{{ acc_id }}-{{ key + 1 }}-pane"
         type="button">
         {{ button_content|safe_html }}
@@ -80,7 +80,7 @@
         </button>
 
         {# Render the accordion pane #}
-        <div id="{{ acc_id }}-{{ key + 1 }}-pane" class="accordion-pane {{ vvja_animation ? vvja_animation : '' }}" role="region" aria-labelledby="{{ acc_id }}-{{ key + 1 }}" aria-hidden="{% if key == 0 and first_toggle %}false{% else %}true{% endif %}" data-index="{{ key }}">
+        <div id="{{ acc_id }}-{{ key + 1 }}-pane" class="accordion-pane {{ vvja_animation ? vvja_animation : '' }}" role="region" aria-labelledby="{{ acc_id }}-{{ key + 1 }}" aria-hidden="true" data-index="{{ key + 1 }}" style="transition: max-height {{ transition_speed }}, padding {{ transition_speed }};">
           {{ pane_content|safe_html }}
         </div>
 
@@ -89,3 +89,5 @@
 
   </div>
 </div>
+
+

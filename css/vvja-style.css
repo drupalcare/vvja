@@ -6,53 +6,14 @@
  * Website:      https://www.flashwebcenter.com
  * Developer:    Alaa Haddad https://www.alaahaddad.com.
  */
-.vvja {
-  overflow: hidden;
+
+/* Hover and focus effects on accordion buttons */
+.vvja .accordion-button:focus,
+.vvja .accordion-button:hover {
+  font-weight: normal;
 }
 
-.vvja .accordion-inner,
-.vvja .accordion-item {
-  display: grid;
-  width: 100%;
-  gap: 16px;
-}
-
-.vvja .accordion-inner {
-  gap: 16px;
-}
-
-.vvja .accordion-button {
-  padding: 16px 12px;
-  display: flex;
-  width: 100%;
-  flex-grow: 1;
-  white-space: initial;
-  cursor: pointer;
-  z-index: 1;
-  text-align: left;
-  margin: 0;
-}
-
-.vvja .accordion-button > .single-toggle {
-  display: flex;
-  margin-left: auto;
-}
-
-.vvja .active .accordion-pane {
-  padding: 16px;
-  border-top: none;
-  width: 100%;
-  margin: 0;
-  overflow: hidden;
-}
-
-.vvja .global-toggle {
-  justify-content: end;
-  align-items: center;
-  display: flex;
-  flex-grow: 1;
-}
-
+/* Global toggle button styles */
 .vvja .global-toggle .button,
 .vvja .single-toggle .button {
   font-size: 32px;
@@ -61,126 +22,4 @@
 .vvja .global-toggle .button {
   padding: 12px;
   margin-right: 0;
-}
-
-/* Animate slideshow */
-.vvja__animate-fading {
-  animation: fading 5s ease-in-out infinite;
-}
-
-@keyframes fading {
-  0% {
-    opacity: 0;
-  }
-
-  50% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0;
-  }
-
-}
-
-.vvja__animate_opacity {
-  animation: opac 0.8s ease-out;
-}
-
-@keyframes opac {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-
-}
-
-.vvja__animate_top {
-  position: relative;
-  animation: animatetop 0.6s ease-out;
-}
-
-@keyframes animatetop {
-  from {
-    top: -100px;
-    opacity: 0;
-  }
-
-  to {
-    top: 0;
-    opacity: 1;
-  }
-
-}
-
-.vvja__animate_left {
-  position: relative;
-  animation: animateleft 0.6s ease-out;
-}
-
-@keyframes animateleft {
-  from {
-    left: -100px;
-    opacity: 0;
-  }
-
-  to {
-    left: 0;
-    opacity: 1;
-  }
-
-}
-
-.vvja__animate_right {
-  position: relative;
-  animation: animateright 0.6s ease-out;
-}
-
-@keyframes animateright {
-  from {
-    right: -100px;
-    opacity: 0;
-  }
-
-  to {
-    right: 0;
-    opacity: 1;
-  }
-
-}
-
-.vvja__animate_bottom {
-  position: relative;
-  animation: animatebottom 0.6s ease-out;
-}
-
-@keyframes animatebottom {
-  from {
-    bottom: -100px;
-    opacity: 0;
-  }
-
-  to {
-    bottom: 0;
-    opacity: 1;
-  }
-
-}
-
-.vvja__animate_zoom {
-  animation: animatezoom 0.6s ease-out;
-}
-
-@keyframes animatezoom {
-  from {
-    transform: scale(0);
-  }
-
-  to {
-    transform: scale(1.05);
-  }
-
 }

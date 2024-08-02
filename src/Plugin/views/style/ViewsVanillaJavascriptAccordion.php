@@ -37,8 +37,9 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
     $options['first_toggle'] = ['default' => TRUE];
     $options['animation'] = ['default' => 'vvja__animate_bottom'];
     $options['unique_id'] = ['default' => $this->generateUniqueId()];
-    // New option for CSS library.
     $options['enable_css'] = ['default' => TRUE];
+    // Add default transition speed.
+    $options['transition_speed'] = ['default' => '0.3s'];
     return $options;
   }
 
@@ -92,6 +93,19 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
       '#description' => $this->t('Choose the animation type.'),
     ];
 
+    // Add transition speed option to the form.
+    $form['transition_speed'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Transition Speed'),
+      '#options' => [
+        '0.2s' => $this->t('Fast (0.2 seconds)'),
+        '0.3s' => $this->t('Normal (0.3 seconds)'),
+        '0.6s' => $this->t('Slow (0.6 seconds)'),
+        '0.9s' => $this->t('Very Slow (0.9 seconds)'),
+      ],
+      '#default_value' => $this->options['transition_speed'],
+      '#description' => $this->t('Select the speed for the accordion transition.'),
+    ];
   }
 
   /**
@@ -103,10 +117,10 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
   }
 
   /**
-   * Renders the view with the 3D carousel style.
+   * Renders the view with the accordion style.
    *
    * @return array
-   *   A render array for the 3D carousel.
+   *   A render array for the accordion.
    */
   public function render() {
     $rows = [];

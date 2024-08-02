@@ -1,0 +1,23 @@
+{
+    "name": "drupal/vvja",
+    "description": "Provides a Vanilla Javascript Accordion format for Views.",
+    "type": "drupal-module",
+    "license": "GPL-2.0-or-later",
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "Alaa Haddad (alaahaddad.com)",
+            "homepage": "https://www.drupal.org/u/flashwebcenter",
+            "role": "Maintainer"
+        }
+    ],
+    "homepage": "https://drupal.org/project/vvja",
+  "require": {
+    "drupal/core": "*",
+  },
+    "support": {
+        "issues": "https://drupal.org/project/issues/vvja",
+        "source": "https://git.drupalcode.org/project/vvja"
+    }
+}
+

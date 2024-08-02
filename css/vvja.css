@@ -1,0 +1,22 @@
+/**
+ * @file
+ * Paragraph Bundle Accordion.
+ *
+ * Filename:     vvja.css
+ * Website:      https://www.flashwebcenter.com
+ * Developer:    Alaa Haddad https://www.alaahaddad.com.
+ */
+
+.vvja .inactive > .accordion-pane {
+  display: none;
+}
+
+.vvja .global-toggle .b-minus,
+.vvja .single-toggle span {
+  display: none;
+}
+
+.vvja .accordion-item.active .single-toggle span.b-minus,
+.vvja .accordion-item.inactive .single-toggle span.b-plus {
+  display: block;
+}

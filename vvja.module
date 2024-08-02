@@ -1,0 +1,130 @@
+<?php
+
+/**
+ * @file
+ * Contains vvja.module.
+ *
+ * Filename:     vvja.module
+ * Website:      https://www.flashwebcenter.com
+ * Description:  template.
+ * Developer:    Alaa Haddad https://www.alaahaddad.com.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Template\Attribute;
+
+/**
+ * Implements hook_help().
+ */
+function vvja_help($route_name, RouteMatchInterface $route_match) {
+  if ($route_name === 'help.page.vvja') {
+    return _vvja_helper_render_readme();
+  }
+  return NULL;
+}
+
+/**
+ * Helper function to render README.md.
+ */
+function _vvja_helper_render_readme() {
+  $text = file_get_contents(__DIR__ . "/README.md");
+
+  if (!\Drupal::moduleHandler()->moduleExists('markdown')) {
+    return '<pre>' . $text . '</pre>';
+  }
+
+  // Use the Markdown filter to render the README.
+  $filter_manager = \Drupal::service('plugin.manager.filter');
+  $settings = \Drupal::configFactory()
+    ->get('markdown.settings')
+    ->getRawData();
+  $config = ['settings' => $settings];
+  $filter = $filter_manager->createInstance('markdown', $config);
+  return $filter->process($text, 'en');
+}
+
+/**
+ * Implements hook_theme().
+ */
+function vvja_theme($existing, $type, $theme, $path) {
+  return [
+    'views_view_vvja_fields' => [
+      'variables' => [
+        'view' => NULL,
+        'options' => [],
+        'row' => NULL,
+        'field_alias' => NULL,
+        'attributes' => [],
+        'title_attributes' => [],
+        'content_attributes' => [],
+        'title_prefix' => [],
+        'title_suffix' => [],
+        'fields' => [],
+      ],
+      'template' => 'views-view-vvja-fields',
+      'path' => $path . '/templates',
+    ],
+    'views_view_vvja' => [
+      'variables' => [
+        'view' => NULL,
+        'rows' => [],
+        'options' => [],
+      ],
+      'template' => 'views-view-vvja',
+      'path' => $path . '/templates',
+    ],
+  ];
+}
+
+/**
+ * Prepares variables for views_view_vvja template.
+ */
+function template_preprocess_views_view_vvja(&$variables) {
+  \Drupal::moduleHandler()->loadInclude('views', 'inc', 'views.theme');
+  $handler = $variables['view']->style_plugin;
+
+  $list_attributes = [];
+  if ($handler->options['global_toggle']) {
+    $list_attributes['data-global-toggle'] = 'true';
+  }
+  if ($handler->options['single_toggle']) {
+    $list_attributes['data-single-toggle'] = 'true';
+  }
+  if ($handler->options['first_toggle']) {
+    $list_attributes['data-first-toggle'] = 'true';
+  }
+  if ($handler->options['animation'] != 'none') {
+    $list_attributes['data-animation'] = $handler->options['animation'];
+  }
+
+  $variables['list']['attributes'] = new Attribute($list_attributes);
+
+  $variables['settings'] = [
+    'view_id' => $handler->view->dom_id,
+    'global_toggle' => $handler->options['global_toggle'],
+    'single_toggle' => $handler->options['single_toggle'],
+    'first_toggle' => $handler->options['first_toggle'],
+    'animation' => $handler->options['animation'],
+    'enable_css' => $handler->options['enable_css'],
+  ];
+
+  if (!empty($variables['rows'])) {
+    foreach ($variables['rows'] as $key => $row) {
+      if (isset($row['#theme']) && is_array($row['#theme'])) {
+        foreach ($row['#theme'] as $idx => $theme_hook_suggestion) {
+          $variables['rows'][$key]['#theme'][$idx] = str_replace('views_view_fields', 'views_view_vvja_fields', $theme_hook_suggestion);
+        }
+      }
+    }
+  }
+
+  template_preprocess_views_view_unformatted($variables);
+}
+
+/**
+ * Prepares variables for views_view_vvja_fields template.
+ */
+function template_preprocess_views_view_vvja_fields(&$variables) {
+  \Drupal::moduleHandler()->loadInclude('views', 'inc', 'views.theme');
+  template_preprocess_views_view_fields($variables);
+}

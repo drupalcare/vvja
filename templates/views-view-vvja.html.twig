@@ -1,0 +1,91 @@
+{#
+  @file
+  Template for rendering a Views Vanilla Javascript Accordion.
+
+  Available variables:
+  - options: The options array containing settings for the accordion.
+  - rows: An array of row items to be displayed in the accordion.
+  - attributes: A list of HTML attributes for the wrapper div.
+
+  Options settings:
+  - unique_id: A unique identifier for the accordion instance.
+  - global_toggle: Whether to display expand/collapse all buttons.
+  - single_toggle: Whether to display toggle indicators for each section.
+  - first_toggle: Whether to have the first section open by default.
+  - animation: Animation type for the accordion panels.
+#}
+
+{# Set unique ID for the accordion instance #}
+{% set unique_id = options.unique_id %}
+{% set vvja_id = 'vvja-' ~ unique_id %}
+
+{# Set the classes for the accordion. #}
+{% set classes = [
+  'vvja',
+  vvja_id,
+] %}
+
+{# Display or hide expand all options based on configuration #}
+{% set global_toggle = options.global_toggle %}
+{% set single_toggle = options.single_toggle %}
+{% set first_toggle = options.first_toggle %}
+{% set vvja_animation = options.animation %}
+{% set acc_id = 'accordion-inner-' ~ unique_id %}
+
+{# Render the accordion. #}
+<div {{ attributes.addClass(classes).setAttribute('id', vvja_id) }}>
+  <div id="{{ acc_id }}" class="accordion-inner">
+
+    {# Render global expand/collapse buttons if enabled #}
+    {% if global_toggle %}
+    <div class="global-toggle">
+      <button class="button b-plus" aria-expanded="false" aria-controls="{{ vvja_id }}" aria-label="{{ 'Expand all sections'|t }}" tabindex="0">
+        <span class="visually-hidden">{{ 'Expand all sections'|t }}</span>
+        &#x0229E;
+      </button>
+      <button class="button b-minus" aria-expanded="true" aria-controls="{{ vvja_id }}" aria-label="{{ 'Collapse all sections'|t }}" tabindex="-1">
+        <span class="visually-hidden">{{ 'Collapse all sections'|t }}</span>
+        &#x0229F;
+      </button>
+    </div>
+    {% endif %}
+
+    {# Loop through each row and render the accordion structure #}
+    {% set total_panels = 0 %}
+    {% for key, row in rows %}
+      {% set total_panels = total_panels + 1 %}
+      {% set row_content = row.content|render %}
+
+      {# Use the unique tag or CSS class to split the content #}
+      {% set split_content = row_content|split('<div class="vvja-separator"></div>') %}
+      {% set button_content = split_content[0] %}
+      {% set pane_content = split_content[1]|default('') %}
+
+      <div id="accordion-item-{{ unique_id }}-{{ loop.index }}" class="accordion-item {% if loop.first and first_toggle %} active {% else %} inactive {% endif %}">
+
+        {# Render the button #}
+        <button id="{{ acc_id }}-{{ key + 1 }}" class="button accordion-button"
+        aria-label="{{ button_content|striptags|trim|t }}"
+        aria-expanded="{% if key == 0 and first_toggle %}true{% else %}false{% endif %}"
+        aria-controls="{{ acc_id }}-{{ key + 1 }}-pane"
+        type="button">
+        {{ button_content|safe_html }}
+        {% if single_toggle %}
+          <div class="single-toggle">
+            <span aria-hidden="true" class="b-minus">&#x02212;</span>
+            <span aria-hidden="true" class="b-plus">&#x0002B;</span>
+            <span class="visually-hidden">{{ 'Close or Open tab'|t }}</span>
+          </div>
+        {% endif %}
+        </button>
+
+        {# Render the accordion pane #}
+        <div id="{{ acc_id }}-{{ key + 1 }}-pane" class="accordion-pane {{ vvja_animation ? vvja_animation : '' }}" role="region" aria-labelledby="{{ acc_id }}-{{ key + 1 }}" aria-hidden="{% if key == 0 and first_toggle %}false{% else %}true{% endif %}" data-index="{{ key }}">
+          {{ pane_content|safe_html }}
+        </div>
+
+      </div>
+    {% endfor %}
+
+  </div>
+</div>

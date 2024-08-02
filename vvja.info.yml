@@ -1,0 +1,7 @@
+name: 'Views Vanilla Javascript Accordion'
+type: module
+description: 'Provides a Vanilla Javascript Accordion format for Views.'
+core_version_requirement: ^10 || ^11
+package: Views
+dependencies:
+  - drupal:views

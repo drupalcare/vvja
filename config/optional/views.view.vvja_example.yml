@@ -1,0 +1,113 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+    - vvja
+id: vvja_example
+label: 'VVJA Example'
+module: views
+description: 'Render items in a Vanilla JavaScript Accordion.'
+tag: ''
+base_table: node_field_data
+base_field: nid
+display:
+  default:
+    id: default
+    display_title: Master
+    display_plugin: default
+    position: 0
+    display_options:
+      title: 'VVJA View'
+      fields:
+        title:
+          id: title
+          table: node_field_data
+          field: title
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: Title
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: '0'
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            link_target: ''
+            link_popup: ''
+            link_popup_width: ''
+            link_popup_height: ''
+          element_type: ''
+          element_class: ''
+          element_style: ''
+          element_id: ''
+          link_to_entity: true
+          link_to_entity_class: ''
+          link_to_entity_rel: ''
+      pager:
+        type: some
+        options:
+          items_per_page: 10
+      exposed_form:
+        type: basic
+        options: {  }
+      cache:
+        type: tag
+        options:
+          views: true
+          terms: false
+          blocks: false
+      empty: {  }
+      arguments: {  }
+      filters:
+        status:
+          id: status
+          table: node_field_data
+          field: status
+          value: '1'
+      style:
+        type: views_vvja
+        options:
+          grouping: {  }
+          single_toggle: 1
+          global_toggle: 1
+          first_toggle: 1
+          animation: vvja__animate_bottom
+          enable_css: 1
+      row:
+        type: fields
+        options:
+          default_field_elements: false
+      defaults:
+        empty: true
+        query: true
+        title: true
+        pager: true
+        exposed_form: true
+        fields: true
+        sorts: true
+        filters: true
+        header: true
+        footer: true
+        style_plugin: true
+      relationships: {  }
+      header: {  }
+      footer: {  }
+      display_extenders: {  }
+      style_plugin: views_vvja
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_content'
+        - 'languages:language_interface'
+        - 'user.node_grants:view'
+      tags: {  }

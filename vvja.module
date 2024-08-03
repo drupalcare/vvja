@@ -2,7 +2,9 @@
 
 /**
  * @file
- * Contains vvja.module.
+ * Provides the module implementation for vvja.
+ *
+ * Contains template preprocessing and theme definitions for Views.
  *
  * Filename:     vvja.module
  * Website:      https://www.flashwebcenter.com
@@ -25,22 +27,27 @@ function vvja_help($route_name, RouteMatchInterface $route_match) {
 
 /**
  * Helper function to render README.md.
+ *
+ * @return string
+ *   The rendered content of README.md.
  */
 function _vvja_helper_render_readme() {
-  $text = file_get_contents(__DIR__ . "/README.md");
+  $readme_path = __DIR__ . '/README.md';
+  $text = file_get_contents($readme_path);
+
+  if ($text === FALSE) {
+    return t('README.md file not found.');
+  }
 
   if (!\Drupal::moduleHandler()->moduleExists('markdown')) {
-    return '<pre>' . $text . '</pre>';
+    return '<pre>' . htmlspecialchars($text) . '</pre>';
   }
 
   // Use the Markdown filter to render the README.
   $filter_manager = \Drupal::service('plugin.manager.filter');
-  $settings = \Drupal::configFactory()
-    ->get('markdown.settings')
-    ->getRawData();
-  $config = ['settings' => $settings];
-  $filter = $filter_manager->createInstance('markdown', $config);
-  return $filter->process($text, 'en');
+  $settings = \Drupal::config('markdown.settings')->getRawData();
+  $filter = $filter_manager->createInstance('markdown', ['settings' => $settings]);
+  return $filter->process($text, 'en')->getProcessedText();
 }
 
 /**
@@ -77,28 +84,45 @@ function vvja_theme($existing, $type, $theme, $path) {
 }
 
 /**
- * Prepares variables for views_view_vvja template.
+ * Implements hook_preprocess_HOOK() for views_view_vvja.
  */
-function template_preprocess_views_view_vvja(&$variables) {
+function template_preprocess_views_view_vvja(array &$variables) {
+  // Load necessary views theme functions.
   \Drupal::moduleHandler()->loadInclude('views', 'inc', 'views.theme');
+
+  // Access the style plugin handler.
   $handler = $variables['view']->style_plugin;
 
+  // Initialize list attributes array.
   $list_attributes = [];
-  if ($handler->options['global_toggle']) {
+
+  // Conditionally add attributes based on plugin options.
+  if (!empty($handler->options['global_toggle'])) {
     $list_attributes['data-global-toggle'] = 'true';
   }
-  if ($handler->options['single_toggle']) {
+  if (!empty($handler->options['single_toggle'])) {
     $list_attributes['data-single-toggle'] = 'true';
   }
-  if ($handler->options['first_toggle']) {
+  if (!empty($handler->options['first_toggle'])) {
     $list_attributes['data-first-toggle'] = 'true';
   }
-  if ($handler->options['animation'] != 'none') {
+  if (!empty($handler->options['animation'])) {
     $list_attributes['data-animation'] = $handler->options['animation'];
   }
+  if (!empty($handler->options['transition_speed'])) {
+    $list_attributes['data-transition-speed'] = $handler->options['transition_speed'];
+  }
+  if (!empty($handler->options['enable_css'])) {
+    $list_attributes['data-enable-css'] = 'true';
+  }
+  if (!empty($handler->options['unique_id'])) {
+    $list_attributes['data-unique-id'] = $handler->options['unique_id'];
+  }
 
+  // Create an Attribute object for the list.
   $variables['list']['attributes'] = new Attribute($list_attributes);
 
+  // Pass additional settings to the template.
   $variables['settings'] = [
     'view_id' => $handler->view->dom_id,
     'global_toggle' => $handler->options['global_toggle'],
@@ -106,25 +130,33 @@ function template_preprocess_views_view_vvja(&$variables) {
     'first_toggle' => $handler->options['first_toggle'],
     'animation' => $handler->options['animation'],
     'enable_css' => $handler->options['enable_css'],
+    'transition_speed' => $handler->options['transition_speed'],
+    'unique_id' => $handler->options['unique_id'],
   ];
 
+  // Customize theme hook suggestions for rows.
   if (!empty($variables['rows'])) {
     foreach ($variables['rows'] as $key => $row) {
       if (isset($row['#theme']) && is_array($row['#theme'])) {
         foreach ($row['#theme'] as $idx => $theme_hook_suggestion) {
+          // Modify theme hook suggestions to use the custom theme function.
           $variables['rows'][$key]['#theme'][$idx] = str_replace('views_view_fields', 'views_view_vvja_fields', $theme_hook_suggestion);
         }
       }
     }
   }
 
+  // Call the default preprocess function for unformatted views.
   template_preprocess_views_view_unformatted($variables);
 }
 
 /**
  * Prepares variables for views_view_vvja_fields template.
  */
-function template_preprocess_views_view_vvja_fields(&$variables) {
+function template_preprocess_views_view_vvja_fields(array &$variables) {
+  // Load necessary views theme functions.
   \Drupal::moduleHandler()->loadInclude('views', 'inc', 'views.theme');
+
+  // Preprocess views view fields.
   template_preprocess_views_view_fields($variables);
 }

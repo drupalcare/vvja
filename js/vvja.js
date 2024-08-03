@@ -143,6 +143,21 @@
         });
       }
 
+      // Disable links within accordion buttons
+      function disableLinksInAccordionButtons(accordionButtons) {
+        accordionButtons.forEach(button => {
+          const links = button.querySelectorAll('a');
+          links.forEach(link => {
+            link.setAttribute('data-original-href', link.getAttribute('href'));
+            link.removeAttribute('href');
+            link.style.cursor = 'default';
+            link.addEventListener('click', function(event) {
+              event.preventDefault(); // Prevent link from navigating
+            });
+          });
+        });
+      }
+
       const accordionContainers = once('vvjaAccordion', '.accordion-inner', context);
       accordionContainers.forEach(container => {
         const accordionButtons = container.querySelectorAll('.accordion-button');
@@ -189,6 +204,9 @@
 
         // Update aria-labels for accordion buttons based on content
         updateAriaLabelsForAccordionButtons(accordionButtons);
+
+        // Disable links within accordion buttons
+        disableLinksInAccordionButtons(accordionButtons);
       });
     }
   };

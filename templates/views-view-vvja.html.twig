@@ -15,9 +15,6 @@
   - animation: Animation type for the accordion panels.
   - transition_speed: allows users to select different speeds for the accordion.
 #}
-
-
-
 {# Set unique ID for the accordion instance #}
 {% set unique_id = options.unique_id %}
 {% set vvja_id = 'vvja-' ~ unique_id %}
@@ -38,7 +35,7 @@
 
 {# Render the accordion. #}
 <div {{ attributes.addClass(classes).setAttribute('id', vvja_id) }} data-first-toggle="{{ first_toggle ? 'true' : 'false' }}">
-  <div id="{{ acc_id }}" class="accordion-inner">
+  <div id="{{ acc_id }}" class="accordion-inner" role="tablist">
 
     {# Render global expand/collapse buttons if enabled #}
     {% if global_toggle %}
@@ -89,5 +86,3 @@
 
   </div>
 </div>
-
-

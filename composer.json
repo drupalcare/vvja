@@ -12,12 +12,11 @@
         }
     ],
     "homepage": "https://drupal.org/project/vvja",
-  "require": {
-    "drupal/core": "*",
-  },
+    "require": {
+        "drupal/core": "*"
+    },
     "support": {
         "issues": "https://drupal.org/project/issues/vvja",
         "source": "https://git.drupalcode.org/project/vvja"
     }
 }
-

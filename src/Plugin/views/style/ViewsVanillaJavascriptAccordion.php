@@ -30,7 +30,7 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
   /**
    * Set default options.
    */
-  protected function defineOptions() {
+  protected function defineOptions(): array {
     $options = parent::defineOptions();
     $options['single_toggle'] = ['default' => TRUE];
     $options['global_toggle'] = ['default' => TRUE];
@@ -46,7 +46,7 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
   /**
    * {@inheritdoc}
    */
-  public function buildOptionsForm(&$form, FormStateInterface $form_state) {
+  public function buildOptionsForm(&$form, FormStateInterface $form_state): void {
     parent::buildOptionsForm($form, $form_state);
 
     $form['enable_css'] = [
@@ -110,8 +110,10 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
 
   /**
    * Generates a unique numeric ID for the view display.
+   *
+   * @throws \Random\RandomException
    */
-  protected function generateUniqueId() {
+  protected function generateUniqueId(): int {
     // 8 digit unique ID
     return random_int(10000000, 99999999);
   }
@@ -122,7 +124,7 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
    * @return array
    *   A render array for the accordion.
    */
-  public function render() {
+  public function render(): array {
     $rows = [];
     foreach ($this->view->result as $row) {
       $rows[] = $this->view->rowPlugin->render($row);

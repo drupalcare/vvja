@@ -36,6 +36,7 @@
   text-align: left;
   margin: 0;
   font-weight: normal;
+  height: auto;
 }
 
 /* Accordion pane styles to manage open/close */

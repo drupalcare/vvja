@@ -31,11 +31,13 @@
 {% set first_toggle = options.first_toggle %}
 {% set vvja_animation = options.animation %}
 {% set transition_speed = options.transition_speed %}
-{% set acc_id = 'accordion-inner-' ~ unique_id %}
+{% set acc_id = 'vvja-inner-' ~ unique_id %}
+{% set acc_id_btn = 'vvja-button-' ~ unique_id %}
+{% set acc_id_pan = 'vvja-pane-' ~ unique_id %}
 
 {# Render the accordion. #}
 <div {{ attributes.addClass(classes).setAttribute('id', vvja_id) }} data-first-toggle="{{ first_toggle ? 'true' : 'false' }}">
-  <div id="{{ acc_id }}" class="accordion-inner" role="tablist">
+  <div id="{{ acc_id }}" class="vvja-inner" role="tablist">
 
     {# Render global expand/collapse buttons if enabled #}
     {% if global_toggle %}
@@ -58,30 +60,31 @@
       {% set button_content = split_content[0] %}
       {% set pane_content = split_content[1]|default('') %}
 
-      <div id="accordion-item-{{ unique_id }}-{{ key + 1 }}" class="accordion-item closed">
+      <div id="vvja-item-{{ unique_id }}-{{ key + 1 }}" class="vvja-item closed">
 
         {# Render the button #}
-        <button id="{{ acc_id }}-{{ key + 1 }}" class="button accordion-button"
-        aria-label="{{ button_content|striptags|trim|t }}"
-        aria-expanded="false"
-        aria-controls="{{ acc_id }}-{{ key + 1 }}-pane"
-        type="button">
-        {{ button_content|safe_html }}
-        {% if single_toggle %}
-          <div class="single-toggle">
-            <span aria-hidden="true" class="b-minus">&#x02212;</span>
-            <span aria-hidden="true" class="b-plus">&#x0002B;</span>
-            <span class="visually-hidden">{{ 'Close or Open tab'|t }}</span>
-          </div>
-        {% endif %}
+        <button id="{{ acc_id_btn }}-{{ key + 1 }}" class="button vvja-button"
+          aria-label="{{ button_content|striptags|trim|t }}"
+          aria-expanded="false"
+          aria-controls="{{ acc_id_pan }}-{{ key + 1 }}-pane"
+          type="button">
+          {{ button_content|safe_html }}
+          {% if single_toggle %}
+            <span class="single-toggle">
+              <span aria-hidden="true" class="b-minus">&#x02212;</span>
+              <span aria-hidden="true" class="b-plus">&#x0002B;</span>
+              <span class="visually-hidden">{{ 'Close or Open tab @id-pane'|t({'@id': acc_id_pan ~ '-' ~ (key + 1)}) }}</span>
+            </span>
+          {% endif %}
         </button>
 
         {# Render the accordion pane #}
-        <div id="{{ acc_id }}-{{ key + 1 }}-pane" class="accordion-pane {{ vvja_animation ? vvja_animation : '' }}" role="region" aria-labelledby="{{ acc_id }}-{{ key + 1 }}" aria-hidden="true" data-index="{{ key + 1 }}" style="transition: max-height {{ transition_speed }}, padding {{ transition_speed }};">
+        <div id="{{ acc_id_pan }}-{{ key + 1 }}-pane" class="vvja-pane{{ vvja_animation != 'none' ? ' ' ~ vvja_animation : '' }}" role="region" aria-labelledby="{{ acc_id_btn }}-{{ key + 1 }}" aria-hidden="true" data-index="{{ key + 1 }}" style="transition: max-height {{ transition_speed }}s, padding {{ transition_speed }}s;">
           {{ pane_content|safe_html }}
         </div>
 
       </div>
+
     {% endfor %}
 
   </div>

@@ -7,9 +7,14 @@
  * Developer:    Alaa Haddad https://www.alaahaddad.com.
  */
 
-/* Hover and focus effects on accordion buttons */
-.vvja .accordion-button:focus,
-.vvja .accordion-button:hover {
+.vvja .vvja-button {
+  padding: 16px 12px;
+  border: 1px solid gray;
+  border-radius: 5px;
+}
+
+.vvja .vvja-button:focus,
+.vvja .vvja-button:hover {
   font-weight: normal;
 }
 

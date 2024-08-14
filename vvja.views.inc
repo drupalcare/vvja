@@ -38,9 +38,8 @@ function vvja_views_data_alter(array &$data): void {
         'type' => 'boolean',
         'label' => t('Enable CSS Library'),
       ],
-      // Add transition speed option.
       'transition_speed' => [
-        'type' => 'string',
+        'type' => 'float',
         'label' => t('Transition Speed'),
       ],
     ],

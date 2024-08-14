@@ -3,6 +3,7 @@
 namespace Drupal\vvja\Plugin\views\style;
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 use Drupal\views\Plugin\views\style\StylePluginBase;
 
 /**
@@ -29,25 +30,39 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
 
   /**
    * Set default options.
+   *
+   * @return array
+   *   The default options.
    */
   protected function defineOptions(): array {
     $options = parent::defineOptions();
     $options['single_toggle'] = ['default' => TRUE];
     $options['global_toggle'] = ['default' => TRUE];
     $options['first_toggle'] = ['default' => TRUE];
-    $options['animation'] = ['default' => 'vvja__animate_bottom'];
+    $options['animation'] = ['default' => 'a-bottom'];
     $options['unique_id'] = ['default' => $this->generateUniqueId()];
     $options['enable_css'] = ['default' => TRUE];
-    // Add default transition speed.
-    $options['transition_speed'] = ['default' => '0.3s'];
+    $options['transition_speed'] = ['default' => '0.3'];
     return $options;
   }
 
   /**
-   * {@inheritdoc}
+   * Builds the options form.
+   *
+   * @param array $form
+   *   The form array.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state.
    */
-  public function buildOptionsForm(&$form, FormStateInterface $form_state): void {
+  public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);
+
+    $form['warning_message'] = [
+      '#type' => 'markup',
+      '#markup' => '<div class="messages messages--warning">' . $this->t('Note: The accordion component requires Fields as row style. To see an example, check the vvja_example view by clicking <a href="@url">here</a> to edit it.', [
+        '@url' => Url::fromRoute('entity.view.edit_form', ['view' => 'vvja_example'])->toString(),
+      ]) . '</div>',
+    ];
 
     $form['enable_css'] = [
       '#type' => 'checkbox',
@@ -82,39 +97,39 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
       '#title' => $this->t('Animation Type'),
       '#options' => [
         'none' => $this->t('None'),
-        'vvja__animate_top' => $this->t('Top'),
-        'vvja__animate_bottom' => $this->t('Bottom'),
-        'vvja__animate_left' => $this->t('Left'),
-        'vvja__animate_right' => $this->t('Right'),
-        'vvja__animate_zoom' => $this->t('Zoom'),
-        'vvja__animate_opacity' => $this->t('Opacity'),
+        'a-top' => $this->t('Slide from Top'),
+        'a-bottom' => $this->t('Slide from Bottom'),
+        'a-left' => $this->t('Slide from Left'),
+        'a-right' => $this->t('Slide from Right'),
+        'a-zoom' => $this->t('Zoom'),
+        'a-fade' => $this->t('Fade'),
       ],
       '#default_value' => $this->options['animation'],
       '#description' => $this->t('Choose the animation type.'),
     ];
 
-    // Add transition speed option to the form.
     $form['transition_speed'] = [
-      '#type' => 'select',
+      '#type' => 'number',
       '#title' => $this->t('Transition Speed'),
-      '#options' => [
-        '0.2s' => $this->t('Fast (0.2 seconds)'),
-        '0.3s' => $this->t('Normal (0.3 seconds)'),
-        '0.6s' => $this->t('Slow (0.6 seconds)'),
-        '0.9s' => $this->t('Very Slow (0.9 seconds)'),
-      ],
       '#default_value' => $this->options['transition_speed'],
-      '#description' => $this->t('Select the speed for the accordion transition.'),
+      '#description' => $this->t('Select the speed for the accordion transition. Enter a value between 0.1 (fast) and 2 (slow) to control the animation speed.'),
+      '#step' => 0.1,
+      '#min' => 0.1,
+      '#max' => 2,
+      '#required' => TRUE,
     ];
   }
 
   /**
    * Generates a unique numeric ID for the view display.
    *
-   * @throws \Random\RandomException
+   * @return int
+   *   A unique ID.
+   *
+   * @throws \Exception
+   *   If an appropriate source of randomness cannot be found.
    */
   protected function generateUniqueId(): int {
-    // 8 digit unique ID
     return random_int(10000000, 99999999);
   }
 

@@ -7,26 +7,45 @@
  * Developer:    Alaa Haddad https://www.alaahaddad.com.
  */
 
-/* Ensure the accordion has overflow hidden for smooth open/close transitions */
+.vvja .visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+  white-space: nowrap;
+}
+
+.vvja,
+.vvja * {
+  box-sizing: border-box;
+}
+
+.hidden {
+  display: none;
+}
+
 .vvja {
   overflow: hidden;
 }
 
 /* Basic layout for accordion items and their panes */
-.vvja .accordion-inner,
-.vvja .accordion-item {
+.vvja .vvja-inner,
+.vvja .vvja-item {
   display: grid;
   width: 100%;
   gap: 16px;
 }
 
-.vvja .accordion-inner {
+.vvja .vvja-inner {
   gap: 16px;
 }
 
 /* Style for accordion buttons */
-.vvja .accordion-button {
-  padding: 16px 12px;
+.vvja .vvja-button {
   display: flex;
   width: 100%;
   flex-grow: 1;
@@ -40,32 +59,31 @@
 }
 
 /* Accordion pane styles to manage open/close */
-.vvja .accordion-pane {
+.vvja .vvja-pane {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.9s ease, padding 0.9s ease;
 }
 
-.vvja .opened .accordion-pane {
+.vvja .opened .vvja-pane {
   max-height: none;
 }
 
-.vvja .closed .accordion-pane {
+.vvja .closed .vvja-pane {
   max-height: 0;
   padding: 0;
   overflow: hidden;
 }
 
 /* Style for toggle indicators */
-.vvja .accordion-button > .single-toggle {
+.vvja .vvja-button > .single-toggle {
   display: flex;
   margin-left: auto;
   font-weight: bold;
   font-size: 24px;
 }
 
-.vvja .accordion-item.opened .single-toggle span.b-minus,
-.vvja .accordion-item.closed .single-toggle span.b-plus {
+.vvja .vvja-item.opened .single-toggle span.b-minus,
+.vvja .vvja-item.closed .single-toggle span.b-plus {
   display: block;
 }
 
@@ -84,23 +102,7 @@
 
 
 /* Animate Accordion */
-.vvja__animate-fading {
-  animation: fading 5s ease-in-out infinite;
-}
-
-@keyframes fading {
-  0% {
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-.vvja__animate_opacity {
+.a-fade {
   animation: opac 0.8s ease-out;
 }
 
@@ -113,7 +115,7 @@
   }
 }
 
-.vvja__animate_top {
+.a-top {
   position: relative;
   animation: animatetop 0.6s ease-out;
 }
@@ -129,7 +131,7 @@
   }
 }
 
-.vvja__animate_left {
+.a-left {
   position: relative;
   animation: animateleft 0.6s ease-out;
 }
@@ -145,7 +147,7 @@
   }
 }
 
-.vvja__animate_right {
+.a-right {
   position: relative;
   animation: animateright 0.6s ease-out;
 }
@@ -161,7 +163,7 @@
   }
 }
 
-.vvja__animate_bottom {
+.a-bottom {
   position: relative;
   animation: animatebottom 0.6s ease-out;
 }
@@ -177,7 +179,7 @@
   }
 }
 
-.vvja__animate_zoom {
+.a-zoom {
   animation: animatezoom 0.6s ease-out;
 }
 

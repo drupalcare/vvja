@@ -55,11 +55,23 @@
           const plus = toggle.querySelector('.b-plus');
           const minus = toggle.querySelector('.b-minus');
           if (isOpen) {
-            if (plus) plus.style.display = 'none';
-            if (minus) minus.style.display = 'block';
+            if (plus) {
+              plus.classList.add('hidden');
+              plus.setAttribute('aria-hidden', 'true');
+            }
+            if (minus) {
+              minus.classList.remove('hidden');
+              minus.setAttribute('aria-hidden', 'false');
+            }
           } else {
-            if (plus) plus.style.display = 'block';
-            if (minus) minus.style.display = 'none';
+            if (plus) {
+              plus.classList.remove('hidden');
+              plus.setAttribute('aria-hidden', 'false');
+            }
+            if (minus) {
+              minus.classList.add('hidden');
+              minus.setAttribute('aria-hidden', 'true');
+            }
           }
         }
       }
@@ -82,8 +94,8 @@
 
       // Function to handle global toggle actions
       function handleGlobalToggle(container, action) {
-        const panes = container.querySelectorAll('.accordion-pane');
-        const buttons = container.querySelectorAll('.accordion-button');
+        const panes = container.querySelectorAll('.vvja-pane');
+        const buttons = container.querySelectorAll('.vvja-button');
         if (action === 'expand') {
           buttons.forEach(button => {
             const pane = button.nextElementSibling;
@@ -135,10 +147,19 @@
         accordionButtons.forEach(button => {
           const img = button.querySelector('img');
           if (img && img.alt) {
+            // Use the image's alt text as the aria-label
             button.setAttribute('aria-label', img.alt);
+          } else if (button.hasAttribute('aria-label')) {
+            // Retain the existing aria-label if it's already set
+            return;
           } else {
-            // If no image or alt, use button text as aria-label
-            button.setAttribute('aria-label', button.textContent.trim() || 'Accordion Button');
+            // Set aria-label based on a specific element or a default label
+            const labelElement = button.querySelector('.button-label');
+            if (labelElement) {
+              button.setAttribute('aria-label', labelElement.textContent.trim());
+            } else {
+              button.setAttribute('aria-label', 'Accordion Button');
+            }
           }
         });
       }
@@ -158,9 +179,9 @@
         });
       }
 
-      const accordionContainers = once('vvjaAccordion', '.accordion-inner', context);
+      const accordionContainers = once('vvja', '.vvja > .vvja-inner', context);
       accordionContainers.forEach(container => {
-        const accordionButtons = container.querySelectorAll('.accordion-button');
+        const accordionButtons = container.querySelectorAll('.vvja-button');
 
         // Initialize tabindex and ARIA attributes
         accordionButtons.forEach((button) => {

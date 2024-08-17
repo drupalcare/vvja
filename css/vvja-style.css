@@ -6,7 +6,6 @@
  * Website:      https://www.flashwebcenter.com
  * Developer:    Alaa Haddad https://www.alaahaddad.com.
  */
-
 .vvja .vvja-button {
   padding: 16px 12px;
   border: 1px solid gray;
@@ -27,4 +26,21 @@
 .vvja .global-toggle .button {
   padding: 12px;
   margin-right: 0;
+}
+
+.vvja .vvja-item.opened .vvja-pane>*:first-child {
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.vvja .vvja-item.opened {
+  gap: 0;
+}
+
+.vvja .vvja-item.opened .vvja-button {
+  padding-bottom: 0;
+}
+
+.vvja .vvja-item.opened .vvja-pane {
+  padding-top: 0;
 }

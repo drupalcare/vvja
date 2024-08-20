@@ -6,7 +6,6 @@
  * Website:      https://www.flashwebcenter.com
  * Developer:    Alaa Haddad https://www.alaahaddad.com.
  */
-
 .vvja .visually-hidden {
   position: absolute;
   width: 1px;
@@ -100,6 +99,14 @@
   flex-grow: 1;
 }
 
+/* For exapnded cards */
+.vvja.global-toggle.max-w .vvja-inner >:first-child {
+  grid-column: 1 / -1;
+}
+
+.vvja.max-w .vvja-item {
+  display: block;
+}
 
 /* Animate Accordion */
 .a-fade {
@@ -110,9 +117,11 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
+
 }
 
 .a-top {
@@ -125,10 +134,12 @@
     top: -100px;
     opacity: 0;
   }
+
   to {
     top: 0;
     opacity: 1;
   }
+
 }
 
 .a-left {
@@ -141,10 +152,12 @@
     left: -100px;
     opacity: 0;
   }
+
   to {
     left: 0;
     opacity: 1;
   }
+
 }
 
 .a-right {
@@ -157,10 +170,12 @@
     right: -100px;
     opacity: 0;
   }
+
   to {
     right: 0;
     opacity: 1;
   }
+
 }
 
 .a-bottom {
@@ -173,10 +188,12 @@
     bottom: -100px;
     opacity: 0;
   }
+
   to {
     bottom: 0;
     opacity: 1;
   }
+
 }
 
 .a-zoom {
@@ -187,7 +204,9 @@
   from {
     transform: scale(0);
   }
+
   to {
     transform: scale(1.05);
   }
+
 }

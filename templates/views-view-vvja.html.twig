@@ -19,11 +19,10 @@
 {% set unique_id = options.unique_id %}
 {% set vvja_id = 'vvja-' ~ unique_id %}
 
-{# Set the classes for the accordion. #}
-{% set classes = [
-  'vvja',
-  vvja_id,
-] %}
+{% set max_width = '' %}
+{% if options.accordion_item_width > 0 %}
+  {% set max_width = options.accordion_item_width %}
+{% endif %}
 
 {# Display or hide expand all options based on configuration #}
 {% set global_toggle = options.global_toggle %}
@@ -35,9 +34,20 @@
 {% set acc_id_btn = 'vvja-button-' ~ unique_id %}
 {% set acc_id_pan = 'vvja-pane-' ~ unique_id %}
 
+{% set classes = [
+  'vvja',
+  vvja_id,
+  global_toggle ? 'global-toggle' : '',
+  single_toggle ? 'single-toggle' : '',
+  first_toggle ? 'first-toggle' : '',
+  options.accordion_item_width != 0 ? 'max-w' : ''
+] %}
+
+
 {# Render the accordion. #}
 <div {{ attributes.addClass(classes).setAttribute('id', vvja_id) }} data-first-toggle="{{ first_toggle ? 'true' : 'false' }}">
-  <div id="{{ acc_id }}" class="vvja-inner" role="tablist">
+  <div id="{{ acc_id }}" class="vvja-inner" role="tablist"{% if max_width %} style="grid-template-columns: repeat(auto-fill, minmax({{ max_width }}px, 1fr));"{% endif %}>
+
 
     {# Render global expand/collapse buttons if enabled #}
     {% if global_toggle %}

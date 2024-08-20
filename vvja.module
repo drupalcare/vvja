@@ -118,6 +118,9 @@ function template_preprocess_views_view_vvja(array &$variables) {
   if (!empty($handler->options['unique_id'])) {
     $list_attributes['data-unique-id'] = $handler->options['unique_id'];
   }
+  if (!empty($handler->options['accordion_item_width'])) {
+    $list_attributes['data-accordion-item-width'] = $handler->options['accordion_item_width'];
+  }
 
   // Create an Attribute object for the list.
   $variables['list']['attributes'] = new Attribute($list_attributes);
@@ -132,6 +135,7 @@ function template_preprocess_views_view_vvja(array &$variables) {
     'enable_css' => $handler->options['enable_css'],
     'transition_speed' => $handler->options['transition_speed'],
     'unique_id' => $handler->options['unique_id'],
+    'accordion_item_width' => $handler->options['accordion_item_width'],
   ];
 
   // Customize theme hook suggestions for rows.

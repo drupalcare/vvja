@@ -39,10 +39,11 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
     $options['single_toggle'] = ['default' => TRUE];
     $options['global_toggle'] = ['default' => TRUE];
     $options['first_toggle'] = ['default' => TRUE];
+    $options['transition_speed'] = ['default' => '0.3'];
     $options['animation'] = ['default' => 'a-bottom'];
     $options['unique_id'] = ['default' => $this->generateUniqueId()];
     $options['enable_css'] = ['default' => TRUE];
-    $options['transition_speed'] = ['default' => '0.3'];
+    $options['accordion_item_width'] = ['default' => 0];
     return $options;
   }
 
@@ -71,18 +72,18 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
       '#description' => $this->t('Check this box to include the CSS library for styling the accordion.'),
     ];
 
-    $form['single_toggle'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Show Collapse or Expand'),
-      '#default_value' => $this->options['single_toggle'],
-      '#description' => $this->t('Check this box to show a toggle (+/-) button to open and close the accordion sections.'),
-    ];
-
     $form['global_toggle'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Show Collapse or Expand All'),
+      '#title' => $this->t('Show Collapse or Expand All (Global)'),
       '#default_value' => $this->options['global_toggle'],
       '#description' => $this->t('Check this box to show a button that toggles all the accordions at once.'),
+    ];
+
+    $form['single_toggle'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Show Collapse or Expand (Single)'),
+      '#default_value' => $this->options['single_toggle'],
+      '#description' => $this->t('Check this box to show a toggle (+/-) button to open and close the accordion sections.'),
     ];
 
     $form['first_toggle'] = [
@@ -116,6 +117,16 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
       '#step' => 0.1,
       '#min' => 0.1,
       '#max' => 2,
+      '#required' => TRUE,
+    ];
+
+    $form['accordion_item_width'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Accordion Item Width (px)'),
+      '#default_value' => $this->options['accordion_item_width'],
+      '#description' => $this->t('Set the width of each accordion item in pixels to display them as cards. Set to zero to allow each accordion item to expand to the full available width.'),
+      '#step' => 1,
+      '#min' => 0,
       '#required' => TRUE,
     ];
   }

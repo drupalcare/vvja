@@ -42,6 +42,11 @@ function vvja_views_data_alter(array &$data): void {
         'type' => 'float',
         'label' => t('Transition Speed'),
       ],
+      'accordion_item_width' => [
+        'type' => 'numeric',
+        'label' => t('Accordion Item Width'),
+      ],
+
     ],
   ];
 }

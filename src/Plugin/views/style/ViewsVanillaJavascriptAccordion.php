@@ -122,13 +122,14 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
 
     $form['accordion_item_width'] = [
       '#type' => 'number',
-      '#title' => $this->t('Accordion Item Width (px)'),
+      '#title' => $this->t('Expandable Card Width (px)'),
       '#default_value' => $this->options['accordion_item_width'],
-      '#description' => $this->t('Set the width of each accordion item in pixels to display them as cards. Set to zero to allow each accordion item to expand to the full available width.'),
+      '#description' => $this->t('Set the width of each Expandable Card in pixels. You can use this setting to display items as Expandable Cards or as a list. If set to zero, each item will expand to the full available width, creating a list layout. Otherwise, specifying a width will display each item as an Expandable Card with the specified width.'),
       '#step' => 1,
       '#min' => 0,
       '#required' => TRUE,
     ];
+
   }
 
   /**

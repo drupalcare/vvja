@@ -179,7 +179,7 @@
         });
       }
 
-      const accordionContainers = once('vvja', '.vvja > .vvja-inner', context);
+      const accordionContainers = once('vvjAccordion', '.vvja > .vvja-inner', context);
       accordionContainers.forEach(container => {
         const accordionButtons = container.querySelectorAll('.vvja-button');
 

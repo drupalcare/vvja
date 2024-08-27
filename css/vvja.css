@@ -6,7 +6,7 @@
  * Website:      https://www.flashwebcenter.com
  * Developer:    Alaa Haddad https://www.alaahaddad.com.
  */
-.vvja .visually-hidden {
+.vvj-accordion .visually-hidden {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -18,9 +18,16 @@
   white-space: nowrap;
 }
 
-.vvja,
-.vvja * {
+.vvj-accordion,
+.vvj-accordion * {
   box-sizing: border-box;
+}
+
+.vvj-accordion,
+.vvj-accordion .view-content {
+  width: 100%;
+  min-width: 100%;
+  display: block!important;
 }
 
 .hidden {

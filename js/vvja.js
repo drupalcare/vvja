@@ -1,6 +1,6 @@
 /**
  * @file
- * Views Vanilla JacaScript Accordion.
+ * Views Vanilla JavaScript Accordion.
  *
  * Filename:     vvja.js
  * Website:      https://www.flashwebcenter.com
@@ -17,6 +17,7 @@
         pane.style.maxHeight = `${pane.scrollHeight + panePadding}px`; // Add padding to maxHeight
         pane.style.padding = '16px'; // Apply padding when pane is open
         pane.setAttribute('aria-hidden', 'false');
+        toggleFocusableElements(pane, false); // Enable focusable elements
       }
 
       // Function to smoothly close an accordion pane
@@ -24,13 +25,13 @@
         pane.style.maxHeight = '0';
         pane.style.padding = '0 16px';
         pane.setAttribute('aria-hidden', 'true');
+        toggleFocusableElements(pane, true); // Disable focusable elements
       }
 
       // Function to deactivate a button
       function deactivateButton(button) {
         button.classList.remove('active');
         button.setAttribute('tabindex', '-1');
-        button.setAttribute('aria-selected', 'false');
         button.setAttribute('aria-expanded', 'false');
         updateToggleIndicator(button, false);
         button.parentElement.classList.remove('opened');
@@ -41,7 +42,6 @@
       function activateButton(button) {
         button.classList.add('active');
         button.removeAttribute('tabindex');
-        button.setAttribute('aria-selected', 'true');
         button.setAttribute('aria-expanded', 'true');
         updateToggleIndicator(button, true);
         button.parentElement.classList.remove('closed');
@@ -74,6 +74,22 @@
             }
           }
         }
+      }
+
+      // Function to toggle focusable elements inside a pane
+      function toggleFocusableElements(pane, shouldDisable) {
+        const focusableElements = pane.querySelectorAll('a, button, input, select, textarea, [tabindex]');
+        focusableElements.forEach(element => {
+          if (shouldDisable) {
+            element.setAttribute('tabindex', '-1');
+            element.setAttribute('aria-disabled', 'true');
+            element.disabled = true; // Disable element if it's a form control
+          } else {
+            element.removeAttribute('tabindex');
+            element.removeAttribute('aria-disabled');
+            element.disabled = false; // Enable element if it's a form control
+          }
+        });
       }
 
       // Function to handle individual accordion clicks
@@ -179,6 +195,15 @@
         });
       }
 
+      // Function to initialize focusable elements on load
+      function initializeFocusableElements() {
+        const panes = document.querySelectorAll('.vvja-pane');
+        panes.forEach(pane => {
+          const isHidden = pane.getAttribute('aria-hidden') === 'true';
+          toggleFocusableElements(pane, isHidden);
+        });
+      }
+
       const accordionContainers = once('vvjAccordion', '.vvja > .vvja-inner', context);
       accordionContainers.forEach(container => {
         const accordionButtons = container.querySelectorAll('.vvja-button');
@@ -229,6 +254,9 @@
         // Disable links within accordion buttons
         disableLinksInAccordionButtons(accordionButtons);
       });
+
+      // Initialize focusable elements on page load
+      initializeFocusableElements();
     }
   };
 })(Drupal, drupalSettings, once);

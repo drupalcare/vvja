@@ -46,7 +46,7 @@
 
 {# Render the accordion. #}
 <div {{ attributes.addClass(classes).setAttribute('id', vvja_id) }} data-first-toggle="{{ first_toggle ? 'true' : 'false' }}">
-  <div id="{{ acc_id }}" class="vvja-inner" role="tablist"{% if max_width %} style="grid-template-columns: repeat(auto-fill, minmax({{ max_width }}px, 1fr));"{% endif %}>
+  <div id="{{ acc_id }}" class="vvja-inner" {% if max_width %} style="grid-template-columns: repeat(auto-fill, minmax({{ max_width }}px, 1fr));"{% endif %}>
 
 
     {# Render global expand/collapse buttons if enabled #}
@@ -70,7 +70,7 @@
       {% set button_content = split_content[0] %}
       {% set pane_content = split_content[1]|default('') %}
 
-      <div id="vvja-item-{{ unique_id }}-{{ key + 1 }}" class="vvja-item closed">
+      <div id="vvja-item-{{ unique_id }}-{{ key + 1 }}" role="region" class="vvja-item closed">
 
         {# Render the button #}
         <button id="{{ acc_id_btn }}-{{ key + 1 }}" class="button vvja-button"
@@ -89,7 +89,7 @@
         </button>
 
         {# Render the accordion pane #}
-        <div id="{{ acc_id_pan }}-{{ key + 1 }}-pane" class="vvja-pane{{ vvja_animation != 'none' ? ' ' ~ vvja_animation : '' }}" role="region" aria-labelledby="{{ acc_id_btn }}-{{ key + 1 }}" aria-hidden="true" data-index="{{ key + 1 }}" style="transition: max-height {{ transition_speed }}s, padding {{ transition_speed }}s;">
+        <div id="{{ acc_id_pan }}-{{ key + 1 }}-pane" class="vvja-pane{{ vvja_animation != 'none' ? ' ' ~ vvja_animation : '' }}" aria-labelledby="{{ acc_id_btn }}-{{ key + 1 }}" aria-hidden="true" data-index="{{ key + 1 }}" style="transition: max-height {{ transition_speed }}s, padding {{ transition_speed }}s;">
           {{ pane_content|safe_html }}
         </div>
 

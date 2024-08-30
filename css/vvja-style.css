@@ -17,12 +17,11 @@
   font-weight: normal;
 }
 
-/* Global toggle button styles */
-.vvja .global-toggle .button,
-.vvja .single-toggle .button {
-  font-size: 32px;
+.vvja .vvja-inner {
+  margin-top: 1rem;
 }
 
+/* Global toggle button styles */
 .vvja .global-toggle .button {
   padding: 0.75rem;
   margin-right: 0;
@@ -35,4 +34,15 @@
 
 .vvja .vvja-item.opened {
   gap: 0;
+}
+
+.vvja .vvja-inner {
+  margin-top: 1rem;
+  --grid-gap: 1rem;
+  gap: var(--grid-gap);
+}
+
+.vvja .vvja-item {
+  --grid-item-gap: 1rem;
+  gap: var(--grid-item-gap);
 }

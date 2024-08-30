@@ -27,27 +27,26 @@
 .vvj-accordion .view-content {
   width: 100%;
   min-width: 100%;
-  display: block!important;
-}
-
-.hidden {
-  display: none;
+  display: block !important;
 }
 
 .vvja {
   overflow: hidden;
 }
 
+.vvja .vvja-pane {
+  transition: max-height var(--transition-speed), padding var(--transition-speed);
+}
+
 /* Basic layout for accordion items and their panes */
-.vvja .vvja-inner,
+.vvja .vvja-inner {
+  display: grid;
+  width: 100%;
+}
+
 .vvja .vvja-item {
   display: grid;
   width: 100%;
-  gap: 16px;
-}
-
-.vvja .vvja-inner {
-  gap: 16px;
 }
 
 /* Style for accordion buttons */
@@ -65,11 +64,6 @@
 }
 
 /* Accordion pane styles to manage open/close */
-.vvja .vvja-pane {
-  max-height: 0;
-  overflow: hidden;
-}
-
 .vvja .opened .vvja-pane {
   max-height: none;
 }
@@ -81,24 +75,26 @@
 }
 
 /* Style for toggle indicators */
-.vvja .vvja-button > .single-toggle {
+.vvja .single-toggle svg,
+.vvja .group-toggle svg {
+  width: 2rem;
+  height: 2rem;
+}
+
+.single-toggle,
+.single-toggle span,
+.global-toggle .group-toggle,
+.global-toggle .group-toggle span {
   display: flex;
+  align-items: start;
+  justify-content: center;
+}
+
+.vvja .vvja-button > .single-toggle {
   margin-left: auto;
-  font-weight: bold;
-  font-size: 24px;
+  padding-left: 12px;
 }
 
-.vvja .vvja-item.opened .single-toggle span.b-minus,
-.vvja .vvja-item.closed .single-toggle span.b-plus {
-  display: block;
-}
-
-.vvja .global-toggle .b-minus,
-.vvja .single-toggle span {
-  display: none;
-}
-
-/* Global toggle styles */
 .vvja .global-toggle {
   justify-content: end;
   align-items: center;
@@ -106,13 +102,46 @@
   flex-grow: 1;
 }
 
+.global-toggle .b-minus,
+.global-toggle .b-plus,
+.single-toggle .b-plus,
+.single-toggle .b-minus {
+  opacity: 1;
+  width: auto;
+  transform: scale(1.1);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  pointer-events: auto;
+}
+
+.global-toggle .b-minus.hidden,
+.global-toggle .b-plus.hidden,
+.single-toggle .b-minus.hidden,
+.single-toggle .b-plus.hidden {
+  opacity: 0;
+  width: 0;
+  transform: scale(0.8);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  pointer-events: none;
+}
+
 /* For exapnded cards */
+.vvja.max-w .vvja-inner {
+  grid-template-columns: repeat(auto-fill, minmax(calc(var(--box-width) * 1px), 1fr));
+}
+
 .vvja.global-toggle.max-w .vvja-inner >:first-child {
   grid-column: 1 / -1;
 }
 
 .vvja.max-w .vvja-item {
   display: block;
+}
+
+@media (max-width:36rem) {
+  .vvja.max-w .vvja-inner {
+    grid-template-columns: 1fr;
+  }
+
 }
 
 /* Animate Accordion */

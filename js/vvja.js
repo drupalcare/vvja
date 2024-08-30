@@ -6,257 +6,234 @@
  * Website:      https://www.flashwebcenter.com
  * Developer:    Alaa Haddad https://www.alaahaddad.com.
  */
+
 ((Drupal, drupalSettings, once) => {
   'use strict';
 
   Drupal.behaviors.VVJAccordion = {
     attach: function (context, settings) {
-      // Function to smoothly open an accordion pane
-      function openPane(pane) {
-        const panePadding = 32; // Total vertical padding (top + bottom)
-        pane.style.maxHeight = `${pane.scrollHeight + panePadding}px`; // Add padding to maxHeight
-        pane.style.padding = '16px'; // Apply padding when pane is open
-        pane.setAttribute('aria-hidden', 'false');
-        toggleFocusableElements(pane, false); // Enable focusable elements
-      }
-
-      // Function to smoothly close an accordion pane
-      function closePane(pane) {
-        pane.style.maxHeight = '0';
-        pane.style.padding = '0 16px';
-        pane.setAttribute('aria-hidden', 'true');
-        toggleFocusableElements(pane, true); // Disable focusable elements
-      }
-
-      // Function to deactivate a button
-      function deactivateButton(button) {
-        button.classList.remove('active');
-        button.setAttribute('tabindex', '-1');
-        button.setAttribute('aria-expanded', 'false');
-        updateToggleIndicator(button, false);
-        button.parentElement.classList.remove('opened');
-        button.parentElement.classList.add('closed');
-      }
-
-      // Function to activate a button
-      function activateButton(button) {
-        button.classList.add('active');
-        button.removeAttribute('tabindex');
-        button.setAttribute('aria-expanded', 'true');
-        updateToggleIndicator(button, true);
-        button.parentElement.classList.remove('closed');
-        button.parentElement.classList.add('opened');
-      }
-
-      // Function to update the single toggle indicator
-      function updateToggleIndicator(button, isOpen) {
-        const toggle = button.querySelector('.single-toggle');
-        if (toggle) {
-          const plus = toggle.querySelector('.b-plus');
-          const minus = toggle.querySelector('.b-minus');
-          if (isOpen) {
-            if (plus) {
-              plus.classList.add('hidden');
-              plus.setAttribute('aria-hidden', 'true');
-            }
-            if (minus) {
-              minus.classList.remove('hidden');
-              minus.setAttribute('aria-hidden', 'false');
-            }
-          } else {
-            if (plus) {
-              plus.classList.remove('hidden');
-              plus.setAttribute('aria-hidden', 'false');
-            }
-            if (minus) {
-              minus.classList.add('hidden');
-              minus.setAttribute('aria-hidden', 'true');
-            }
-          }
-        }
-      }
-
-      // Function to toggle focusable elements inside a pane
-      function toggleFocusableElements(pane, shouldDisable) {
-        const focusableElements = pane.querySelectorAll('a, button, input, select, textarea, [tabindex]');
-        focusableElements.forEach(element => {
-          if (shouldDisable) {
-            element.setAttribute('tabindex', '-1');
-            element.setAttribute('aria-disabled', 'true');
-            element.disabled = true; // Disable element if it's a form control
-          } else {
-            element.removeAttribute('tabindex');
-            element.removeAttribute('aria-disabled');
-            element.disabled = false; // Enable element if it's a form control
-          }
-        });
-      }
-
-      // Function to handle individual accordion clicks
-      function handleAccordionClick(event) {
-        const button = event.currentTarget;
-        const pane = button.nextElementSibling;
-
-        const isOpen = pane.style.maxHeight && pane.style.maxHeight !== '0px';
-
-        if (isOpen) {
-          closePane(pane);
-          deactivateButton(button);
-        } else {
-          openPane(pane);
-          activateButton(button);
-        }
-      }
-
-      // Function to handle global toggle actions
-      function handleGlobalToggle(container, action) {
-        const panes = container.querySelectorAll('.vvja-pane');
-        const buttons = container.querySelectorAll('.vvja-button');
-        if (action === 'expand') {
-          buttons.forEach(button => {
-            const pane = button.nextElementSibling;
-            if (pane) {
-              openPane(pane);
-              activateButton(button);
-            }
-          });
-        } else if (action === 'collapse') {
-          panes.forEach(pane => closePane(pane));
-          buttons.forEach(button => deactivateButton(button));
-        }
-      }
-
-      // Function to handle keyboard navigation
-      function handleKeyboardNavigation(accordionButtons) {
-        accordionButtons.forEach((button, index) => {
-          button.addEventListener('keydown', (event) => {
-            const currentIndex = index;
-            let newIndex;
-
-            switch (event.key) {
-              case 'ArrowDown':
-                newIndex = (currentIndex + 1) % accordionButtons.length;
-                break;
-              case 'ArrowUp':
-                newIndex = (currentIndex - 1 + accordionButtons.length) % accordionButtons.length;
-                break;
-              case 'Home':
-                newIndex = 0;
-                break;
-              case 'End':
-                newIndex = accordionButtons.length - 1;
-                break;
-              default:
-                return;
-            }
-
-            accordionButtons.forEach(b => b.setAttribute('tabindex', '-1'));
-            accordionButtons[newIndex].setAttribute('tabindex', '0');
-            accordionButtons[newIndex].focus();
-            event.preventDefault();
-          });
-        });
-      }
-
-      // Function to update aria-labels for accordion buttons based on image alt text
-      function updateAriaLabelsForAccordionButtons(accordionButtons) {
-        accordionButtons.forEach(button => {
-          const img = button.querySelector('img');
-          if (img && img.alt) {
-            // Use the image's alt text as the aria-label
-            button.setAttribute('aria-label', img.alt);
-          } else if (button.hasAttribute('aria-label')) {
-            // Retain the existing aria-label if it's already set
-            return;
-          } else {
-            // Set aria-label based on a specific element or a default label
-            const labelElement = button.querySelector('.button-label');
-            if (labelElement) {
-              button.setAttribute('aria-label', labelElement.textContent.trim());
-            } else {
-              button.setAttribute('aria-label', 'Accordion Button');
-            }
-          }
-        });
-      }
-
-      // Disable links within accordion buttons
-      function disableLinksInAccordionButtons(accordionButtons) {
-        accordionButtons.forEach(button => {
-          const links = button.querySelectorAll('a');
-          links.forEach(link => {
-            link.setAttribute('data-original-href', link.getAttribute('href'));
-            link.removeAttribute('href');
-            link.style.cursor = 'default';
-            link.addEventListener('click', function(event) {
-              event.preventDefault(); // Prevent link from navigating
-            });
-          });
-        });
-      }
-
-      // Function to initialize focusable elements on load
-      function initializeFocusableElements() {
-        const panes = document.querySelectorAll('.vvja-pane');
-        panes.forEach(pane => {
-          const isHidden = pane.getAttribute('aria-hidden') === 'true';
-          toggleFocusableElements(pane, isHidden);
-        });
-      }
-
       const accordionContainers = once('vvjAccordion', '.vvja > .vvja-inner', context);
+
       accordionContainers.forEach(container => {
         const accordionButtons = container.querySelectorAll('.vvja-button');
 
-        // Initialize tabindex and ARIA attributes
         accordionButtons.forEach((button) => {
           if (!button.classList.contains('active')) {
             button.setAttribute('tabindex', '-1');
           }
 
-          // Attach click event listener
           button.addEventListener('click', handleAccordionClick);
         });
 
-        // Handle keyboard navigation
-        handleKeyboardNavigation(accordionButtons);
+        const globalToggleButton = container.querySelector('.global-toggle .button.group-toggle');
 
-        // Handle global toggle buttons
-        const globalTogglePlus = container.querySelector('.global-toggle .b-plus');
-        const globalToggleMinus = container.querySelector('.global-toggle .b-minus');
+        if (globalToggleButton) {
+          globalToggleButton.addEventListener('click', () => {
+            const isExpanded = globalToggleButton.getAttribute('aria-expanded') === 'true';
 
-        if (globalTogglePlus && globalToggleMinus) {
-          globalTogglePlus.addEventListener('click', () => {
-            handleGlobalToggle(container, 'expand');
-            globalTogglePlus.style.display = 'none';
-            globalToggleMinus.style.display = 'block';
-          });
-
-          globalToggleMinus.addEventListener('click', () => {
-            handleGlobalToggle(container, 'collapse');
-            globalTogglePlus.style.display = 'block';
-            globalToggleMinus.style.display = 'none';
+            if (isExpanded) {
+              handleGlobalToggle('collapse');
+              globalToggleButton.setAttribute('aria-expanded', 'false');
+              toggleAriaHidden(globalToggleButton.querySelector('.b-plus'), false);
+              toggleAriaHidden(globalToggleButton.querySelector('.b-minus'), true);
+            } else {
+              handleGlobalToggle('expand');
+              globalToggleButton.setAttribute('aria-expanded', 'true');
+              toggleAriaHidden(globalToggleButton.querySelector('.b-plus'), true);
+              toggleAriaHidden(globalToggleButton.querySelector('.b-minus'), false);
+            }
           });
         }
 
-        // Open the first item if first_toggle is true
         const firstToggle = container.closest('.vvja').dataset.firstToggle === 'true';
         if (firstToggle) {
           const firstButton = accordionButtons[0];
           const firstPane = firstButton.nextElementSibling;
           openPane(firstPane);
           activateButton(firstButton);
+          toggleAriaHidden(firstButton.querySelector('.b-plus'), true);
+          toggleAriaHidden(firstButton.querySelector('.b-minus'), false);
         }
 
-        // Update aria-labels for accordion buttons based on content
+        function openPane(pane) {
+          const panePadding = 32;
+          pane.style.maxHeight = `${pane.scrollHeight + panePadding}px`;
+          pane.style.padding = '16px';
+          pane.setAttribute('aria-hidden', 'false');
+          toggleFocusableElements(pane, false);
+        }
+
+        function closePane(pane) {
+          pane.style.maxHeight = '0';
+          pane.style.padding = '0 16px';
+          pane.setAttribute('aria-hidden', 'true');
+          toggleFocusableElements(pane, true);
+        }
+
+        function deactivateButton(button) {
+          button.classList.remove('active');
+          button.setAttribute('tabindex', '-1');
+          button.setAttribute('aria-expanded', 'false');
+          updateToggleIndicator(button, false);
+          button.parentElement.classList.remove('opened');
+          button.parentElement.classList.add('closed');
+        }
+
+        function activateButton(button) {
+          button.classList.add('active');
+          button.removeAttribute('tabindex');
+          button.setAttribute('aria-expanded', 'true');
+          updateToggleIndicator(button, true);
+          button.parentElement.classList.remove('closed');
+          button.parentElement.classList.add('opened');
+        }
+
+        function updateToggleIndicator(button, isOpen) {
+          const toggle = button.querySelector('.single-toggle');
+          if (toggle) {
+            const plus = toggle.querySelector('.b-plus');
+            const minus = toggle.querySelector('.b-minus');
+            if (isOpen) {
+              toggleAriaHidden(plus, true);
+              toggleAriaHidden(minus, false);
+            } else {
+              toggleAriaHidden(plus, false);
+              toggleAriaHidden(minus, true);
+            }
+          }
+        }
+
+        function toggleAriaHidden(element, isHidden) {
+          if (element) {
+            element.setAttribute('aria-hidden', isHidden.toString());
+            element.classList.toggle('hidden', isHidden);
+          }
+        }
+
+        function toggleFocusableElements(pane, shouldDisable) {
+          const focusableElements = pane.querySelectorAll('a, button, input, select, textarea, [tabindex]');
+          focusableElements.forEach(element => {
+            if (shouldDisable) {
+              element.setAttribute('tabindex', '-1');
+              element.setAttribute('aria-disabled', 'true');
+              element.disabled = true;
+            } else {
+              element.removeAttribute('tabindex');
+              element.removeAttribute('aria-disabled');
+              element.disabled = false;
+            }
+          });
+        }
+
+        function handleAccordionClick(event) {
+          const button = event.currentTarget;
+          const pane = button.nextElementSibling;
+
+          const isOpen = pane.style.maxHeight && pane.style.maxHeight !== '0px';
+
+          if (isOpen) {
+            closePane(pane);
+            deactivateButton(button);
+          } else {
+            openPane(pane);
+            activateButton(button);
+          }
+        }
+
+        function handleGlobalToggle(action) {
+          const panes = container.querySelectorAll('.vvja-pane');
+          const buttons = container.querySelectorAll('.vvja-button');
+          if (action === 'expand') {
+            buttons.forEach(button => {
+              const pane = button.nextElementSibling;
+              if (pane) {
+                openPane(pane);
+                activateButton(button);
+              }
+            });
+          } else if (action === 'collapse') {
+            panes.forEach(pane => closePane(pane));
+            buttons.forEach(button => deactivateButton(button));
+          }
+        }
+
+        function handleKeyboardNavigation(accordionButtons) {
+          accordionButtons.forEach((button, index) => {
+            button.addEventListener('keydown', (event) => {
+              const currentIndex = index;
+              let newIndex;
+
+              switch (event.key) {
+                case 'ArrowDown':
+                  newIndex = (currentIndex + 1) % accordionButtons.length;
+                  break;
+                case 'ArrowUp':
+                  newIndex = (currentIndex - 1 + accordionButtons.length) % accordionButtons.length;
+                  break;
+                case 'Home':
+                  newIndex = 0;
+                  break;
+                case 'End':
+                  newIndex = accordionButtons.length - 1;
+                  break;
+                default:
+                  return;
+              }
+
+              accordionButtons.forEach(b => b.setAttribute('tabindex', '-1'));
+              accordionButtons[newIndex].setAttribute('tabindex', '0');
+              accordionButtons[newIndex].focus();
+              event.preventDefault();
+            });
+          });
+        }
+
+        function updateAriaLabelsForAccordionButtons(accordionButtons) {
+          accordionButtons.forEach(button => {
+            const img = button.querySelector('img');
+            if (img && img.alt) {
+              button.setAttribute('aria-label', img.alt);
+            } else if (button.hasAttribute('aria-label')) {
+              return;
+            } else {
+              const labelElement = button.querySelector('.button-label');
+              if (labelElement) {
+                button.setAttribute('aria-label', labelElement.textContent.trim());
+              } else {
+                button.setAttribute('aria-label', 'Accordion Button');
+              }
+            }
+          });
+        }
+
+        function disableLinksInAccordionButtons(accordionButtons) {
+          accordionButtons.forEach(button => {
+            const links = button.querySelectorAll('a');
+            links.forEach(link => {
+              link.setAttribute('data-original-href', link.getAttribute('href'));
+              link.removeAttribute('href');
+              link.style.cursor = 'default';
+              link.addEventListener('click', function(event) {
+                event.preventDefault();
+              });
+            });
+          });
+        }
+
+        function initializeFocusableElements() {
+          const panes = container.querySelectorAll('.vvja-pane');
+          panes.forEach(pane => {
+            const isHidden = pane.getAttribute('aria-hidden') === 'true';
+            toggleFocusableElements(pane, isHidden);
+          });
+        }
+
+        handleKeyboardNavigation(accordionButtons);
         updateAriaLabelsForAccordionButtons(accordionButtons);
-
-        // Disable links within accordion buttons
         disableLinksInAccordionButtons(accordionButtons);
+        initializeFocusableElements();
       });
-
-      // Initialize focusable elements on page load
-      initializeFocusableElements();
     }
   };
 })(Drupal, drupalSettings, once);
+

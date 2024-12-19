@@ -228,6 +228,32 @@
           });
         }
 
+        // Debounce function to limit resize event calls
+        let resizeTimeout;
+        let lastResizeWidth = window.innerWidth;
+        function handleResizeDebounced() {
+          clearTimeout(resizeTimeout);
+          resizeTimeout = setTimeout(() => {
+            if (window.innerWidth > 768 && Math.abs(lastResizeWidth - window.innerWidth) > 30) {
+              handleResize();
+              lastResizeWidth = window.innerWidth;
+            }
+          }, 100);
+        }
+
+        // Adjust open panes on resize
+        function handleResize() {
+          const openPanes = container.querySelectorAll('.vvja-pane[aria-hidden="false"]');
+
+          openPanes.forEach(pane => {
+            const panePadding = 32; // Match the padding used in openPane()
+            pane.style.maxHeight = `${pane.scrollHeight + panePadding}px`;
+          });
+        }
+
+        // Add resize event listener
+        window.addEventListener('resize', handleResizeDebounced);
+
         handleKeyboardNavigation(accordionButtons);
         updateAriaLabelsForAccordionButtons(accordionButtons);
         disableLinksInAccordionButtons(accordionButtons);

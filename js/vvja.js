@@ -212,9 +212,10 @@
             links.forEach(link => {
               link.setAttribute('data-original-href', link.getAttribute('href'));
               link.removeAttribute('href');
-              link.style.cursor = 'default';
+              link.style.cursor = 'pointer';
               link.addEventListener('click', function(event) {
                 event.preventDefault();
+                event.stopPropagation();
               });
             });
           });

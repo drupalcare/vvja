@@ -1,5 +1,4 @@
 vvja:
-  version: VERSION
   css:
     theme:
       css/vvja.css: { }

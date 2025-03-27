@@ -41,8 +41,3 @@
   --grid-gap: 1rem;
   gap: var(--grid-gap);
 }
-
-.vvja .vvja-item {
-  --grid-item-gap: 1rem;
-  gap: var(--grid-item-gap);
-}

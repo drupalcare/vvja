@@ -43,6 +43,7 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
     $options['animation'] = ['default' => 'a-bottom'];
     $options['unique_id'] = ['default' => $this->generateUniqueId()];
     $options['enable_css'] = ['default' => TRUE];
+    $options['exclusive_panel'] = ['default' => FALSE];
     $options['accordion_item_width'] = ['default' => 0];
     return $options;
   }
@@ -77,6 +78,18 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
       '#title' => $this->t('Show Collapse or Expand All (Global)'),
       '#default_value' => $this->options['global_toggle'],
       '#description' => $this->t('Check this box to show a button that toggles all the accordions at once.'),
+    ];
+
+    $form['exclusive_panel'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enable Exclusive Mode'),
+      '#default_value' => $this->options['exclusive_panel'],
+      '#description' => $this->t('Allow only one panel to be open at a time. By default, multiple panels can be open simultaneously. Note: This feature is incompatible with the "Show Collapse" or "Expand All (Global)" options.'),
+      '#states' => [
+        'enabled' => [
+          ':input[name="style_options[global_toggle]"]' => ['checked' => FALSE],
+        ],
+      ],
     ];
 
     $form['single_toggle'] = [

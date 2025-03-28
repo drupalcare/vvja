@@ -14,6 +14,7 @@
   - first_toggle: Whether to have the first section open by default.
   - animation: Animation type for the accordion panels.
   - transition_speed: allows users to select different speeds for the accordion.
+  - exclusive_panel: allows users to have one panel open only.
 #}
 {# Set unique ID for the accordion instance #}
 {% set unique_id = options.unique_id %}
@@ -21,7 +22,9 @@
 {% set max_width = options.accordion_item_width %}
 
 {# Display or hide expand all options based on configuration #}
+{% set exclusive_panel = options.exclusive_panel %}
 {% set global_toggle = options.global_toggle %}
+{% set show_global_toggle = global_toggle and not exclusive_panel %}
 {% set single_toggle = options.single_toggle %}
 {% set first_toggle = options.first_toggle %}
 {% set vvja_animation = options.animation %}
@@ -33,23 +36,23 @@
 {% set classes = [
   'vvja',
   vvja_id,
-  global_toggle ? 'global-toggle' : '',
-  single_toggle ? 'single-toggle' : '',
-  first_toggle ? 'first-toggle' : '',
+  global_toggle ? 'global-toggle-on' : '',
+  single_toggle ? 'single-toggle-on' : '',
+  first_toggle ? 'first-toggle-on' : '',
   options.accordion_item_width != 0 ? 'max-w' : ''
 ] %}
 
 {# Render the accordion. #}
-<div {{ attributes.addClass(classes).setAttribute('id', vvja_id) }} data-first-toggle="{{ first_toggle ? 'true' : 'false' }}">
-  <div id="{{ acc_id }}" class="vvja-inner" {% if max_width > 0 %} style="--box-width: {{ max_width }}"{% endif %}>
+<div {{ attributes.addClass(classes).setAttribute('id', vvja_id) }}>
+  <div id="{{ acc_id }}" class="vvja-inner" {% if max_width > 0 %} style="--box-width: {{ max_width }}"{% endif %} data-exclusive="{{ exclusive_panel ? 'true' : 'false' }}" data-first-toggle="{{ first_toggle ? 'true' : 'false' }}">
 
     {# Render global expand/collapse buttons if enabled #}
-    {% if global_toggle %}
+    {% if show_global_toggle %}
     <div class="global-toggle">
       <button class="button group-toggle" aria-expanded="false" aria-controls="{{ vvja_id }}" aria-label="{{ 'Expand or Collapse all sections'|t }}">
         <span class="group-toggle">
-          <span aria-hidden="true" class="b-minus hidden">{{ include('@vvja/svg/collapse-all.svg') }}</span>
-          <span aria-hidden="false" class="b-plus">{{ include('@vvja/svg/expand-all.svg') }}</span>
+          <span aria-hidden="true" class="group-toggle-inner b-minus vvja-hidden">{{ include('@vvja/svg/collapse-all.svg') }}</span>
+          <span aria-hidden="false" class="group-toggle-inner b-plus">{{ include('@vvja/svg/expand-all.svg') }}</span>
           <span class="visually-hidden">{{ 'Expand or Collapse all sections'|t }}</span>
         </span>
       </button>
@@ -70,8 +73,8 @@
         {{ button_content|safe_html }}
         {% if single_toggle %}
           <span class="single-toggle">
-            <span aria-hidden="true" class="b-minus hidden">{{ include('@vvja/svg/collapse-content.svg') }}</span>
-            <span aria-hidden="false" class="b-plus">{{ include('@vvja/svg/expand-content.svg') }}</span>
+            <span aria-hidden="true" class="single-toggle-inner b-minus vvja-hidden">{{ include('@vvja/svg/collapse-content.svg') }}</span>
+            <span aria-hidden="false" class="single-toggle-inner b-plus">{{ include('@vvja/svg/expand-content.svg') }}</span>
             <span class="visually-hidden">{{ 'Close or Open tab @id-pane'|t({'@id': acc_id_pan ~ '-' ~ (key + 1)}) }}</span>
           </span>
         {% endif %}

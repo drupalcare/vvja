@@ -17,11 +17,10 @@
       accordionContainers.forEach(container => {
         const accordionButtons = container.querySelectorAll('.vvja-button');
 
-        accordionButtons.forEach((button) => {
+        once('vvjAccordionButtonInit', accordionButtons).forEach((button) => {
           if (!button.classList.contains('active')) {
             button.setAttribute('tabindex', '-1');
           }
-
           button.addEventListener('click', handleAccordionClick);
         });
 
@@ -45,7 +44,7 @@
           });
         }
 
-        const firstToggle = container.closest('.vvja').dataset.firstToggle === 'true';
+        const firstToggle = container.dataset.firstToggle === 'true';
         if (firstToggle) {
           const firstButton = accordionButtons[0];
           const firstPane = firstButton.nextElementSibling;
@@ -55,17 +54,51 @@
           toggleAriaHidden(firstButton.querySelector('.b-minus'), false);
         }
 
+        function updateGlobalToggleState(container) {
+          const globalToggleButton = container.querySelector('.global-toggle .group-toggle');
+          if (!globalToggleButton) return;
+
+          const panes = container.querySelectorAll('.vvja-pane');
+          const allOpen = Array.from(panes).every(pane => pane.getAttribute('aria-hidden') === 'false');
+          const allClosed = Array.from(panes).every(pane => pane.getAttribute('aria-hidden') === 'true');
+
+          if (allOpen) {
+            globalToggleButton.setAttribute('aria-expanded', 'true');
+            toggleAriaHidden(globalToggleButton.querySelector('.b-plus'), true);
+            toggleAriaHidden(globalToggleButton.querySelector('.b-minus'), false);
+          } else if (allClosed) {
+            globalToggleButton.setAttribute('aria-expanded', 'false');
+            toggleAriaHidden(globalToggleButton.querySelector('.b-plus'), false);
+            toggleAriaHidden(globalToggleButton.querySelector('.b-minus'), true);
+          } else {
+            // Mixed state: keep as-is or default to collapse
+            globalToggleButton.setAttribute('aria-expanded', 'false');
+            toggleAriaHidden(globalToggleButton.querySelector('.b-plus'), false);
+            toggleAriaHidden(globalToggleButton.querySelector('.b-minus'), true);
+          }
+        }
+
         function openPane(pane) {
           const panePadding = 32;
           pane.style.maxHeight = `${pane.scrollHeight + panePadding}px`;
           pane.style.padding = '16px';
           pane.setAttribute('aria-hidden', 'false');
           toggleFocusableElements(pane, false);
+
+          // Optional: Let it resize naturally afterward
+          pane.addEventListener('transitionend', () => {
+            if (pane.getAttribute('aria-hidden') === 'false') {
+              pane.style.maxHeight = 'none';
+            }
+          }, { once: true });
         }
 
         function closePane(pane) {
-          pane.style.maxHeight = '0';
-          pane.style.padding = '0 16px';
+          pane.style.maxHeight = `${pane.scrollHeight}px`;
+          requestAnimationFrame(() => {
+            pane.style.maxHeight = '0';
+            pane.style.padding = '0 16px';
+          });
           pane.setAttribute('aria-hidden', 'true');
           toggleFocusableElements(pane, true);
         }
@@ -106,7 +139,7 @@
         function toggleAriaHidden(element, isHidden) {
           if (element) {
             element.setAttribute('aria-hidden', isHidden.toString());
-            element.classList.toggle('hidden', isHidden);
+            element.classList.toggle('vvja-hidden', isHidden);
           }
         }
 
@@ -128,15 +161,42 @@
         function handleAccordionClick(event) {
           const button = event.currentTarget;
           const pane = button.nextElementSibling;
+          const container = button.closest('.vvja-inner');
+          const allButtons = container.querySelectorAll('.vvja-button');
 
           const isOpen = pane.style.maxHeight && pane.style.maxHeight !== '0px';
 
-          if (isOpen) {
-            closePane(pane);
-            deactivateButton(button);
+          // Check if exclusive mode is enabled via data attribute
+          const isExclusive = container.dataset.exclusive === 'true';
+
+          if (isExclusive) {
+            // Exclusive mode: close all other panels
+            allButtons.forEach(otherButton => {
+              const otherPane = otherButton.nextElementSibling;
+
+              if (otherButton !== button) {
+                closePane(otherPane);
+                deactivateButton(otherButton);
+              }
+            });
+
+            if (isOpen) {
+              closePane(pane);
+              deactivateButton(button);
+            } else {
+              openPane(pane);
+              activateButton(button);
+            }
+
           } else {
-            openPane(pane);
-            activateButton(button);
+            if (isOpen) {
+              closePane(pane);
+              deactivateButton(button);
+            } else {
+              openPane(pane);
+              activateButton(button);
+            }
+            updateGlobalToggleState(container);
           }
         }
 
@@ -263,4 +323,3 @@
     }
   };
 })(Drupal, drupalSettings, once);
-

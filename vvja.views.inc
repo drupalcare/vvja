@@ -38,6 +38,10 @@ function vvja_views_data_alter(array &$data): void {
         'type' => 'boolean',
         'label' => t('Enable CSS Library'),
       ],
+      'exclusive_panel' => [
+        'type' => 'boolean',
+        'label' => t('Enable Exclusive Mode'),
+      ],
       'transition_speed' => [
         'type' => 'float',
         'label' => t('Transition Speed'),

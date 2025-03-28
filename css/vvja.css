@@ -18,6 +18,10 @@
   white-space: nowrap;
 }
 
+.vvja-hidden {
+  display: none!important;
+}
+
 .vvj-accordion,
 .vvj-accordion * {
   box-sizing: border-box;
@@ -129,7 +133,7 @@
   grid-template-columns: repeat(auto-fill, minmax(calc(var(--box-width) * 1px), 1fr));
 }
 
-.vvja.global-toggle.max-w .vvja-inner >:first-child {
+.vvja.global-toggle-on.max-w .vvja-inner >:first-child {
   grid-column: 1 / -1;
 }
 

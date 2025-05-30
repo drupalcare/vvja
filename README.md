@@ -51,6 +51,29 @@ Views UI:
 4. **Enable CSS**: Optionally enable custom CSS for styling the accordion.
    When enabled, additional styling options are available.
 
+## Token Support in Views Text Areas
+
+In Views headers, footers, or empty text areas—when using *Global: Text area* or
+*Global: Unfiltered text*—there is an option called **"Use replacement tokens
+from the first row."**
+
+The default Twig-style tokens (e.g., `{{ title }}` or `{{ field_image }}`)
+**will not work** with the VVJA style. Instead, use the custom tokens provided
+by VVJA:
+
+**Examples:**
+
+- `{{ title }}` → `[vvja:title]`  
+- `{{ field_image }}` → `[vvja:field_image]`
+
+To strip any HTML from the output, you can append `:plain` to the token:
+
+- `[vvja:title:plain]`
+
+These tokens pull data from the **first row** of the View result and are
+designed to work seamlessly with the VVJA rendering system.
+
+
 ## Example Usage
 
 1. Create a new view or edit an existing view.

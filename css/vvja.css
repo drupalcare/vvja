@@ -19,7 +19,7 @@
 }
 
 .vvja-hidden {
-  display: none!important;
+  display: none !important;
 }
 
 .vvj-accordion,
@@ -40,6 +40,8 @@
 
 .vvja .vvja-pane {
   transition: max-height var(--transition-speed), padding var(--transition-speed);
+  min-width: 0;
+  min-height: 0;
 }
 
 /* Basic layout for accordion items and their panes */
@@ -65,6 +67,22 @@
   margin: 0;
   font-weight: normal;
   height: auto;
+  justify-content: start;
+  align-items: center;
+  justify-content: space-between;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.vvja .vvja-button span:not(.btn-inner) {
+  line-height: 1;
+}
+
+.vvja .vvja-button > * {
+  display: inline-flex;
+}
+
+.vvja .vvja-button span.btn-inner {
+  align-items: center;
 }
 
 /* Accordion pane styles to manage open/close */
@@ -81,8 +99,11 @@
 /* Style for toggle indicators */
 .vvja .single-toggle svg,
 .vvja .group-toggle svg {
-  width: 2rem;
-  height: 2rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: transform 0.25s ease, opacity 0.2s ease;
 }
 
 .single-toggle,
@@ -126,6 +147,19 @@
   transform: scale(0.8);
   transition: opacity 0.6s ease, transform 0.6s ease;
   pointer-events: none;
+}
+
+.vvja-button:hover,
+.vvja-button:focus-visible {
+  outline: none;
+  background-color: rgba(0, 0, 0, 0.04);
+  margin-top: 1px;
+  transform: translateY(-1px);
+}
+
+.vvja-button .btn-inner {
+  flex: 1;
+  line-height: 1.4;
 }
 
 /* For exapnded cards */

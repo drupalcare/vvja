@@ -1,4 +1,4 @@
-name: 'Views Vanilla Javascript Accordion'
+name: 'Views Vanilla Javascript Accordion - VVJA'
 type: module
 description: 'Provides a Vanilla Javascript Accordion format for Views.'
 core_version_requirement: ^10 || ^11

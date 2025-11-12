@@ -1,0 +1,31 @@
+views.style.views_vvja:
+  type: views_style
+  label: 'Views Vanilla JavaScript Accordion'
+  mapping:
+    single_toggle:
+      type: boolean
+      label: 'Show single toggle button'
+    global_toggle:
+      type: boolean
+      label: 'Show global toggle button'
+    first_toggle:
+      type: boolean
+      label: 'Expand first item by default'
+    transition_speed:
+      type: float
+      label: 'Transition speed in seconds'
+    animation:
+      type: string
+      label: 'Animation type'
+    unique_id:
+      type: integer
+      label: 'Unique identifier for accordion instance'
+    enable_css:
+      type: boolean
+      label: 'Enable default CSS styling'
+    exclusive_panel:
+      type: boolean
+      label: 'Enable exclusive panel mode'
+    accordion_item_width:
+      type: integer
+      label: 'Accordion item width in pixels'

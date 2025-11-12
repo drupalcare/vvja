@@ -70,7 +70,7 @@
 
       {# Render the button #}
       <button id="{{ acc_id_btn }}-{{ key + 1 }}" class="button vvja-button" aria-label="{{ button_content|striptags|trim|t }}" aria-expanded="false" aria-controls="{{ acc_id_pan }}-{{ key + 1 }}-pane" type="button">
-        {{ button_content|safe_html }}
+        <span class="btn-inner">{{ button_content|safe_html }}</span>
         {% if single_toggle %}
           <span class="single-toggle">
             <span aria-hidden="true" class="single-toggle-inner b-minus vvja-hidden">{{ include('@vvja/svg/collapse-content.svg') }}</span>

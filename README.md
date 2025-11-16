@@ -73,6 +73,73 @@ To strip any HTML from the output, you can append `:plain` to the token:
 These tokens pull data from the **first row** of the View result and are
 designed to work seamlessly with the VVJA rendering system.
 
+## Deep Linking
+
+Enable deep linking in your accordion's Format Settings to create shareable URLs for specific panels.
+
+**Setup:**
+1. Enable **Deep Linking** in Format Settings
+2. Set **URL Identifier** (e.g., "faqs")
+3. Accordion panel links become: `#accordion-faqs-3`
+
+**Note:** Deep linking works with all accordion configurations (exclusive and multi-panel modes).
+
+## JavaScript API
+
+Control accordions from your own JavaScript code:
+
+### Available Methods
+
+**Open specific panel:**
+```javascript
+Drupal.vvja.openPanel('faqs', 3);  // Open panel 3
+```
+
+**Close specific panel:**
+```javascript
+Drupal.vvja.closePanel('faqs', 2);  // Close panel 2
+```
+
+**Toggle specific panel:**
+```javascript
+Drupal.vvja.togglePanel('faqs', 1);  // Toggle panel 1
+```
+
+**Get open panels:**
+```javascript
+const openPanels = Drupal.vvja.getOpenPanels('faqs');  // Returns array like [1, 3, 5]
+```
+
+**Get total panels:**
+```javascript
+const total = Drupal.vvja.getTotalPanels('faqs');  // Returns total number of panels
+```
+
+**Access accordion instance:**
+```javascript
+const instance = Drupal.vvja.getInstance('#vvja-12345');
+```
+
+### Complete Example: Custom Panel Control
+
+```javascript
+// Wait for Drupal behaviors to attach
+Drupal.behaviors.myCustomAccordion = {
+  attach: function(context, settings) {
+    // Find your custom button
+    const openAllBtn = once('open-all', '.my-open-all-button', context)[0];
+    
+    if (openAllBtn) {
+      openAllBtn.addEventListener('click', function() {
+        const total = Drupal.vvja.getTotalPanels('faqs');
+        for (let i = 1; i <= total; i++) {
+          Drupal.vvja.openPanel('faqs', i);
+        }
+      });
+    }
+  }
+};
+```
 
 ## Example Usage
 

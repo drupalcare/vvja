@@ -2,30 +2,42 @@ views.style.views_vvja:
   type: views_style
   label: 'Views Vanilla JavaScript Accordion'
   mapping:
+    unique_id:
+      type: integer
+      label: 'Unique identifier'
     single_toggle:
       type: boolean
-      label: 'Show single toggle button'
+      label: 'Show single toggle indicators'
     global_toggle:
       type: boolean
       label: 'Show global toggle button'
     first_toggle:
       type: boolean
-      label: 'Expand first item by default'
+      label: 'First panel open by default'
     transition_speed:
       type: float
       label: 'Transition speed in seconds'
     animation:
       type: string
       label: 'Animation type'
-    unique_id:
-      type: integer
-      label: 'Unique identifier for accordion instance'
     enable_css:
       type: boolean
-      label: 'Enable default CSS styling'
+      label: 'Enable CSS library'
     exclusive_panel:
       type: boolean
-      label: 'Enable exclusive panel mode'
+      label: 'Exclusive panel mode'
     accordion_item_width:
       type: integer
-      label: 'Accordion item width in pixels'
+      label: 'Custom item width'
+    enable_deeplink:
+      type: boolean
+      label: 'Enable deep linking'
+    deeplink_identifier:
+      type: string
+      label: 'Deep link URL identifier'
+      constraints:
+        Regex:
+          pattern: '/^[a-z][a-z0-9-]*[a-z0-9]$/'
+          message: 'Must start with letter, contain only lowercase letters, numbers, and hyphens'
+        Length:
+          max: 20

@@ -14,3 +14,15 @@ vvja-style:
   css:
     theme:
       css/vvja-style.css: {}
+
+vvja-admin:
+  css:
+    theme:
+      css/vvja-admin.css: {}
+  js:
+    js/vvja-admin.js: {}
+  dependencies:
+    - core/drupal
+    - core/drupal.ajax
+    - core/drupalSettings
+    - core/once

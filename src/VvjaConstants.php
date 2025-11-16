@@ -33,6 +33,13 @@ final class VvjaConstants {
   public const VIEWS_TYPE_BOOLEAN = 'boolean';
   public const VIEWS_TYPE_FLOAT = 'float';
 
+  /**
+   * Deep linking configuration constants.
+   */
+  public const DEEPLINK_IDENTIFIER_MAX_LENGTH = 20;
+  public const DEEPLINK_IDENTIFIER_PATTERN = '/^[a-z][a-z0-9-]*[a-z0-9]$/';
+  public const DEEPLINK_RESERVED_WORDS = ['accordion', 'panel', 'vvja'];
+
   public const DEFAULT_ANIMATION = 'a-bottom';
   public const DEFAULT_TRANSITION_SPEED = 0.3;
   public const DEFAULT_ACCORDION_ITEM_WIDTH = 0;

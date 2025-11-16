@@ -198,6 +198,9 @@
             }
             updateGlobalToggleState(container);
           }
+
+          // Update deep link hash if enabled.
+          updateDeepLinkHash(container, pane);
         }
 
         function handleGlobalToggle(action) {
@@ -319,7 +322,211 @@
         updateAriaLabelsForAccordionButtons(accordionButtons);
         disableLinksInAccordionButtons(accordionButtons);
         initializeFocusableElements();
+
+        // Initialize deep linking if enabled.
+        const deeplinkEnabled = container.dataset.deeplinkEnabled === 'true';
+        const deeplinkId = container.dataset.deeplinkId;
+        if (deeplinkEnabled && deeplinkId) {
+          initializeDeepLinking(container, deeplinkId);
+        }
       });
     }
   };
+
+  /**
+   * Initialize deep linking functionality.
+   *
+   * @param {HTMLElement} container
+   *   The accordion container element.
+   * @param {string} deeplinkId
+   *   The deep link identifier.
+   */
+  function initializeDeepLinking(container, deeplinkId) {
+    // Check URL hash on page load.
+    const hash = window.location.hash;
+    if (hash && hash.startsWith(`#accordion-${deeplinkId}-`)) {
+      const panelNumber = parseInt(hash.split('-').pop(), 10);
+      if (!isNaN(panelNumber) && panelNumber > 0) {
+        const buttons = container.querySelectorAll('.vvja-button');
+        if (panelNumber <= buttons.length) {
+          setTimeout(() => {
+            buttons[panelNumber - 1].click();
+          }, 100);
+        }
+      }
+    }
+
+    // Listen for hash changes.
+    const hashChangeHandler = function() {
+      const hash = window.location.hash;
+      if (hash && hash.startsWith(`#accordion-${deeplinkId}-`)) {
+        const panelNumber = parseInt(hash.split('-').pop(), 10);
+        if (!isNaN(panelNumber) && panelNumber > 0) {
+          const buttons = container.querySelectorAll('.vvja-button');
+          if (panelNumber <= buttons.length) {
+            buttons[panelNumber - 1].click();
+          }
+        }
+      }
+    };
+
+    window.addEventListener('hashchange', hashChangeHandler);
+    
+    // Store handler for cleanup.
+    if (!container.vvjaEventHandlers) {
+      container.vvjaEventHandlers = {};
+    }
+    container.vvjaEventHandlers.hashChange = hashChangeHandler;
+  }
+
+  /**
+   * Update URL hash when panel is opened.
+   *
+   * @param {HTMLElement} container
+   *   The accordion container element.
+   * @param {HTMLElement} pane
+   *   The pane element.
+   */
+  function updateDeepLinkHash(container, pane) {
+    const deeplinkEnabled = container.dataset.deeplinkEnabled === 'true';
+    const deeplinkId = container.dataset.deeplinkId;
+    
+    if (deeplinkEnabled && deeplinkId && pane) {
+      const panelIndex = pane.dataset.index;
+      if (panelIndex) {
+        const newHash = `#accordion-${deeplinkId}-${panelIndex}`;
+        if (window.location.hash !== newHash && pane.getAttribute('aria-hidden') === 'false') {
+          history.replaceState(null, '', newHash);
+        }
+      }
+    }
+  }
+
+  /**
+   * Public API for external accordion control.
+   */
+  Drupal.vvja = Drupal.vvja || {};
+
+  /**
+   * Helper to get container by identifier.
+   */
+  function getContainerByIdentifier(identifier) {
+    let container = document.querySelector(`[data-deeplink-id="${identifier}"]`);
+    if (!container) {
+      container = document.querySelector(identifier);
+    }
+    return container;
+  }
+
+  /**
+   * Open specific panel.
+   */
+  Drupal.vvja.openPanel = function(identifier, panelIndex) {
+    const container = getContainerByIdentifier(identifier);
+    if (!container) {
+      console.warn(`VVJA: Accordion "${identifier}" not found`);
+      return false;
+    }
+
+    const buttons = container.querySelectorAll('.vvja-button');
+    if (panelIndex < 1 || panelIndex > buttons.length) {
+      console.warn(`VVJA: Invalid panel ${panelIndex}. Must be between 1 and ${buttons.length}`);
+      return false;
+    }
+
+    const button = buttons[panelIndex - 1];
+    const pane = button.nextElementSibling;
+    const isOpen = pane.getAttribute('aria-hidden') === 'false';
+    
+    if (!isOpen) {
+      button.click();
+    }
+    return true;
+  };
+
+  /**
+   * Close specific panel.
+   */
+  Drupal.vvja.closePanel = function(identifier, panelIndex) {
+    const container = getContainerByIdentifier(identifier);
+    if (!container) {
+      console.warn(`VVJA: Accordion "${identifier}" not found`);
+      return false;
+    }
+
+    const buttons = container.querySelectorAll('.vvja-button');
+    if (panelIndex < 1 || panelIndex > buttons.length) {
+      console.warn(`VVJA: Invalid panel ${panelIndex}. Must be between 1 and ${buttons.length}`);
+      return false;
+    }
+
+    const button = buttons[panelIndex - 1];
+    const pane = button.nextElementSibling;
+    const isOpen = pane.getAttribute('aria-hidden') === 'false';
+    
+    if (isOpen) {
+      button.click();
+    }
+    return true;
+  };
+
+  /**
+   * Toggle specific panel.
+   */
+  Drupal.vvja.togglePanel = function(identifier, panelIndex) {
+    const container = getContainerByIdentifier(identifier);
+    if (!container) {
+      console.warn(`VVJA: Accordion "${identifier}" not found`);
+      return false;
+    }
+
+    const buttons = container.querySelectorAll('.vvja-button');
+    if (panelIndex < 1 || panelIndex > buttons.length) {
+      console.warn(`VVJA: Invalid panel ${panelIndex}. Must be between 1 and ${buttons.length}`);
+      return false;
+    }
+
+    buttons[panelIndex - 1].click();
+    return true;
+  };
+
+  /**
+   * Get array of open panel indices.
+   */
+  Drupal.vvja.getOpenPanels = function(identifier) {
+    const container = getContainerByIdentifier(identifier);
+    if (!container) return null;
+
+    const panes = container.querySelectorAll('.vvja-pane');
+    const openPanels = [];
+    
+    panes.forEach((pane, index) => {
+      if (pane.getAttribute('aria-hidden') === 'false') {
+        openPanels.push(index + 1);
+      }
+    });
+
+    return openPanels;
+  };
+
+  /**
+   * Get total number of panels.
+   */
+  Drupal.vvja.getTotalPanels = function(identifier) {
+    const container = getContainerByIdentifier(identifier);
+    if (!container) return null;
+    return container.querySelectorAll('.vvja-button').length;
+  };
+
+  /**
+   * Get accordion instance.
+   */
+  Drupal.vvja.getInstance = function(containerOrSelector) {
+    const container = typeof containerOrSelector === 'string' 
+      ? document.querySelector(containerOrSelector)
+      : containerOrSelector;
+    
+    return container ? container.closest('.vvja-inner') : null;
+  };
+
 })(Drupal, drupalSettings, once);

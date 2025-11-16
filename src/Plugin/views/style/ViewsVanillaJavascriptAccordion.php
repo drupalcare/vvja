@@ -67,6 +67,8 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
     $options['enable_css'] = ['default' => TRUE];
     $options['exclusive_panel'] = ['default' => FALSE];
     $options['accordion_item_width'] = ['default' => VvjaConstants::DEFAULT_ACCORDION_ITEM_WIDTH];
+    $options['enable_deeplink'] = ['default' => FALSE];
+    $options['deeplink_identifier'] = ['default' => ''];
     return $options;
   }
 
@@ -115,8 +117,10 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
     $this->buildBehaviorSection($form);
     $this->buildAnimationSection($form);
     $this->buildLayoutSection($form);
+    $this->buildDeepLinkingSection($form);
     $this->buildAdvancedSection($form);
     $this->buildTokenDocumentation($form);
+    $this->attachFormAssets($form);
   }
 
   /**
@@ -275,6 +279,101 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
   }
 
   /**
+   * Build deep linking configuration section.
+   *
+   * @param array $form
+   *   The form array.
+   */
+  protected function buildDeepLinkingSection(array &$form): void {
+    $form['deeplink_section'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Deep Linking Settings'),
+      '#open' => FALSE,
+      '#weight' => -5,
+    ];
+
+    $form['deeplink_section']['enable_deeplink'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enable Deep Linking'),
+      '#description' => $this->t('Generate shareable links for each accordion panel that appear in the browser URL.'),
+      '#default_value' => $this->options['enable_deeplink'] ?? FALSE,
+      '#attributes' => [
+        'data-vvja-deeplink-toggle' => 'true',
+      ],
+    ];
+
+    $form['deeplink_section']['deeplink_identifier'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('URL Identifier'),
+      '#description' => $this->t('Short identifier used in panel links. Example: "faqs" creates links like #accordion-faqs-3. Will be automatically cleaned: converted to lowercase, spaces become hyphens, special characters removed.'),
+      '#default_value' => $this->options['deeplink_identifier'] ?? '',
+      '#maxlength' => VvjaConstants::DEEPLINK_IDENTIFIER_MAX_LENGTH,
+      '#size' => 20,
+      '#placeholder' => 'my-accordion',
+      '#wrapper_attributes' => [
+        'class' => ['deeplink-identifier-wrapper'],
+        'data-vvja-deeplink-field' => 'true',
+      ],
+      '#element_validate' => [[$this, 'validateDeeplinkIdentifier']],
+    ];
+  }
+
+  /**
+   * Validates and sanitizes the deep link identifier field.
+   *
+   * @param array $element
+   *   The form element.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state.
+   */
+  public function validateDeeplinkIdentifier(array $element, FormStateInterface $form_state): void {
+    $deeplink_values = $form_state->getValue(['style_options', 'deeplink_section']);
+    $enable_deeplink = $deeplink_values['enable_deeplink'] ?? FALSE;
+    $identifier = $deeplink_values['deeplink_identifier'] ?? '';
+
+    if (!$enable_deeplink) {
+      return;
+    }
+
+    if (empty($identifier)) {
+      $form_state->setError($element, $this->t('URL Identifier is required when Deep Linking is enabled.'));
+      return;
+    }
+
+    $transliteration = \Drupal::transliteration();
+    $clean = $transliteration->transliterate($identifier, 'en');
+    $clean = strtolower($clean);
+    $clean = preg_replace('/[\s_]+/', '-', $clean);
+    $clean = preg_replace('/[^a-z0-9-]/', '', $clean);
+    $clean = preg_replace('/-+/', '-', $clean);
+    $clean = trim($clean, '-');
+    $clean = preg_replace('/^[0-9-]+/', '', $clean);
+
+    if (empty($clean)) {
+      $form_state->setError($element, $this->t('URL Identifier must contain at least one letter.'));
+      return;
+    }
+
+    if (in_array($clean, VvjaConstants::DEEPLINK_RESERVED_WORDS, TRUE)) {
+      $form_state->setError($element, $this->t('Please choose a more specific identifier. "@identifier" is a reserved word.', ['@identifier' => $clean]));
+      return;
+    }
+
+    $form_state->setValue(['style_options', 'deeplink_section', 'deeplink_identifier'], $clean);
+  }
+
+  /**
+   * Attach form-specific JavaScript and CSS assets.
+   *
+   * @param array $form
+   *   The form array.
+   */
+  protected function attachFormAssets(array &$form): void {
+    $form['#attached']['library'][] = 'core/drupal.ajax';
+    $form['#attached']['library'][] = 'vvja/vvja-admin';
+  }
+
+  /**
    * Build advanced options section.
    *
    * @param array $form
@@ -401,6 +500,11 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
 
     if (isset($values['advanced_section'])) {
       $flattened['enable_css'] = $values['advanced_section']['enable_css'] ?? TRUE;
+    }
+
+    if (isset($values['deeplink_section'])) {
+      $flattened['enable_deeplink'] = $values['deeplink_section']['enable_deeplink'] ?? FALSE;
+      $flattened['deeplink_identifier'] = $values['deeplink_section']['deeplink_identifier'] ?? '';
     }
 
     $flattened['unique_id'] = $this->options['unique_id'] ?? $this->generateUniqueId();

@@ -6,6 +6,12 @@
  * Website:      https://www.flashwebcenter.com
  * Developer:    Alaa Haddad https://www.alaahaddad.com.
  */
+.vvja {
+  --vvja-grid-gap: 16px;
+  --vvja-pane-padding: 16px;
+  --vvja-transition-speed: 0.5;
+}
+
 .vvj-accordion .visually-hidden {
   position: absolute;
   width: 1px;
@@ -39,13 +45,25 @@
 }
 
 .vvja .vvja-pane {
-  transition: max-height var(--transition-speed), padding var(--transition-speed);
+  transition: max-height var(--vvja-transition-speed);
+  overflow: hidden;
   min-width: 0;
   min-height: 0;
 }
 
+.vvja .vvja-pane-inner {
+  min-width: 0;
+  overflow: hidden;
+  padding: var(--vvja-pane-padding, 16px);
+}
+
+.vvja {
+  margin-block-end: var(--vvja-grid-gap, 16px);
+}
+
 /* Basic layout for accordion items and their panes */
 .vvja .vvja-inner {
+  gap: var(--vvja-grid-gap);
   display: grid;
   width: 100%;
 }
@@ -73,8 +91,14 @@
   transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-.vvja .vvja-button span:not(.btn-inner) {
+.vvja .global-toggle .button span,
+.vvja .vvja-button .single-toggle {
   line-height: 1;
+}
+
+.vvja .global-toggle .button span svg,
+.vvja .vvja-button .single-toggle svg {
+  fill: currentColor;
 }
 
 .vvja .vvja-button > * {
@@ -92,8 +116,6 @@
 
 .vvja .closed .vvja-pane {
   max-height: 0;
-  padding: 0;
-  overflow: hidden;
 }
 
 /* Style for toggle indicators */
@@ -103,21 +125,37 @@
   height: 1.6rem;
   line-height: 1;
   flex-shrink: 0;
-  transition: transform 0.25s ease, opacity 0.2s ease;
 }
 
-.single-toggle,
-.single-toggle span,
-.global-toggle .group-toggle,
-.global-toggle .group-toggle span {
+.vvja .single-toggle,
+.vvja .global-toggle .group-toggle {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+}
+
+.vvja .single-toggle > .single-toggle-inner,
+.vvja .global-toggle .group-toggle > .group-toggle-inner {
+  grid-area: 1 / 1;
   display: flex;
-  align-items: start;
+  align-items: center;
   justify-content: center;
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.vvja .single-toggle > .single-toggle-inner.vvja-icon-hidden,
+.vvja .global-toggle .group-toggle > .group-toggle-inner.vvja-icon-hidden {
+  opacity: 0;
+  transform: rotate(90deg) scale(0);
+  pointer-events: none;
 }
 
 .vvja .vvja-button > .single-toggle {
   margin-inline-start: auto;
   padding-inline-start: 12px;
+  align-self: start;
 }
 
 .vvja .global-toggle {
@@ -125,28 +163,6 @@
   align-items: center;
   display: flex;
   flex-grow: 1;
-}
-
-.global-toggle .b-minus,
-.global-toggle .b-plus,
-.single-toggle .b-plus,
-.single-toggle .b-minus {
-  opacity: 1;
-  width: auto;
-  transform: scale(1.1);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-  pointer-events: auto;
-}
-
-.global-toggle .b-minus.hidden,
-.global-toggle .b-plus.hidden,
-.single-toggle .b-minus.hidden,
-.single-toggle .b-plus.hidden {
-  opacity: 0;
-  width: 0;
-  transform: scale(0.8);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-  pointer-events: none;
 }
 
 .vvja-button:hover,
@@ -164,7 +180,7 @@
 
 /* For exapnded cards */
 .vvja.max-w .vvja-inner {
-  grid-template-columns: repeat(auto-fill, minmax(calc(var(--box-width) * 1px), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(calc(var(--vvja-box-width) * 1px), 1fr));
 }
 
 .vvja.global-toggle-on.max-w .vvja-inner >:first-child {

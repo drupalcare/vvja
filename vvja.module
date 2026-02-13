@@ -20,6 +20,7 @@ use Drupal\views\ViewExecutable;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Template\Attribute;
 use Drupal\vvja\Plugin\views\style\ViewsVanillaJavascriptAccordion;
+use Drupal\vvja\SvgSanitizer;
 
 /**
  * Implements hook_help().
@@ -124,8 +125,8 @@ function template_preprocess_views_view_vvja(array &$variables): void {
     $list_attributes['data-single-toggle'] = $handler->options['single_toggle'] ? 'true' : 'false';
   }
 
-  if (isset($handler->options['first_toggle'])) {
-    $list_attributes['data-first-toggle'] = $handler->options['first_toggle'] ? 'true' : 'false';
+  if (isset($handler->options['expand_default'])) {
+    $list_attributes['data-expand-default'] = $handler->options['expand_default'];
   }
 
   if (isset($handler->options['enable_css'])) {
@@ -143,15 +144,26 @@ function template_preprocess_views_view_vvja(array &$variables): void {
 
   $variables['options'] = $handler->options;
 
+  // Sanitize custom SVG icons at render time for defense-in-depth.
+  $svg_fields = ['svg_expand_content', 'svg_collapse_content', 'svg_expand_all', 'svg_collapse_all'];
+  foreach ($svg_fields as $field) {
+    $svg = $handler->options[$field] ?? '';
+    if ($svg !== '') {
+      $sanitized = SvgSanitizer::sanitize($svg);
+      $variables['options'][$field] = $sanitized !== '' ? Markup::create($sanitized) : '';
+    }
+  }
+
   $variables['settings'] = [
     'view_id' => $variables['view']->dom_id,
     'animation' => $handler->options['animation'],
     'unique_id' => $handler->options['unique_id'],
     'transition_speed' => $handler->options['transition_speed'],
     'accordion_item_width' => $handler->options['accordion_item_width'],
+    'pane_padding' => $handler->options['pane_padding'],
     'global_toggle' => $handler->options['global_toggle'],
     'single_toggle' => $handler->options['single_toggle'],
-    'first_toggle' => $handler->options['first_toggle'],
+    'expand_default' => $handler->options['expand_default'],
     'enable_css' => $handler->options['enable_css'],
     'exclusive_panel' => $handler->options['exclusive_panel'],
   ];
@@ -321,10 +333,10 @@ function vvja_views_data_alter(array &$data): void {
         'label' => t('Single Toggle'),
         'description' => t('Show individual collapse/expand buttons.'),
       ],
-      'first_toggle' => [
-        'type' => 'boolean',
-        'label' => t('First Toggle'),
-        'description' => t('Expand the first item by default.'),
+      'expand_default' => [
+        'type' => 'string',
+        'label' => t('Default Expand Behavior'),
+        'description' => t('Initial expand state: none, first, or all.'),
       ],
       'enable_css' => [
         'type' => 'boolean',

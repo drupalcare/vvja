@@ -11,9 +11,9 @@ views.style.views_vvja:
     global_toggle:
       type: boolean
       label: 'Show global toggle button'
-    first_toggle:
-      type: boolean
-      label: 'First panel open by default'
+    expand_default:
+      type: string
+      label: 'Default expand behavior'
     transition_speed:
       type: float
       label: 'Transition speed in seconds'
@@ -29,6 +29,12 @@ views.style.views_vvja:
     accordion_item_width:
       type: integer
       label: 'Custom item width'
+    pane_padding:
+      type: integer
+      label: 'Content padding in pixels'
+    panel_gap:
+      type: integer
+      label: 'Panel gap in pixels'
     enable_deeplink:
       type: boolean
       label: 'Enable deep linking'
@@ -41,3 +47,15 @@ views.style.views_vvja:
           message: 'Must start with letter, contain only lowercase letters, numbers, and hyphens'
         Length:
           max: 20
+    svg_expand_content:
+      type: string
+      label: 'Custom expand content SVG icon'
+    svg_collapse_content:
+      type: string
+      label: 'Custom collapse content SVG icon'
+    svg_expand_all:
+      type: string
+      label: 'Custom expand all SVG icon'
+    svg_collapse_all:
+      type: string
+      label: 'Custom collapse all SVG icon'

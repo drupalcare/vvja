@@ -7,6 +7,7 @@ namespace Drupal\vvja\Plugin\views\style;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\views\Plugin\views\style\StylePluginBase;
+use Drupal\vvja\SvgSanitizer;
 use Drupal\vvja\VvjaConstants;
 
 /**
@@ -60,15 +61,21 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
     $options = parent::defineOptions();
     $options['single_toggle'] = ['default' => TRUE];
     $options['global_toggle'] = ['default' => TRUE];
-    $options['first_toggle'] = ['default' => TRUE];
+    $options['expand_default'] = ['default' => VvjaConstants::DEFAULT_EXPAND];
     $options['transition_speed'] = ['default' => VvjaConstants::DEFAULT_TRANSITION_SPEED];
     $options['animation'] = ['default' => VvjaConstants::DEFAULT_ANIMATION];
     $options['unique_id'] = ['default' => $this->generateUniqueId()];
     $options['enable_css'] = ['default' => TRUE];
     $options['exclusive_panel'] = ['default' => FALSE];
     $options['accordion_item_width'] = ['default' => VvjaConstants::DEFAULT_ACCORDION_ITEM_WIDTH];
+    $options['pane_padding'] = ['default' => VvjaConstants::DEFAULT_PANE_PADDING];
+    $options['panel_gap'] = ['default' => VvjaConstants::DEFAULT_PANEL_GAP];
     $options['enable_deeplink'] = ['default' => FALSE];
     $options['deeplink_identifier'] = ['default' => ''];
+    $options['svg_expand_content'] = ['default' => ''];
+    $options['svg_collapse_content'] = ['default' => ''];
+    $options['svg_expand_all'] = ['default' => ''];
+    $options['svg_collapse_all'] = ['default' => ''];
     return $options;
   }
 
@@ -87,6 +94,20 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
       self::ANIMATION_RIGHT => $this->t('Slide from Right'),
       self::ANIMATION_ZOOM => $this->t('Zoom'),
       self::ANIMATION_FADE => $this->t('Fade'),
+    ];
+  }
+
+  /**
+   * Get default expand options.
+   *
+   * @return array
+   *   An associative array of expand default options.
+   */
+  protected function getExpandDefaultOptions(): array {
+    return [
+      VvjaConstants::EXPAND_NONE => $this->t('None'),
+      VvjaConstants::EXPAND_FIRST => $this->t('Expand First Item'),
+      VvjaConstants::EXPAND_ALL => $this->t('Expand All Items'),
     ];
   }
 
@@ -117,6 +138,7 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
     $this->buildBehaviorSection($form);
     $this->buildAnimationSection($form);
     $this->buildLayoutSection($form);
+    $this->buildCustomIconsSection($form);
     $this->buildDeepLinkingSection($form);
     $this->buildAdvancedSection($form);
     $this->buildTokenDocumentation($form);
@@ -168,6 +190,7 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
       '#weight' => -50,
     ];
   }
+
   /**
    * Build behavior configuration section.
    *
@@ -208,11 +231,12 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
       '#description' => $this->t('Check this box to show a toggle (+/-) button to open and close the accordion sections.'),
     ];
 
-    $form['behavior_section']['first_toggle'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Expand First Item'),
-      '#default_value' => $this->options['first_toggle'],
-      '#description' => $this->t('Check this box to expand the first item in the accordion.'),
+    $form['behavior_section']['expand_default'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Default Expand Behavior'),
+      '#options' => $this->getExpandDefaultOptions(),
+      '#default_value' => $this->options['expand_default'],
+      '#description' => $this->t('Select the initial expand state for accordion items on page load. Note: "Expand All Items" is incompatible with "Enable Exclusive Mode".'),
     ];
   }
 
@@ -276,6 +300,131 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
       '#min' => VvjaConstants::MIN_ACCORDION_ITEM_WIDTH,
       '#required' => TRUE,
     ];
+
+    $form['layout_section']['pane_padding'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Content Padding (px)'),
+      '#default_value' => $this->options['pane_padding'],
+      '#description' => $this->t('Set the inner padding of each accordion panel content area in pixels.'),
+      '#step' => 1,
+      '#min' => VvjaConstants::MIN_PANE_PADDING,
+      '#required' => TRUE,
+    ];
+
+    $form['layout_section']['panel_gap'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Panel Gap (px)'),
+      '#default_value' => $this->options['panel_gap'],
+      '#description' => $this->t('Set the gap between accordion panels in pixels.'),
+      '#step' => 1,
+      '#min' => VvjaConstants::MIN_PANEL_GAP,
+      '#required' => TRUE,
+    ];
+  }
+
+  /**
+   * Build custom icons configuration section.
+   *
+   * @param array $form
+   *   The form array.
+   */
+  protected function buildCustomIconsSection(array &$form): void {
+    $google_url = 'https://fonts.google.com/icons';
+
+    $form['icons_section'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Custom Icons'),
+      '#open' => FALSE,
+      '#weight' => -15,
+      '#description' => $this->t('<p>Replace the default toggle icons with your own SVG markup. Leave empty to use the default icons. You can browse thousands of free SVG icons at <a href="@url" target="_blank">Google Material Symbols</a>.</p>
+        <p><strong>How to use:</strong> Find an icon, click the SVG download or copy the SVG code, and paste it into the field below. For best results, use icons with <code>fill="currentColor"</code> so they inherit your theme colors.</p>
+        <details><summary><strong>Security &amp; Sanitization</strong></summary>
+        <p>All SVG input is validated and sanitized before saving. The following protections are applied:</p>
+        <ul>
+          <li><strong>Whitelisted elements only:</strong> svg, path, circle, rect, line, polyline, polygon, ellipse, g, defs, use, symbol, clippath, mask, lineargradient, radialgradient, stop, title, desc.</li>
+          <li><strong>Whitelisted attributes only:</strong> Core attributes (id, class, xmlns), dimensions (viewBox, width, height, x, y, r, cx, cy, etc.), path data (d, points), presentation (fill, stroke, opacity, transform, etc.), and gradient attributes.</li>
+          <li><strong>Blocked content:</strong> &lt;script&gt;, &lt;foreignObject&gt;, &lt;iframe&gt;, &lt;object&gt;, &lt;embed&gt; elements are rejected. All event handlers (onclick, onload, etc.) are stripped. javascript: and data: URIs are removed. External URL references are blocked — only internal fragment references (#id) are allowed.</li>
+          <li><strong>XML validation:</strong> Input must be well-formed XML with &lt;svg&gt; as the root element.</li>
+        </ul>
+        </details>', [
+          '@url' => $google_url,
+        ]),
+    ];
+
+    $form['icons_section']['svg_expand_content'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('Expand Panel Icon'),
+      '#default_value' => $this->options['svg_expand_content'] ?? '',
+      '#description' => $this->t('SVG icon shown when a panel can be expanded (opened).'),
+      '#rows' => 3,
+      '#placeholder' => '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="..."/></svg>',
+      '#element_validate' => [[$this, 'validateSvgField']],
+    ];
+
+    $form['icons_section']['svg_collapse_content'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('Collapse Panel Icon'),
+      '#default_value' => $this->options['svg_collapse_content'] ?? '',
+      '#description' => $this->t('SVG icon shown when a panel can be collapsed (closed).'),
+      '#rows' => 3,
+      '#placeholder' => '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="..."/></svg>',
+      '#element_validate' => [[$this, 'validateSvgField']],
+    ];
+
+    $form['icons_section']['svg_expand_all'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('Expand All Icon'),
+      '#default_value' => $this->options['svg_expand_all'] ?? '',
+      '#description' => $this->t('SVG icon for the global "Expand All" button.'),
+      '#rows' => 3,
+      '#placeholder' => '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="..."/></svg>',
+      '#element_validate' => [[$this, 'validateSvgField']],
+    ];
+
+    $form['icons_section']['svg_collapse_all'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('Collapse All Icon'),
+      '#default_value' => $this->options['svg_collapse_all'] ?? '',
+      '#description' => $this->t('SVG icon for the global "Collapse All" button.'),
+      '#rows' => 3,
+      '#placeholder' => '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="..."/></svg>',
+      '#element_validate' => [[$this, 'validateSvgField']],
+    ];
+  }
+
+  /**
+   * Validates an SVG textarea field.
+   *
+   * @param array $element
+   *   The form element.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state.
+   */
+  public function validateSvgField(array $element, FormStateInterface $form_state): void {
+    $value = trim($element['#value'] ?? '');
+    if ($value === '') {
+      return;
+    }
+
+    $errors = SvgSanitizer::validate($value);
+    if (!empty($errors)) {
+      $form_state->setError($element, $this->t('@title: @errors', [
+        '@title' => $element['#title'],
+        '@errors' => implode(' ', $errors),
+      ]));
+      return;
+    }
+
+    // Store the sanitized version.
+    $sanitized = SvgSanitizer::sanitize($value);
+    if ($sanitized === '') {
+      $form_state->setError($element, $this->t('@title: The SVG could not be processed. Please check the markup.', [
+        '@title' => $element['#title'],
+      ]));
+      return;
+    }
+
+    $form_state->setValueForElement($element, $sanitized);
   }
 
   /**
@@ -443,6 +592,13 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
           $this->t('Exclusive mode is incompatible with "Show Collapse or Expand All" option. Please disable one of these features.')
         );
       }
+
+      if (!empty($behavior['exclusive_panel']) && ($behavior['expand_default'] ?? VvjaConstants::EXPAND_NONE) === VvjaConstants::EXPAND_ALL) {
+        $form_state->setError(
+          $form['behavior_section']['expand_default'],
+          $this->t('"Expand All Items" is incompatible with "Enable Exclusive Mode". Please select a different expand behavior or disable Exclusive Mode.')
+        );
+      }
     }
 
     if (isset($values['animation_section']['transition_speed'])) {
@@ -486,7 +642,7 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
       $flattened['global_toggle'] = $values['behavior_section']['global_toggle'] ?? TRUE;
       $flattened['exclusive_panel'] = $values['behavior_section']['exclusive_panel'] ?? FALSE;
       $flattened['single_toggle'] = $values['behavior_section']['single_toggle'] ?? TRUE;
-      $flattened['first_toggle'] = $values['behavior_section']['first_toggle'] ?? TRUE;
+      $flattened['expand_default'] = $values['behavior_section']['expand_default'] ?? VvjaConstants::DEFAULT_EXPAND;
     }
 
     if (isset($values['animation_section'])) {
@@ -496,6 +652,8 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
 
     if (isset($values['layout_section'])) {
       $flattened['accordion_item_width'] = $values['layout_section']['accordion_item_width'] ?? VvjaConstants::DEFAULT_ACCORDION_ITEM_WIDTH;
+      $flattened['pane_padding'] = $values['layout_section']['pane_padding'] ?? VvjaConstants::DEFAULT_PANE_PADDING;
+      $flattened['panel_gap'] = $values['layout_section']['panel_gap'] ?? VvjaConstants::DEFAULT_PANEL_GAP;
     }
 
     if (isset($values['advanced_section'])) {
@@ -505,6 +663,13 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
     if (isset($values['deeplink_section'])) {
       $flattened['enable_deeplink'] = $values['deeplink_section']['enable_deeplink'] ?? FALSE;
       $flattened['deeplink_identifier'] = $values['deeplink_section']['deeplink_identifier'] ?? '';
+    }
+
+    if (isset($values['icons_section'])) {
+      $flattened['svg_expand_content'] = $values['icons_section']['svg_expand_content'] ?? '';
+      $flattened['svg_collapse_content'] = $values['icons_section']['svg_collapse_content'] ?? '';
+      $flattened['svg_expand_all'] = $values['icons_section']['svg_expand_all'] ?? '';
+      $flattened['svg_collapse_all'] = $values['icons_section']['svg_collapse_all'] ?? '';
     }
 
     $flattened['unique_id'] = $this->options['unique_id'] ?? $this->generateUniqueId();

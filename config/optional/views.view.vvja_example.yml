@@ -199,7 +199,7 @@ display:
           enable_css: 1
           single_toggle: 1
           global_toggle: 1
-          first_toggle: 1
+          expand_default: first
           animation: a-fade
           transition_speed: '0.7'
       row:

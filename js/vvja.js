@@ -29,29 +29,18 @@
         if (globalToggleButton) {
           globalToggleButton.addEventListener('click', () => {
             const isExpanded = globalToggleButton.getAttribute('aria-expanded') === 'true';
-
-            if (isExpanded) {
-              handleGlobalToggle('collapse');
-              globalToggleButton.setAttribute('aria-expanded', 'false');
-              toggleAriaHidden(globalToggleButton.querySelector('.b-plus'), false);
-              toggleAriaHidden(globalToggleButton.querySelector('.b-minus'), true);
-            } else {
-              handleGlobalToggle('expand');
-              globalToggleButton.setAttribute('aria-expanded', 'true');
-              toggleAriaHidden(globalToggleButton.querySelector('.b-plus'), true);
-              toggleAriaHidden(globalToggleButton.querySelector('.b-minus'), false);
-            }
+            handleGlobalToggle(isExpanded ? 'collapse' : 'expand');
+            updateGlobalToggleState(container);
           });
         }
 
-        const firstToggle = container.dataset.firstToggle === 'true';
-        if (firstToggle) {
-          const firstButton = accordionButtons[0];
-          const firstPane = firstButton.nextElementSibling;
-          openPane(firstPane);
-          activateButton(firstButton);
-          toggleAriaHidden(firstButton.querySelector('.b-plus'), true);
-          toggleAriaHidden(firstButton.querySelector('.b-minus'), false);
+        const expandDefault = container.dataset.expandDefault || 'none';
+        if (expandDefault === 'first' && accordionButtons.length > 0) {
+          openPane(accordionButtons[0].nextElementSibling);
+          activateButton(accordionButtons[0]);
+        } else if (expandDefault === 'all') {
+          handleGlobalToggle('expand');
+          updateGlobalToggleState(container);
         }
 
         function updateGlobalToggleState(container) {
@@ -79,13 +68,10 @@
         }
 
         function openPane(pane) {
-          const panePadding = 32;
-          pane.style.maxHeight = `${pane.scrollHeight + panePadding}px`;
-          pane.style.padding = '16px';
+          pane.style.maxHeight = `${pane.scrollHeight}px`;
           pane.setAttribute('aria-hidden', 'false');
           toggleFocusableElements(pane, false);
 
-          // Optional: Let it resize naturally afterward
           pane.addEventListener('transitionend', () => {
             if (pane.getAttribute('aria-hidden') === 'false') {
               pane.style.maxHeight = 'none';
@@ -97,7 +83,6 @@
           pane.style.maxHeight = `${pane.scrollHeight}px`;
           requestAnimationFrame(() => {
             pane.style.maxHeight = '0';
-            pane.style.padding = '0 16px';
           });
           pane.setAttribute('aria-hidden', 'true');
           toggleFocusableElements(pane, true);
@@ -139,7 +124,7 @@
         function toggleAriaHidden(element, isHidden) {
           if (element) {
             element.setAttribute('aria-hidden', isHidden.toString());
-            element.classList.toggle('vvja-hidden', isHidden);
+            element.classList.toggle('vvja-icon-hidden', isHidden);
           }
         }
 
@@ -310,8 +295,7 @@
           const openPanes = container.querySelectorAll('.vvja-pane[aria-hidden="false"]');
 
           openPanes.forEach(pane => {
-            const panePadding = 32; // Match the padding used in openPane()
-            pane.style.maxHeight = `${pane.scrollHeight + panePadding}px`;
+            pane.style.maxHeight = `${pane.scrollHeight}px`;
           });
         }
 

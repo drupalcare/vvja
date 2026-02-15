@@ -16,14 +16,36 @@ like jQuery UI or Bootstrap.
   content displays.
 - **Toggle Options**: Choose between single toggle indicators for each section
   or a global toggle for expanding/collapsing all sections at once.
-- **First Item Expansion**: Option to automatically expand the first section by
-  default, improving initial user interaction.
-- **Animation Effects**: Select from various animation styles, including Top,
-  Bottom, Left, Right, Zoom, and Opacity, for engaging transitions.
+- **Expansion Modes**: Control which panels are open on page load: none (all
+  collapsed), first panel only, or all panels expanded.
+- **Exclusive Panel**: Allow only one panel to be open at a time. When a user
+  opens a new panel, any currently open panel is automatically closed.
+- **Animation Effects**: Choose from seven animation styles: None, Slide from
+  Top, Bottom, Left, Right, Zoom, and Fade. Configurable transition speed
+  from 0.1s (fast) to 2s (slow).
+- **Layout Controls**: Fine-tune the spacing between panels (`panel_gap`) and
+  the inner padding of panel content areas (`pane_padding`), both configurable
+  in pixels.
+- **Custom SVG Icons**: Replace the default expand/collapse icons with your own
+  custom SVG markup for both individual panel toggles and the global
+  expand/collapse all buttons. All SVG input is sanitized for XSS protection.
+- **Deep Linking**: Enable shareable URLs that link directly to specific
+  accordion panels with browser back/forward navigation support.
+- **JavaScript API**: Control accordions programmatically from your own
+  JavaScript via `Drupal.vvja`.
+- **Custom Token System**: Use `[vvja:FIELD_NAME]` tokens in Views headers and
+  footers to display field values from the first row.
+- **CSS Custom Properties**: Theme via CSS variables (`--vvja-grid-gap`,
+  `--vvja-pane-padding`, `--vvja-transition-speed`, `--vvja-box-width`) for
+  easy customization without overriding selectors.
+- **Expandable Cards**: Set a fixed width per accordion item to create card-style
+  layouts, or use `0` for full-width traditional accordion.
 - **Unique ID Generation**: Automatically generates a unique numeric ID for
   each view display to ensure consistency and prevent conflicts.
+- **Responsive**: Automatically recalculates panel heights on viewport resize
+  for consistent behavior across devices.
 - **CSS Customization**: Easily customize the appearance of the accordion with
-  optional CSS inclusion to match your site’s design.
+  optional CSS inclusion to match your site's design.
 
 ## Accessibility
 
@@ -31,25 +53,67 @@ The **VVJA** module includes several accessibility features to ensure that your
 accordion is usable by all visitors, including those using screen readers:
 
 - **ARIA Roles and Properties**: Proper ARIA roles and properties provide
-  context and state information to screen readers.
+  context and state information to screen readers, including `aria-expanded`,
+  `aria-controls`, `aria-labelledby`, and `aria-hidden`.
 - **Keyboard Navigation**: Users can navigate through accordion sections using
-  keyboard shortcuts, ensuring full functionality without a mouse.
+  keyboard shortcuts (Arrow Up/Down, Home, End), ensuring full functionality
+  without a mouse.
 - **Focus Management**: Ensures that the currently displayed section is focused,
-  providing a better experience for keyboard and screen reader users.
+  providing a better experience for keyboard and screen reader users. Only one
+  button is in the tab order at a time.
+- **Focusable Element Management**: Links, buttons, and inputs inside hidden
+  panels are automatically disabled (`tabindex="-1"`, `aria-disabled="true"`)
+  to prevent keyboard trapping.
+- **Auto ARIA Labels**: Button labels are automatically generated from button
+  content or image alt text for screen reader context.
 
 ## Configuration
 
 After installing and enabling the module, you can configure it through the
-Views UI:
+Views UI. Settings are organized into the following sections:
 
-1. **Toggle Settings**: Configure the single and global toggle options to
-   control how sections are expanded and collapsed.
-2. **First Item Expansion**: Enable this option to have the first section
-   expanded by default.
-3. **Animation Type**: Choose the desired animation effect for the accordion
-   transitions.
-4. **Enable CSS**: Optionally enable custom CSS for styling the accordion.
-   When enabled, additional styling options are available.
+### Behavior Settings
+
+1. **Single Toggle**: Show individual expand/collapse icons on each panel.
+2. **Global Toggle**: Show an "Expand All / Collapse All" button above the
+   accordion.
+3. **Exclusive Panel**: Only one panel can be open at a time. Incompatible
+   with Global Toggle and Expand All.
+4. **Expand Default**: Choose which panels are open on page load: None,
+   First, or All.
+
+### Animation Settings
+
+1. **Animation Type**: Choose the animation effect for panel transitions.
+   Options: None, Slide from Top, Bottom, Left, Right, Zoom, and Fade.
+2. **Transition Speed**: Value between 0.1 (fast) and 2 (slow) seconds.
+   Default: 0.3s.
+
+### Layout Settings
+
+1. **Accordion Item Width**: Width in pixels for card-style layouts. Set to
+   `0` for full-width (default).
+2. **Content Padding**: Inner padding of panel content areas in pixels.
+   Default: 16px.
+3. **Panel Gap**: Spacing between accordion panels in pixels. Default: 16px.
+
+### Custom Icons
+
+1. **Panel Expand/Collapse Icons**: Custom SVG markup for each panel button.
+2. **Global Expand/Collapse All Icons**: Custom SVG markup for the global
+   toggle button.
+
+### Deep Linking Settings
+
+1. **Enable Deep Linking**: Generate shareable URLs with hash fragments.
+2. **URL Identifier**: Short identifier used in the URL hash (e.g., "faqs"
+   produces `#accordion-faqs-3`). Must start with a letter, lowercase,
+   max 20 characters.
+
+### Advanced Options
+
+1. **Enable CSS**: Include the default VVJA stylesheet. Disable to use your
+   own CSS exclusively.
 
 ## Token Support in Views Text Areas
 
@@ -153,8 +217,8 @@ Drupal.behaviors.myCustomAccordion = {
 
 - **Dependencies**: This module does not have any dependencies on other
   contributed modules.
-- **Compatibility**: Fully compatible with Drupal 10 and follows Drupal best
-  practices.
+- **Compatibility**: Fully compatible with Drupal 10 and Drupal 11, following
+  Drupal best practices.
 
 ## Installation
 

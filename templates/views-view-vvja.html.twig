@@ -91,7 +91,7 @@
       {# Render the button #}
       {% if deeplink_config.enabled and deeplink_config.identifier %}
         {# Deep linking enabled - use anchor link #}
-        <a id="{{ acc_id_btn }}-{{ key + 1 }}" href="#accordion-{{ deeplink_config.identifier }}-{{ key + 1 }}" class="button vvja-button{{ is_expanded ? ' active' : '' }}" role="button" aria-label="{{ button_content|striptags|trim|t }}" aria-expanded="{{ is_expanded ? 'true' : 'false' }}" aria-controls="{{ acc_id_pan }}-{{ key + 1 }}-pane">
+        <a id="{{ acc_id_btn }}-{{ key + 1 }}" href="#accordion-{{ deeplink_config.identifier }}-{{ key + 1 }}" class="button vvja-button{{ is_expanded ? ' active' : '' }}" aria-label="{{ button_content|striptags|trim|t }}" aria-expanded="{{ is_expanded ? 'true' : 'false' }}" aria-controls="{{ acc_id_pan }}-{{ key + 1 }}-pane">
           <span class="btn-inner">{{ button_content|safe_html }}</span>
           {% if single_toggle %}
             <span class="single-toggle">

@@ -15,12 +15,15 @@
 declare(strict_types=1);
 
 use Drupal\Component\Utility\Html;
+use Drupal\Component\Utility\Xss;
+use Drupal\Core\Render\BubbleableMetadata;
 use Drupal\Core\Render\Markup;
 use Drupal\views\ViewExecutable;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Template\Attribute;
 use Drupal\vvja\Plugin\views\style\ViewsVanillaJavascriptAccordion;
 use Drupal\vvja\SvgSanitizer;
+use Drupal\vvja\VvjaConstants;
 
 /**
  * Implements hook_help().
@@ -208,11 +211,18 @@ function vvja_preprocess_views_view(array &$variables): void {
  */
 function vvja_token_info(): array {
   return [
+    'types' => [
+      'vvja' => [
+        'name' => t('VVJA Accordion'),
+        'description' => t('Tokens for accessing field values from the first row of a VVJA-enabled View.'),
+        'needs-data' => 'view',
+      ],
+    ],
     'tokens' => [
-      'view' => [
-        'vvja' => [
-          'name' => t('VVJA field output'),
-          'description' => t("Use these tokens when you enable 'Use replacement tokens from the first row' in Views text areas such as the header, footer, or empty text. Use [vvja:field_name] for rendered output, or [vvja:field_name:plain] to strip HTML and return plain text. These tokens pull values from the first row of the View result."),
+      'vvja' => [
+        '*' => [
+          'name' => t('Field token'),
+          'description' => t('Use [vvja:FIELD_NAME] for HTML output or [vvja:FIELD_NAME:plain] for plain text. Replace FIELD_NAME with the actual machine name of the field (e.g., [vvja:title], [vvja:body:plain]).'),
         ],
       ],
     ],
@@ -222,10 +232,10 @@ function vvja_token_info(): array {
 /**
  * Implements hook_tokens().
  */
-function vvja_tokens(string $type, array $tokens, array $data = [], array $options = []): array {
+function vvja_tokens(string $type, array $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata): array {
   $replacements = [];
 
-  if (!in_array($type, ['vvja', 'global'])) {
+  if ($type !== 'vvja') {
     return $replacements;
   }
 
@@ -243,14 +253,17 @@ function vvja_tokens(string $type, array $tokens, array $data = [], array $optio
     return $replacements;
   }
 
+  // Add cache dependency on the view (includes tags, contexts, and max-age).
+  $bubbleable_metadata->addCacheableDependency($view);
+
   $first_row = $view->result[0];
   $field_handlers = $view->display_handler->getHandlers('field');
 
   /** @var \Drupal\Core\Render\RendererInterface $renderer */
   $renderer = \Drupal::service('renderer');
 
-  foreach ($tokens as $token => $name) {
-    if (!preg_match('/^[a-zA-Z0-9_]+(:plain)?$/', $token)) {
+  foreach ($tokens as $token => $original) {
+    if (!preg_match(VvjaConstants::TOKEN_PATTERN, $token)) {
       \Drupal::logger('vvja')->warning('Invalid token format: @token', ['@token' => $token]);
       continue;
     }
@@ -269,9 +282,7 @@ function vvja_tokens(string $type, array $tokens, array $data = [], array $optio
 
     try {
       $handler = $field_handlers[$field_id];
-      $value = $plain && method_exists($handler, 'advancedRenderText')
-        ? $handler->advancedRenderText($first_row)
-        : $handler->advancedRender($first_row);
+      $value = $handler->advancedRender($first_row);
 
       if (is_array($value)) {
         $rendered = $renderer->renderPlain($value);
@@ -280,74 +291,18 @@ function vvja_tokens(string $type, array $tokens, array $data = [], array $optio
         $rendered = (string) $value;
       }
 
-      $replacements["[vvja:$token]"] = $plain
+      $replacements[$original] = $plain
         ? Html::decodeEntities(strip_tags($rendered))
-        : Markup::create($rendered);
+        : Markup::create(Xss::filterAdmin($rendered));
     }
     catch (\Throwable $e) {
       \Drupal::logger('vvja')->error('Token replacement failed for @token: @message', [
         '@token' => $token,
         '@message' => $e->getMessage(),
       ]);
-      $replacements["[vvja:$token]"] = '';
+      $replacements[$original] = '';
     }
   }
 
   return $replacements;
-}
-
-/**
- * Implements hook_views_data_alter().
- */
-function vvja_views_data_alter(array &$data): void {
-  $data['views_style_plugin']['views_vvja'] = [
-    'type' => 'views_style',
-    'label' => t('Views Vanilla JavaScript Accordion'),
-    'mapping' => [
-      'unique_id' => [
-        'type' => 'string',
-        'label' => t('Unique ID for the view display'),
-      ],
-      'animation' => [
-        'type' => 'string',
-        'label' => t('Animation Type'),
-        'description' => t('The type of animation for opening/closing panels.'),
-      ],
-      'transition_speed' => [
-        'type' => 'float',
-        'label' => t('Transition Speed'),
-        'description' => t('The speed of the transition animation.'),
-      ],
-      'accordion_item_width' => [
-        'type' => 'integer',
-        'label' => t('Accordion Item Width'),
-        'description' => t('The width of each accordion item in pixels.'),
-      ],
-      'global_toggle' => [
-        'type' => 'boolean',
-        'label' => t('Global Toggle'),
-        'description' => t('Show collapse/expand all button.'),
-      ],
-      'single_toggle' => [
-        'type' => 'boolean',
-        'label' => t('Single Toggle'),
-        'description' => t('Show individual collapse/expand buttons.'),
-      ],
-      'expand_default' => [
-        'type' => 'string',
-        'label' => t('Default Expand Behavior'),
-        'description' => t('Initial expand state: none, first, or all.'),
-      ],
-      'enable_css' => [
-        'type' => 'boolean',
-        'label' => t('Enable CSS'),
-        'description' => t('Include the default CSS library.'),
-      ],
-      'exclusive_panel' => [
-        'type' => 'boolean',
-        'label' => t('Exclusive Panel'),
-        'description' => t('Only allow one panel to be open at a time.'),
-      ],
-    ],
-  ];
 }

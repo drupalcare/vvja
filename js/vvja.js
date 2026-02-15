@@ -299,6 +299,12 @@
           });
         }
 
+        // Store handlers for cleanup in detach.
+        if (!container.vvjaEventHandlers) {
+          container.vvjaEventHandlers = {};
+        }
+        container.vvjaEventHandlers.resize = handleResizeDebounced;
+
         // Add resize event listener
         window.addEventListener('resize', handleResizeDebounced);
 
@@ -312,6 +318,24 @@
         const deeplinkId = container.dataset.deeplinkId;
         if (deeplinkEnabled && deeplinkId) {
           initializeDeepLinking(container, deeplinkId);
+        }
+      });
+    },
+
+    detach: function (context, settings, trigger) {
+      if (trigger !== 'unload') {
+        return;
+      }
+      const containers = (context || document).querySelectorAll('.vvja > .vvja-inner');
+      containers.forEach(container => {
+        if (container.vvjaEventHandlers) {
+          if (container.vvjaEventHandlers.resize) {
+            window.removeEventListener('resize', container.vvjaEventHandlers.resize);
+          }
+          if (container.vvjaEventHandlers.hashChange) {
+            window.removeEventListener('hashchange', container.vvjaEventHandlers.hashChange);
+          }
+          delete container.vvjaEventHandlers;
         }
       });
     }
@@ -355,11 +379,8 @@
     };
 
     window.addEventListener('hashchange', hashChangeHandler);
-    
-    // Store handler for cleanup.
-    if (!container.vvjaEventHandlers) {
-      container.vvjaEventHandlers = {};
-    }
+
+    // Store handler for cleanup via detach.
     container.vvjaEventHandlers.hashChange = hashChangeHandler;
   }
 

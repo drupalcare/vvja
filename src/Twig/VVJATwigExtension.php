@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\vvja\Twig;
 
 use Twig\Extension\AbstractExtension;
@@ -32,9 +34,8 @@ class VVJATwigExtension extends AbstractExtension {
   }
 
   /**
-   * Marks the provided HTML string as safe.
+   * Marks the provided HTML string as safe for output.
    *
-   * This method decodes HTML entities and marks the result as safe for output.
    * Use ONLY when the content is from a trusted source and has already been
    * sanitized by Drupal's rendering system.
    *
@@ -45,8 +46,7 @@ class VVJATwigExtension extends AbstractExtension {
    *   The safe HTML string wrapped in Twig Markup object.
    */
   public function safeHtml(string $string): Markup {
-    $decoded_string = html_entity_decode($string, ENT_QUOTES, 'UTF-8');
-    return new Markup($decoded_string, 'UTF-8');
+    return new Markup($string, 'UTF-8');
   }
 
 }

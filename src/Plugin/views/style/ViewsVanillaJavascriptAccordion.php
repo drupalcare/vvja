@@ -693,14 +693,6 @@ class ViewsVanillaJavascriptAccordion extends StylePluginBase {
 
     $this->cachedUniqueId = random_int(VvjaConstants::MIN_UNIQUE_ID, VvjaConstants::MAX_UNIQUE_ID);
 
-    if ($this->cachedUniqueId < VvjaConstants::MIN_UNIQUE_ID) {
-      $this->cachedUniqueId += VvjaConstants::MIN_UNIQUE_ID;
-    }
-    if ($this->cachedUniqueId > VvjaConstants::MAX_UNIQUE_ID) {
-      $range = VvjaConstants::MAX_UNIQUE_ID - VvjaConstants::MIN_UNIQUE_ID + 1;
-      $this->cachedUniqueId = $this->cachedUniqueId % $range + VvjaConstants::MIN_UNIQUE_ID;
-    }
-
     return $this->cachedUniqueId;
   }
 

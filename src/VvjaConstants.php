@@ -9,35 +9,12 @@ namespace Drupal\vvja;
  */
 final class VvjaConstants {
 
-  public const TOKEN_NAMESPACE = 'vvja';
-  public const TOKEN_PLAIN_SUFFIX = ':plain';
   public const TOKEN_PATTERN = '/^[a-zA-Z0-9_]+(:plain)?$/';
-
-  public const DATA_ATTRIBUTE_MAP = [
-    'animation' => 'animation',
-    'unique_id' => 'unique-id',
-    'transition_speed' => 'transition-speed',
-    'accordion_item_width' => 'accordion-item-width',
-    'expand_default' => 'expand-default',
-  ];
-
-  public const BOOLEAN_ATTRIBUTE_MAP = [
-    'global_toggle' => 'global-toggle',
-    'single_toggle' => 'single-toggle',
-    'enable_css' => 'enable-css',
-    'exclusive_panel' => 'exclusive-panel',
-  ];
-
-  public const VIEWS_TYPE_INTEGER = 'integer';
-  public const VIEWS_TYPE_STRING = 'string';
-  public const VIEWS_TYPE_BOOLEAN = 'boolean';
-  public const VIEWS_TYPE_FLOAT = 'float';
 
   /**
    * Deep linking configuration constants.
    */
   public const DEEPLINK_IDENTIFIER_MAX_LENGTH = 20;
-  public const DEEPLINK_IDENTIFIER_PATTERN = '/^[a-z][a-z0-9-]*[a-z0-9]$/';
   public const DEEPLINK_RESERVED_WORDS = ['accordion', 'panel', 'vvja'];
 
   /**

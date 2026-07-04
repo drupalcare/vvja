@@ -1,31 +1,33 @@
 {#
-  @file
-  Template for rendering a Views Vanilla Javascript Accordion.
-
-  Available variables:
-  - options: The options array containing settings for the accordion.
-  - rows: An array of row items to be displayed in the accordion.
-  - attributes: A list of HTML attributes for the wrapper div.
-
-  Options settings:
-  - unique_id: A unique identifier for the accordion instance.
-  - global_toggle: Whether to display expand/collapse all buttons.
-  - single_toggle: Whether to display toggle indicators for each section.
-  - expand_default: Default expand behavior (none, first, all).
-  - animation: Animation type for the accordion panels.
-  - transition_speed: allows users to select different speeds for the accordion.
-  - exclusive_panel: allows users to have one panel open only.
-  - svg_expand_content: Custom SVG for expand panel icon.
-  - svg_collapse_content: Custom SVG for collapse panel icon.
-  - svg_expand_all: Custom SVG for expand all icon.
-  - svg_collapse_all: Custom SVG for collapse all icon.
+/**
+ * @file
+ * Default theme implementation for VVJA — Views Vanilla Javascript Accordion.
+ *
+ * Outer element is `<vvja-accordion>` (custom element from v2.0).
+ * Behavior is encapsulated in VvjaAccordionElement which extends
+ * vvj_core's VvjElementBase. The custom element keeps every v1 CSS
+ * class on its `class` attribute (`.vvja`, `.vvja-12345`, etc.) so
+ * theme overrides targeting `.vvja` continue to work — only the
+ * tag name changed from `<div>` to `<vvja-accordion>`.
+ *
+ * Available variables (from preprocess_views_view_vvja):
+ *   - options: flattened style plugin options
+ *   - rows: list of row render arrays (each pre-rendered into HTML by Views)
+ *   - attributes: the wrapper attribute object (with `vvj-accordion` class)
+ *   - list_attributes: data-* attribute bag for the inner wrapper
+ *   - deeplink_enabled: bool
+ *   - deeplink_identifier: string slug
+ *   - settings: a subset of options for JS hookup
+ *
+ * Each row's content uses the `<div class="vvja-separator"></div>`
+ * pattern to split trigger HTML from pane HTML — emitted by the row
+ * template (`views-view-vvja-fields.html.twig`).
+ */
 #}
-{# Set unique ID for the accordion instance #}
 {% set unique_id = options.unique_id %}
 {% set vvja_id = 'vvja-' ~ unique_id %}
 {% set max_width = options.accordion_item_width %}
 
-{# Display or hide expand all options based on configuration #}
 {% set exclusive_panel = options.exclusive_panel %}
 {% set global_toggle = options.global_toggle %}
 {% set show_global_toggle = global_toggle and not exclusive_panel %}
@@ -40,16 +42,15 @@
 {% set pane_padding = options.pane_padding|default(16) %}
 {% set panel_gap = options.panel_gap|default(16) %}
 
-{# Custom SVG icons (sanitized at render time via SvgSanitizer, passed as Markup objects) #}
+{# Custom SVG icons (sanitized at render time via SvgSanitizer, passed as Markup objects). #}
 {% set icon_expand_content = options.svg_expand_content|default('') %}
 {% set icon_collapse_content = options.svg_collapse_content|default('') %}
 {% set icon_expand_all = options.svg_expand_all|default('') %}
 {% set icon_collapse_all = options.svg_collapse_all|default('') %}
 
-{# Deep linking configuration #}
 {% set deeplink_config = {
   enabled: deeplink_enabled|default(false),
-  identifier: deeplink_identifier|default('')
+  identifier: deeplink_identifier|default(''),
 } %}
 
 {% set classes = [
@@ -58,14 +59,12 @@
   global_toggle ? 'global-toggle-on' : '',
   single_toggle ? 'single-toggle-on' : '',
   expand_default != 'none' ? 'expand-' ~ expand_default : '',
-  options.accordion_item_width != 0 ? 'max-w' : ''
+  options.accordion_item_width != 0 ? 'max-w' : '',
 ] %}
 
-{# Render the accordion. #}
-<div {{ attributes.addClass(classes).setAttribute('id', vvja_id) }}>
+<vvja-accordion {{ attributes.addClass(classes).setAttribute('id', vvja_id) }}{% if deeplink_config.enabled and deeplink_config.identifier %} data-deeplink-id="{{ deeplink_config.identifier }}"{% endif %}>
   <div id="{{ acc_id }}" class="vvja-inner" style="--vvja-grid-gap: {{ panel_gap }}px; --vvja-pane-padding: {{ pane_padding }}px{% if max_width > 0 %}; --vvja-box-width: {{ max_width }}{% endif %}" data-exclusive="{{ exclusive_panel ? 'true' : 'false' }}" data-expand-default="{{ expand_default }}"{% if deeplink_config.enabled and deeplink_config.identifier %} data-deeplink-enabled="true" data-deeplink-id="{{ deeplink_config.identifier }}"{% endif %}>
 
-    {# Render global expand/collapse buttons if enabled #}
     {% if show_global_toggle %}
     <div class="global-toggle">
       <button class="button group-toggle" aria-expanded="{{ all_expanded ? 'true' : 'false' }}" aria-controls="{{ vvja_id }}" aria-label="{{ 'Expand or Collapse all sections'|t }}">
@@ -78,19 +77,15 @@
     </div>
     {% endif %}
 
-    {# Loop through each row and render the accordion structure #}
     {% for key, row in rows %}
     {% set is_expanded = all_expanded or (expand_default == 'first' and key == 0) %}
     {% set row_content = row.content|render %}
-    {# Use the unique tag or CSS class to split the content #}
     {% set split_content = row_content|split('<div class="vvja-separator"></div>') %}
     {% set button_content = split_content[0] %}
     {% set pane_content = split_content[1]|default('') %}
     <div id="vvja-item-{{ unique_id }}-{{ key + 1 }}" role="region" class="vvja-item {{ is_expanded ? 'opened' : 'closed' }}">
 
-      {# Render the button #}
       {% if deeplink_config.enabled and deeplink_config.identifier %}
-        {# Deep linking enabled - use anchor link #}
         <a id="{{ acc_id_btn }}-{{ key + 1 }}" href="#accordion-{{ deeplink_config.identifier }}-{{ key + 1 }}" class="button vvja-button{{ is_expanded ? ' active' : '' }}" aria-label="{{ button_content|striptags|trim|t }}" aria-expanded="{{ is_expanded ? 'true' : 'false' }}" aria-controls="{{ acc_id_pan }}-{{ key + 1 }}-pane">
           <span class="btn-inner">{{ button_content|safe_html }}</span>
           {% if single_toggle %}
@@ -102,7 +97,6 @@
           {% endif %}
         </a>
       {% else %}
-        {# Default button #}
         <button id="{{ acc_id_btn }}-{{ key + 1 }}" class="button vvja-button{{ is_expanded ? ' active' : '' }}" aria-label="{{ button_content|striptags|trim|t }}" aria-expanded="{{ is_expanded ? 'true' : 'false' }}" aria-controls="{{ acc_id_pan }}-{{ key + 1 }}-pane" type="button">
           <span class="btn-inner">{{ button_content|safe_html }}</span>
           {% if single_toggle %}
@@ -115,7 +109,6 @@
         </button>
       {% endif %}
 
-      {# Render the accordion pane #}
       <div id="{{ acc_id_pan }}-{{ key + 1 }}-pane" class="vvja-pane{{ vvja_animation != 'none' ? ' ' ~ vvja_animation : '' }}" aria-labelledby="{{ acc_id_btn }}-{{ key + 1 }}" aria-hidden="{{ is_expanded ? 'false' : 'true' }}" data-index="{{ key + 1 }}" style="--vvja-transition-speed: {{ transition_speed }};">
         <div class="vvja-pane-inner">
           {{ pane_content|safe_html }}
@@ -126,4 +119,4 @@
     {% endfor %}
 
   </div>
-</div>
+</vvja-accordion>

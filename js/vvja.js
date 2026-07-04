@@ -1,537 +1,117 @@
 /**
  * @file
- * Views Vanilla JavaScript Accordion.
+ * Views Vanilla JavaScript Accordion — VVJA v2 compat shim.
  *
- * Filename:     vvja.js
- * Website:      https://www.flashwebcenter.com
- * Developer:    Alaa Haddad https://www.alaahaddad.com.
+ * The accordion's behavior is fully encapsulated in the
+ * `<vvja-accordion>` custom element (see `vvja-accordion-element.js`).
+ * This file exists for two backwards-compat reasons:
+ *
+ *   1. v1 sites referenced `Drupal.behaviors.VVJAccordion` from custom
+ *      code. Registering a no-op behavior under that key keeps any
+ *      such code from crashing.
+ *
+ *   2. v1 sites used the public API `Drupal.vvja.openPanel(id, n)`,
+ *      `closePanel`, `togglePanel`, `getOpenPanels`, `getTotalPanels`,
+ *      `getInstance`. Those methods now delegate to the matching
+ *      methods on the custom element instance.
+ *
+ * The custom element handles its own lifecycle via
+ * `connectedCallback()` + IntersectionObserver lazy hydration —
+ * `Drupal.behaviors.attach()` doesn't drive its setup.
+ *
+ * @license SPDX-License-Identifier: GPL-2.0-or-later
  */
+
+// phpcs:disable Drupal.NamingConventions.UpperCaseConstant
+// phpcs:disable Generic.PHP.UpperCaseConstant
+// phpcs:disable Squiz.WhiteSpace.OperatorSpacing
 
 ((Drupal, drupalSettings, once) => {
   'use strict';
 
   Drupal.behaviors.VVJAccordion = {
-    attach: function (context, settings) {
-      const accordionContainers = once('vvjAccordion', '.vvja > .vvja-inner', context);
-
-      accordionContainers.forEach(container => {
-        const accordionButtons = container.querySelectorAll('.vvja-button');
-
-        once('vvjAccordionButtonInit', accordionButtons).forEach((button) => {
-          if (!button.classList.contains('active')) {
-            button.setAttribute('tabindex', '-1');
-          }
-          button.addEventListener('click', handleAccordionClick);
-        });
-
-        const globalToggleButton = container.querySelector('.global-toggle .button.group-toggle');
-
-        if (globalToggleButton) {
-          globalToggleButton.addEventListener('click', () => {
-            const isExpanded = globalToggleButton.getAttribute('aria-expanded') === 'true';
-            handleGlobalToggle(isExpanded ? 'collapse' : 'expand');
-            updateGlobalToggleState(container);
-          });
-        }
-
-        const expandDefault = container.dataset.expandDefault || 'none';
-        if (expandDefault === 'first' && accordionButtons.length > 0) {
-          openPane(accordionButtons[0].nextElementSibling);
-          activateButton(accordionButtons[0]);
-        } else if (expandDefault === 'all') {
-          handleGlobalToggle('expand');
-          updateGlobalToggleState(container);
-        }
-
-        function updateGlobalToggleState(container) {
-          const globalToggleButton = container.querySelector('.global-toggle .group-toggle');
-          if (!globalToggleButton) return;
-
-          const panes = container.querySelectorAll('.vvja-pane');
-          const allOpen = Array.from(panes).every(pane => pane.getAttribute('aria-hidden') === 'false');
-          const allClosed = Array.from(panes).every(pane => pane.getAttribute('aria-hidden') === 'true');
-
-          if (allOpen) {
-            globalToggleButton.setAttribute('aria-expanded', 'true');
-            toggleAriaHidden(globalToggleButton.querySelector('.b-plus'), true);
-            toggleAriaHidden(globalToggleButton.querySelector('.b-minus'), false);
-          } else if (allClosed) {
-            globalToggleButton.setAttribute('aria-expanded', 'false');
-            toggleAriaHidden(globalToggleButton.querySelector('.b-plus'), false);
-            toggleAriaHidden(globalToggleButton.querySelector('.b-minus'), true);
-          } else {
-            // Mixed state: keep as-is or default to collapse
-            globalToggleButton.setAttribute('aria-expanded', 'false');
-            toggleAriaHidden(globalToggleButton.querySelector('.b-plus'), false);
-            toggleAriaHidden(globalToggleButton.querySelector('.b-minus'), true);
-          }
-        }
-
-        function openPane(pane) {
-          pane.style.maxHeight = `${pane.scrollHeight}px`;
-          pane.setAttribute('aria-hidden', 'false');
-          toggleFocusableElements(pane, false);
-
-          pane.addEventListener('transitionend', () => {
-            if (pane.getAttribute('aria-hidden') === 'false') {
-              pane.style.maxHeight = 'none';
-            }
-          }, { once: true });
-        }
-
-        function closePane(pane) {
-          pane.style.maxHeight = `${pane.scrollHeight}px`;
-          requestAnimationFrame(() => {
-            pane.style.maxHeight = '0';
-          });
-          pane.setAttribute('aria-hidden', 'true');
-          toggleFocusableElements(pane, true);
-        }
-
-        function deactivateButton(button) {
-          button.classList.remove('active');
-          button.setAttribute('tabindex', '-1');
-          button.setAttribute('aria-expanded', 'false');
-          updateToggleIndicator(button, false);
-          button.parentElement.classList.remove('opened');
-          button.parentElement.classList.add('closed');
-        }
-
-        function activateButton(button) {
-          button.classList.add('active');
-          button.removeAttribute('tabindex');
-          button.setAttribute('aria-expanded', 'true');
-          updateToggleIndicator(button, true);
-          button.parentElement.classList.remove('closed');
-          button.parentElement.classList.add('opened');
-        }
-
-        function updateToggleIndicator(button, isOpen) {
-          const toggle = button.querySelector('.single-toggle');
-          if (toggle) {
-            const plus = toggle.querySelector('.b-plus');
-            const minus = toggle.querySelector('.b-minus');
-            if (isOpen) {
-              toggleAriaHidden(plus, true);
-              toggleAriaHidden(minus, false);
-            } else {
-              toggleAriaHidden(plus, false);
-              toggleAriaHidden(minus, true);
-            }
-          }
-        }
-
-        function toggleAriaHidden(element, isHidden) {
-          if (element) {
-            element.setAttribute('aria-hidden', isHidden.toString());
-            element.classList.toggle('vvja-icon-hidden', isHidden);
-          }
-        }
-
-        function toggleFocusableElements(pane, shouldDisable) {
-          const focusableElements = pane.querySelectorAll('a, button, input, select, textarea, [tabindex]');
-          focusableElements.forEach(element => {
-            if (shouldDisable) {
-              element.setAttribute('tabindex', '-1');
-              element.setAttribute('aria-disabled', 'true');
-              element.disabled = true;
-            } else {
-              element.removeAttribute('tabindex');
-              element.removeAttribute('aria-disabled');
-              element.disabled = false;
-            }
-          });
-        }
-
-        function handleAccordionClick(event) {
-          const button = event.currentTarget;
-          const pane = button.nextElementSibling;
-          const container = button.closest('.vvja-inner');
-          const allButtons = container.querySelectorAll('.vvja-button');
-
-          const isOpen = pane.style.maxHeight && pane.style.maxHeight !== '0px';
-
-          // Check if exclusive mode is enabled via data attribute
-          const isExclusive = container.dataset.exclusive === 'true';
-
-          if (isExclusive) {
-            // Exclusive mode: close all other panels
-            allButtons.forEach(otherButton => {
-              const otherPane = otherButton.nextElementSibling;
-
-              if (otherButton !== button) {
-                closePane(otherPane);
-                deactivateButton(otherButton);
-              }
-            });
-
-            if (isOpen) {
-              closePane(pane);
-              deactivateButton(button);
-            } else {
-              openPane(pane);
-              activateButton(button);
-            }
-
-          } else {
-            if (isOpen) {
-              closePane(pane);
-              deactivateButton(button);
-            } else {
-              openPane(pane);
-              activateButton(button);
-            }
-            updateGlobalToggleState(container);
-          }
-
-          // Update deep link hash if enabled.
-          updateDeepLinkHash(container, pane);
-        }
-
-        function handleGlobalToggle(action) {
-          const panes = container.querySelectorAll('.vvja-pane');
-          const buttons = container.querySelectorAll('.vvja-button');
-          if (action === 'expand') {
-            buttons.forEach(button => {
-              const pane = button.nextElementSibling;
-              if (pane) {
-                openPane(pane);
-                activateButton(button);
-              }
-            });
-          } else if (action === 'collapse') {
-            panes.forEach(pane => closePane(pane));
-            buttons.forEach(button => deactivateButton(button));
-          }
-        }
-
-        function handleKeyboardNavigation(accordionButtons) {
-          accordionButtons.forEach((button, index) => {
-            button.addEventListener('keydown', (event) => {
-              const currentIndex = index;
-              let newIndex;
-
-              switch (event.key) {
-                case 'ArrowDown':
-                  newIndex = (currentIndex + 1) % accordionButtons.length;
-                  break;
-                case 'ArrowUp':
-                  newIndex = (currentIndex - 1 + accordionButtons.length) % accordionButtons.length;
-                  break;
-                case 'Home':
-                  newIndex = 0;
-                  break;
-                case 'End':
-                  newIndex = accordionButtons.length - 1;
-                  break;
-                default:
-                  return;
-              }
-
-              accordionButtons.forEach(b => b.setAttribute('tabindex', '-1'));
-              accordionButtons[newIndex].setAttribute('tabindex', '0');
-              accordionButtons[newIndex].focus();
-              event.preventDefault();
-            });
-          });
-        }
-
-        function updateAriaLabelsForAccordionButtons(accordionButtons) {
-          accordionButtons.forEach(button => {
-            const img = button.querySelector('img');
-            if (img && img.alt) {
-              button.setAttribute('aria-label', img.alt);
-            } else if (button.hasAttribute('aria-label')) {
-              return;
-            } else {
-              const labelElement = button.querySelector('.button-label');
-              if (labelElement) {
-                button.setAttribute('aria-label', labelElement.textContent.trim());
-              } else {
-                button.setAttribute('aria-label', 'Accordion Button');
-              }
-            }
-          });
-        }
-
-        function disableLinksInAccordionButtons(accordionButtons) {
-          accordionButtons.forEach(button => {
-            const links = button.querySelectorAll('a');
-            links.forEach(link => {
-              link.setAttribute('data-original-href', link.getAttribute('href'));
-              link.removeAttribute('href');
-              link.style.cursor = 'pointer';
-              link.addEventListener('click', function(event) {
-                event.preventDefault();
-                event.stopPropagation();
-              });
-            });
-          });
-        }
-
-        function initializeFocusableElements() {
-          const panes = container.querySelectorAll('.vvja-pane');
-          panes.forEach(pane => {
-            const isHidden = pane.getAttribute('aria-hidden') === 'true';
-            toggleFocusableElements(pane, isHidden);
-          });
-        }
-
-        // Debounce function to limit resize event calls
-        let resizeTimeout;
-        let lastResizeWidth = window.innerWidth;
-        function handleResizeDebounced() {
-          clearTimeout(resizeTimeout);
-          resizeTimeout = setTimeout(() => {
-            if (window.innerWidth > 768 && Math.abs(lastResizeWidth - window.innerWidth) > 30) {
-              handleResize();
-              lastResizeWidth = window.innerWidth;
-            }
-          }, 100);
-        }
-
-        // Adjust open panes on resize
-        function handleResize() {
-          const openPanes = container.querySelectorAll('.vvja-pane[aria-hidden="false"]');
-
-          openPanes.forEach(pane => {
-            pane.style.maxHeight = `${pane.scrollHeight}px`;
-          });
-        }
-
-        // Store handlers for cleanup in detach.
-        if (!container.vvjaEventHandlers) {
-          container.vvjaEventHandlers = {};
-        }
-        container.vvjaEventHandlers.resize = handleResizeDebounced;
-
-        // Add resize event listener
-        window.addEventListener('resize', handleResizeDebounced);
-
-        handleKeyboardNavigation(accordionButtons);
-        updateAriaLabelsForAccordionButtons(accordionButtons);
-        disableLinksInAccordionButtons(accordionButtons);
-        initializeFocusableElements();
-
-        // Initialize deep linking if enabled.
-        const deeplinkEnabled = container.dataset.deeplinkEnabled === 'true';
-        const deeplinkId = container.dataset.deeplinkId;
-        if (deeplinkEnabled && deeplinkId) {
-          initializeDeepLinking(container, deeplinkId);
-        }
-      });
+    attach(context) {
+      // No-op marker. Custom element hydrates itself via
+      // connectedCallback() → IntersectionObserver. once() guards
+      // against repeated attach calls running side-effects (none here).
+      once('vvja-accordion-marker', 'vvja-accordion', context);
     },
-
-    detach: function (context, settings, trigger) {
-      if (trigger !== 'unload') {
-        return;
-      }
-      const containers = (context || document).querySelectorAll('.vvja > .vvja-inner');
-      containers.forEach(container => {
-        if (container.vvjaEventHandlers) {
-          if (container.vvjaEventHandlers.resize) {
-            window.removeEventListener('resize', container.vvjaEventHandlers.resize);
-          }
-          if (container.vvjaEventHandlers.hashChange) {
-            window.removeEventListener('hashchange', container.vvjaEventHandlers.hashChange);
-          }
-          delete container.vvjaEventHandlers;
-        }
-      });
-    }
+    detach() {
+      // disconnectedCallback on the custom element aborts every
+      // signal-bound listener. Nothing for the behavior to clean up.
+    },
   };
 
   /**
-   * Initialize deep linking functionality.
+   * Resolve a deeplink-id, CSS selector, or DOM node to the matching
+   * `<vvja-accordion>` custom element.
    *
-   * @param {HTMLElement} container
-   *   The accordion container element.
-   * @param {string} deeplinkId
-   *   The deep link identifier.
+   * @param {string|Element} identifier
+   *   Either a deeplink-id (e.g. `'faqs'`), a CSS selector
+   *   (e.g. `'#vvja-12345'`), or an existing element.
+   * @returns {Element|null}
+   *   The matched `<vvja-accordion>` element, or null.
    */
-  function initializeDeepLinking(container, deeplinkId) {
-    // Check URL hash on page load.
-    const hash = window.location.hash;
-    if (hash && hash.startsWith(`#accordion-${deeplinkId}-`)) {
-      const panelNumber = parseInt(hash.split('-').pop(), 10);
-      if (!isNaN(panelNumber) && panelNumber > 0) {
-        const buttons = container.querySelectorAll('.vvja-button');
-        if (panelNumber <= buttons.length) {
-          setTimeout(() => {
-            buttons[panelNumber - 1].click();
-          }, 100);
-        }
-      }
+  function getElement(identifier) {
+    if (identifier instanceof Element) {
+      return identifier.closest('vvja-accordion');
     }
-
-    // Listen for hash changes.
-    const hashChangeHandler = function() {
-      const hash = window.location.hash;
-      if (hash && hash.startsWith(`#accordion-${deeplinkId}-`)) {
-        const panelNumber = parseInt(hash.split('-').pop(), 10);
-        if (!isNaN(panelNumber) && panelNumber > 0) {
-          const buttons = container.querySelectorAll('.vvja-button');
-          if (panelNumber <= buttons.length) {
-            buttons[panelNumber - 1].click();
-          }
-        }
-      }
-    };
-
-    window.addEventListener('hashchange', hashChangeHandler);
-
-    // Store handler for cleanup via detach.
-    container.vvjaEventHandlers.hashChange = hashChangeHandler;
+    if (typeof identifier !== 'string') { return null;
+    }
+    // First: try to match by deeplink-id data attribute.
+    let el = document.querySelector(`vvja-accordion[data-deeplink-id="${identifier}"]`);
+    if (el) { return el;
+    }
+    // Second: try as a CSS selector (id or class).
+    el = document.querySelector(identifier);
+    if (el) { return el.closest('vvja-accordion') || el;
+    }
+    return null;
   }
 
-  /**
-   * Update URL hash when panel is opened.
-   *
-   * @param {HTMLElement} container
-   *   The accordion container element.
-   * @param {HTMLElement} pane
-   *   The pane element.
-   */
-  function updateDeepLinkHash(container, pane) {
-    const deeplinkEnabled = container.dataset.deeplinkEnabled === 'true';
-    const deeplinkId = container.dataset.deeplinkId;
-    
-    if (deeplinkEnabled && deeplinkId && pane) {
-      const panelIndex = pane.dataset.index;
-      if (panelIndex) {
-        const newHash = `#accordion-${deeplinkId}-${panelIndex}`;
-        if (window.location.hash !== newHash && pane.getAttribute('aria-hidden') === 'false') {
-          history.replaceState(null, '', newHash);
-        }
-      }
-    }
-  }
-
-  /**
-   * Public API for external accordion control.
-   */
   Drupal.vvja = Drupal.vvja || {};
 
-  /**
-   * Helper to get container by identifier.
-   */
-  function getContainerByIdentifier(identifier) {
-    let container = document.querySelector(`[data-deeplink-id="${identifier}"]`);
-    if (!container) {
-      container = document.querySelector(identifier);
-    }
-    return container;
-  }
-
-  /**
-   * Open specific panel.
-   */
-  Drupal.vvja.openPanel = function(identifier, panelIndex) {
-    const container = getContainerByIdentifier(identifier);
-    if (!container) {
-      console.warn(`VVJA: Accordion "${identifier}" not found`);
+  Drupal.vvja.openPanel = (identifier, panelIndex) => {
+    const el = getElement(identifier);
+    if (!el || typeof el.openPanel !== 'function') {
+      console.warn(`VVJA: Accordion "${identifier}" not found or not yet hydrated`);
       return false;
     }
+    return el.openPanel(panelIndex);
+  };
 
-    const buttons = container.querySelectorAll('.vvja-button');
-    if (panelIndex < 1 || panelIndex > buttons.length) {
-      console.warn(`VVJA: Invalid panel ${panelIndex}. Must be between 1 and ${buttons.length}`);
+  Drupal.vvja.closePanel = (identifier, panelIndex) => {
+    const el = getElement(identifier);
+    if (!el || typeof el.closePanel !== 'function') {
+      console.warn(`VVJA: Accordion "${identifier}" not found or not yet hydrated`);
       return false;
     }
-
-    const button = buttons[panelIndex - 1];
-    const pane = button.nextElementSibling;
-    const isOpen = pane.getAttribute('aria-hidden') === 'false';
-    
-    if (!isOpen) {
-      button.click();
-    }
-    return true;
+    return el.closePanel(panelIndex);
   };
 
-  /**
-   * Close specific panel.
-   */
-  Drupal.vvja.closePanel = function(identifier, panelIndex) {
-    const container = getContainerByIdentifier(identifier);
-    if (!container) {
-      console.warn(`VVJA: Accordion "${identifier}" not found`);
+  Drupal.vvja.togglePanel = (identifier, panelIndex) => {
+    const el = getElement(identifier);
+    if (!el || typeof el.togglePanel !== 'function') {
+      console.warn(`VVJA: Accordion "${identifier}" not found or not yet hydrated`);
       return false;
     }
+    return el.togglePanel(panelIndex);
+  };
 
-    const buttons = container.querySelectorAll('.vvja-button');
-    if (panelIndex < 1 || panelIndex > buttons.length) {
-      console.warn(`VVJA: Invalid panel ${panelIndex}. Must be between 1 and ${buttons.length}`);
-      return false;
+  Drupal.vvja.getOpenPanels = (identifier) => {
+    const el = getElement(identifier);
+    if (!el || typeof el.getOpenPanels !== 'function') { return null;
     }
+    return el.getOpenPanels();
+  };
 
-    const button = buttons[panelIndex - 1];
-    const pane = button.nextElementSibling;
-    const isOpen = pane.getAttribute('aria-hidden') === 'false';
-    
-    if (isOpen) {
-      button.click();
+  Drupal.vvja.getTotalPanels = (identifier) => {
+    const el = getElement(identifier);
+    if (!el || typeof el.getTotalPanels !== 'function') { return null;
     }
-    return true;
+    return el.getTotalPanels();
   };
 
-  /**
-   * Toggle specific panel.
-   */
-  Drupal.vvja.togglePanel = function(identifier, panelIndex) {
-    const container = getContainerByIdentifier(identifier);
-    if (!container) {
-      console.warn(`VVJA: Accordion "${identifier}" not found`);
-      return false;
-    }
-
-    const buttons = container.querySelectorAll('.vvja-button');
-    if (panelIndex < 1 || panelIndex > buttons.length) {
-      console.warn(`VVJA: Invalid panel ${panelIndex}. Must be between 1 and ${buttons.length}`);
-      return false;
-    }
-
-    buttons[panelIndex - 1].click();
-    return true;
-  };
-
-  /**
-   * Get array of open panel indices.
-   */
-  Drupal.vvja.getOpenPanels = function(identifier) {
-    const container = getContainerByIdentifier(identifier);
-    if (!container) return null;
-
-    const panes = container.querySelectorAll('.vvja-pane');
-    const openPanels = [];
-    
-    panes.forEach((pane, index) => {
-      if (pane.getAttribute('aria-hidden') === 'false') {
-        openPanels.push(index + 1);
-      }
-    });
-
-    return openPanels;
-  };
-
-  /**
-   * Get total number of panels.
-   */
-  Drupal.vvja.getTotalPanels = function(identifier) {
-    const container = getContainerByIdentifier(identifier);
-    if (!container) return null;
-    return container.querySelectorAll('.vvja-button').length;
-  };
-
-  /**
-   * Get accordion instance.
-   */
-  Drupal.vvja.getInstance = function(containerOrSelector) {
-    const container = typeof containerOrSelector === 'string' 
-      ? document.querySelector(containerOrSelector)
-      : containerOrSelector;
-    
-    return container ? container.closest('.vvja-inner') : null;
-  };
+  Drupal.vvja.getInstance = (containerOrSelector) => getElement(containerOrSelector);
 
 })(Drupal, drupalSettings, once);

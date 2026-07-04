@@ -38,14 +38,21 @@ like jQuery UI or Bootstrap.
 - **CSS Custom Properties**: Theme via CSS variables (`--vvja-grid-gap`,
   `--vvja-pane-padding`, `--vvja-transition-speed`, `--vvja-box-width`) for
   easy customization without overriding selectors.
-- **Expandable Cards**: Set a fixed width per accordion item to create card-style
+- **Expandable Cards**: Set a fixed width per accordion item to create card-
+  style
   layouts, or use `0` for full-width traditional accordion.
 - **Unique ID Generation**: Automatically generates a unique numeric ID for
   each view display to ensure consistency and prevent conflicts.
+- **Custom element (v2)**: Front-end behavior runs inside a `<vvja-accordion>`
+  element (lazy-hydrated via `vvj_core`). Every VVJ view wrapper also gets
+  `.vvj-component` and `.vvj-vvja` from `vvj_core` for shared styling.
 - **Responsive**: Automatically recalculates panel heights on viewport resize
   for consistent behavior across devices.
 - **CSS Customization**: Easily customize the appearance of the accordion with
   optional CSS inclusion to match your site's design.
+
+- **Drupal admin help** — full module documentation is embedded at
+  `/admin/help/vvja` (reads this README via the help system).
 
 ## Accessibility
 
@@ -139,14 +146,16 @@ designed to work seamlessly with the VVJA rendering system.
 
 ## Deep Linking
 
-Enable deep linking in your accordion's Format Settings to create shareable URLs for specific panels.
+Enable deep linking in your accordion's Format Settings to create shareable URLs
+for specific panels.
 
 **Setup:**
 1. Enable **Deep Linking** in Format Settings
 2. Set **URL Identifier** (e.g., "faqs")
 3. Accordion panel links become: `#accordion-faqs-3`
 
-**Note:** Deep linking works with all accordion configurations (exclusive and multi-panel modes).
+**Note:** Deep linking works with all accordion configurations (exclusive and
+multi-panel modes).
 
 ## JavaScript API
 
@@ -171,12 +180,14 @@ Drupal.vvja.togglePanel('faqs', 1);  // Toggle panel 1
 
 **Get open panels:**
 ```javascript
-const openPanels = Drupal.vvja.getOpenPanels('faqs');  // Returns array like [1, 3, 5]
+const openPanels = Drupal.vvja.getOpenPanels('faqs');  // Returns array like [1,
+3, 5]
 ```
 
 **Get total panels:**
 ```javascript
-const total = Drupal.vvja.getTotalPanels('faqs');  // Returns total number of panels
+const total = Drupal.vvja.getTotalPanels('faqs');  // Returns total number of
+panels
 ```
 
 **Access accordion instance:**
@@ -213,12 +224,16 @@ Drupal.behaviors.myCustomAccordion = {
 3. Configure the toggle settings, animation type, and CSS options as needed.
 4. Save the view and see the accordion navigation in action on the front end.
 
+**Sample view:** Optional config `views.view.vvja_example` (`config/optional/`)
+installs when there is no ID conflict — useful as a working reference.
+
 ## Additional Information
 
-- **Dependencies**: This module does not have any dependencies on other
-  contributed modules.
-- **Compatibility**: Fully compatible with Drupal 10 and Drupal 11, following
-  Drupal best practices.
+- **Dependencies**: Requires **Drupal core** (`views`, `filter`) and the
+  **`vvj_core`** companion module (installed automatically via Composer when you
+  require `drupal/vvja`). No other contributed projects are required.
+- **Compatibility**: Targets **Drupal 11.3+** and **Drupal 12** with **PHP
+  8.3+**, following Drupal security and modern OOP hook patterns.
 
 ## Installation
 
@@ -245,7 +260,36 @@ For issues, feature requests, and general support, please use the
 ## License
 
 This project is licensed under the 
-[GNU General Public License, version 2 or later](http://www.gnu.org/licenses/gpl-2.0.html).
+[GNU General Public License, version 2 or
+later](http://www.gnu.org/licenses/gpl-2.0.html).
+
+---
+
+## v2.0 architecture notes (for contributors)
+
+v2.0 is a drop-in upgrade from 1.x — every CSS rule, option key, plugin ID,
+theme hook, Twig template name, JS behavior key, and `Drupal.vvja.*` public API
+is preserved byte-identical to v1. v2 modernizes internals only:
+
+- **OOP `#[Hook]` classes** under `src/Hook/` replace the procedural hooks in
+  `vvja.module` (now a stub). Hook discovery is automatic via Drupal 11.3+
+  attribute scanning.
+- **Dependency injection** throughout — every service consumed via constructor
+  injection. Zero `\Drupal::service()` calls inside service code.
+- **AbortController-tracked listeners** — `detach('unload')` aborts every event
+  listener for an accordion instance, preventing leaks across AJAX page swaps.
+- **PHP 8.3 typed constants** in `src/VvjaConstants.php` for compile-time type
+  safety.
+- **Strict types** (`declare(strict_types=1);`) on every PHP file.
+- **Test suite** under
+  `tests/src/{Unit,Kernel,Functional,FunctionalJavascript}/`.
+- **Drupal 11.3+ / PHP 8.3+ requirement** — uses `ViewsThemeHooks` for row/field
+  preprocess (removed procedural `template_preprocess_*` in Drupal 12); declare
+  `core_version_requirement: ^11.3 || ^12` in the module info file.
+
+For 1.x sites: `composer update drupal/vvja && drush cache:rebuild`. Existing
+views, options, theme overrides, custom CSS, and JS API consumers continue
+working unchanged.
 
 ---
 

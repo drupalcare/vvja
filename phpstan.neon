@@ -1,0 +1,20 @@
+includes:
+  - phpstan-baseline.neon
+
+# PHPStan configuration for VVJA v2.
+#
+# Strict array shapes enforced — every `array` parameter / return must
+# have a documented shape (list<T>, array<K, V>, or array{key: type}).
+# This is the same level the parent APEX module enforces.
+parameters:
+  level: max
+  scanDirectories:
+    - ../vvj_core/src
+    - ../vvj_core/tests/src
+  paths:
+    - src
+    - tests
+    - vvja.module
+  excludePaths:
+    - vendor (?)
+  treatPhpDocTypesAsCertain: false

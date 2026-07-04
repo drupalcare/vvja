@@ -1,9 +1,10 @@
 {
     "name": "drupal/vvja",
-    "description": "Provides a Vanilla Javascript Accordion format for Views.",
+    "description": "Provides a vanilla-JavaScript Accordion format for Views. APEX-grade v2 — SDC component, OOP hooks, dynamic library loading, AAA-leaning a11y, CSS-variable bridge to APEX themes.",
     "type": "drupal-module",
     "license": "GPL-2.0-or-later",
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
+    "prefer-stable": true,
     "authors": [
         {
             "name": "Alaa Haddad (alaahaddad.com)",
@@ -13,7 +14,9 @@
     ],
     "homepage": "https://drupal.org/project/vvja",
     "require": {
-        "drupal/core": "*"
+        "php": ">=8.3",
+        "drupal/core": "^11.3 || ^12",
+        "drupal/vvj_core": "^2.0"
     },
     "support": {
         "issues": "https://drupal.org/project/issues/vvja",

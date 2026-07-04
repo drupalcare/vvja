@@ -14,12 +14,26 @@ views.style.views_vvja:
     expand_default:
       type: string
       label: 'Default expand behavior'
+      constraints:
+        Choice:
+          - none
+          - first
+          - all
     transition_speed:
       type: float
       label: 'Transition speed in seconds'
     animation:
       type: string
       label: 'Animation type'
+      constraints:
+        Choice:
+          - none
+          - a-top
+          - a-bottom
+          - a-left
+          - a-right
+          - a-zoom
+          - a-fade
     enable_css:
       type: boolean
       label: 'Enable CSS library'
@@ -43,8 +57,8 @@ views.style.views_vvja:
       label: 'Deep link URL identifier'
       constraints:
         Regex:
-          pattern: '/^[a-z][a-z0-9-]*[a-z0-9]$/'
-          message: 'Must start with letter, contain only lowercase letters, numbers, and hyphens'
+          pattern: '/^[a-z][a-z0-9-]*[a-z0-9]?$/'
+          message: 'Must start with a letter; contain only lowercase letters, numbers, and hyphens.'
         Length:
           max: 20
     svg_expand_content:

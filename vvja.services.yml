@@ -1,5 +1,32 @@
 services:
-  vvja.twig_extension:
-    class: Drupal\vvja\Twig\VVJATwigExtension
-    tags:
-      - { name: twig.extension }
+  # OOP hook classes — Drupal 11.1+ pattern: register FQCN as the
+  # primary service ID so the OOP-hook dispatcher can resolve each
+  # class via ClassResolver. Most use autowiring; VvjaHelpHook needs
+  # explicit `plugin.manager.filter` because plugin managers don't
+  # always have FQCN autowire aliases in Drupal 11.1.
+  Drupal\vvja\Hook\VvjaHelpHook:
+    arguments:
+      - '@extension.list.module'
+      - '@module_handler'
+      - '@plugin.manager.filter'
+      - '@config.factory'
+
+  Drupal\vvja\Hook\VvjaThemeHook:
+    autowire: true
+
+  # Explicit args (not autowire) because `@?vvj_core.svg_sanitizer`
+  # must be nullable for the upgrade window. Autowire would refuse to
+  # inject null and would also try to load the SvgSanitizer class
+  # before vvj_core is enabled (autoloader can't reach it).
+  Drupal\vvja\Hook\VvjaPreprocessHooks:
+    arguments:
+      - '@Drupal\views\Hook\ViewsThemeHooks'
+      - '@?vvj_core.svg_sanitizer'
+
+  # `@?` makes the dependency nullable so the container compiles even
+  # when vvj_core hasn't been enabled yet (the v1 → v2 upgrade window
+  # before vvja_update_10001 runs). After that update hook installs
+  # vvj_core and updb rebuilds the container, the real service injects.
+  Drupal\vvja\Hook\VvjaTokenHooks:
+    arguments:
+      - '@?vvj_core.token_resolver'

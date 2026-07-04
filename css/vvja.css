@@ -97,7 +97,7 @@
 
 .vvja .global-toggle .button span svg,
 .vvja .vvja-button .single-toggle svg {
-  fill: currentColor;
+  fill: currentcolor;
 }
 
 .vvja .vvja-button > * {
@@ -172,7 +172,7 @@
 }
 
 .vvja-button:focus-visible {
-  outline: 2px solid currentColor;
+  outline: 2px solid currentcolor;
   outline-offset: -2px;
   background-color: rgba(0, 0, 0, 0.04);
 }
@@ -243,12 +243,12 @@
 
 @keyframes animateleft {
   from {
-    left: -100px;
+    inset-inline-start: -100px;
     opacity: 0;
   }
 
   to {
-    left: 0;
+    inset-inline-start: 0;
     opacity: 1;
   }
 
@@ -261,12 +261,12 @@
 
 @keyframes animateright {
   from {
-    right: -100px;
+    inset-inline-end: -100px;
     opacity: 0;
   }
 
   to {
-    right: 0;
+    inset-inline-end: 0;
     opacity: 1;
   }
 

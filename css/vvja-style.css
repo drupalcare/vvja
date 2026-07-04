@@ -9,7 +9,7 @@
 .vvja .vvja-button,
 .vvja .global-toggle button {
   padding: 0.75rem;
-  border: 2px solid currentColor;
+  border: 2px solid currentcolor;
   border-radius: 0.375rem;
 }
 
@@ -20,12 +20,12 @@
 
 .vvja .vvja-item.opened > button {
   border: none;
-  border-bottom: 1px solid currentColor;
+  border-bottom: 1px solid currentcolor;
   border-radius: 0;
 }
 
 .vvja .vvja-item.opened {
-  border: 1px solid currentColor;
+  border: 1px solid currentcolor;
   border-radius: 0.375rem;
 }
 

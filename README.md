@@ -144,6 +144,9 @@ To strip any HTML from the output, you can append `:plain` to the token:
 These tokens pull data from the **first row** of the View result and are
 designed to work seamlessly with the VVJA rendering system.
 
+v2 resolves tokens through the shared `vvj_core.token_resolver` service; the
+`[vvja:field]` / `[vvja:field:plain]` syntax is unchanged from v1.
+
 ## Deep Linking
 
 Enable deep linking in your accordion's Format Settings to create shareable URLs
@@ -192,7 +195,7 @@ panels
 
 **Access accordion instance:**
 ```javascript
-const instance = Drupal.vvja.getInstance('#vvja-12345');
+const instance = Drupal.vvja.getInstance('#vvja-12345');  // → <vvja-accordion>
 ```
 
 ### Complete Example: Custom Panel Control

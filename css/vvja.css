@@ -76,7 +76,6 @@
 /* Style for accordion buttons */
 .vvja .vvja-button {
   display: flex;
-  width: 100%;
   flex-grow: 1;
   white-space: initial;
   cursor: pointer;

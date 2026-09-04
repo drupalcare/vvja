@@ -10,11 +10,13 @@ use Drupal\views\Views;
 use Drupal\vvj_core\Service\SvgSanitizer;
 use Drupal\vvj_core\Service\TokenResolver;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
 /**
  * Confirms vvja installs, ships its example view, and appears in Views UI.
  */
 #[Group('vvja')]
+#[RunTestsInSeparateProcesses]
 final class VvjaInstallTest extends BrowserTestBase {
 
   /**
@@ -23,6 +25,9 @@ final class VvjaInstallTest extends BrowserTestBase {
    * @var list<string>
    */
   protected static $modules = [
+    // `help` serves /admin/help/{name}; without it testHelpPageRenders can
+    // only ever 404, whatever this module does.
+    'help',
     'node',
     'views',
     'views_ui',
@@ -94,6 +99,10 @@ final class VvjaInstallTest extends BrowserTestBase {
   public function testHelpPageRenders(): void {
     $admin = $this->drupalCreateUser([
       'access administration pages',
+      // The route requires `access help pages`, not merely
+      // `access administration pages` — checked against core's
+      // help.routing.yml rather than assumed.
+      'access help pages',
     ]);
     $this->assertInstanceOf(User::class, $admin);
     $this->drupalLogin($admin);

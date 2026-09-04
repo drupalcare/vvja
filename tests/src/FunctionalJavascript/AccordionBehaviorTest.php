@@ -8,6 +8,7 @@ use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 use Drupal\node\Entity\Node;
 use Drupal\views\Entity\View;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
 /**
  * FunctionalJavascript tests for vvja accordion interaction and contract.
@@ -15,6 +16,7 @@ use PHPUnit\Framework\Attributes\Group;
 #[Group('vvja')]
 #[Group('vvj_javascript')]
 #[Group('vvj_javascript')]
+#[RunTestsInSeparateProcesses]
 final class AccordionBehaviorTest extends WebDriverTestBase {
 
   /**

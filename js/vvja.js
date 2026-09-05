@@ -27,8 +27,6 @@
 // phpcs:disable Squiz.WhiteSpace.OperatorSpacing
 
 ((Drupal, drupalSettings, once) => {
-  'use strict';
-
   Drupal.behaviors.VVJAccordion = {
     attach(context) {
       // No-op marker. Custom element hydrates itself via
@@ -49,22 +47,27 @@
    * @param {string|Element} identifier
    *   Either a deeplink-id (e.g. `'faqs'`), a CSS selector
    *   (e.g. `'#vvja-12345'`), or an existing element.
-   * @returns {Element|null}
+   * @return {Element|null}
    *   The matched `<vvja-accordion>` element, or null.
    */
   function getElement(identifier) {
     if (identifier instanceof Element) {
       return identifier.closest('vvja-accordion');
     }
-    if (typeof identifier !== 'string') { return null;
+    if (typeof identifier !== 'string') {
+      return null;
     }
     // First: try to match by deeplink-id data attribute.
-    let el = document.querySelector(`vvja-accordion[data-deeplink-id="${identifier}"]`);
-    if (el) { return el;
+    let el = document.querySelector(
+      `vvja-accordion[data-deeplink-id="${identifier}"]`,
+    );
+    if (el) {
+      return el;
     }
     // Second: try as a CSS selector (id or class).
     el = document.querySelector(identifier);
-    if (el) { return el.closest('vvja-accordion') || el;
+    if (el) {
+      return el.closest('vvja-accordion') || el;
     }
     return null;
   }
@@ -74,7 +77,9 @@
   Drupal.vvja.openPanel = (identifier, panelIndex) => {
     const el = getElement(identifier);
     if (!el || typeof el.openPanel !== 'function') {
-      console.warn(`VVJA: Accordion "${identifier}" not found or not yet hydrated`);
+      console.warn(
+        `VVJA: Accordion "${identifier}" not found or not yet hydrated`,
+      );
       return false;
     }
     return el.openPanel(panelIndex);
@@ -83,7 +88,9 @@
   Drupal.vvja.closePanel = (identifier, panelIndex) => {
     const el = getElement(identifier);
     if (!el || typeof el.closePanel !== 'function') {
-      console.warn(`VVJA: Accordion "${identifier}" not found or not yet hydrated`);
+      console.warn(
+        `VVJA: Accordion "${identifier}" not found or not yet hydrated`,
+      );
       return false;
     }
     return el.closePanel(panelIndex);
@@ -92,7 +99,9 @@
   Drupal.vvja.togglePanel = (identifier, panelIndex) => {
     const el = getElement(identifier);
     if (!el || typeof el.togglePanel !== 'function') {
-      console.warn(`VVJA: Accordion "${identifier}" not found or not yet hydrated`);
+      console.warn(
+        `VVJA: Accordion "${identifier}" not found or not yet hydrated`,
+      );
       return false;
     }
     return el.togglePanel(panelIndex);
@@ -100,18 +109,20 @@
 
   Drupal.vvja.getOpenPanels = (identifier) => {
     const el = getElement(identifier);
-    if (!el || typeof el.getOpenPanels !== 'function') { return null;
+    if (!el || typeof el.getOpenPanels !== 'function') {
+      return null;
     }
     return el.getOpenPanels();
   };
 
   Drupal.vvja.getTotalPanels = (identifier) => {
     const el = getElement(identifier);
-    if (!el || typeof el.getTotalPanels !== 'function') { return null;
+    if (!el || typeof el.getTotalPanels !== 'function') {
+      return null;
     }
     return el.getTotalPanels();
   };
 
-  Drupal.vvja.getInstance = (containerOrSelector) => getElement(containerOrSelector);
-
+  Drupal.vvja.getInstance = (containerOrSelector) =>
+    getElement(containerOrSelector);
 })(Drupal, drupalSettings, once);

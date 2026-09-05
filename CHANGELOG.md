@@ -36,7 +36,7 @@ cache:rebuild` and you're done.
   `[vvja:field]` and `[vvja:field:plain]` semantics preserved; the same code now
   serves every VVJ pattern instead of being duplicated.
 - **SVG sanitization delegates to shared `vvj_core.svg_sanitizer`.** Same
-  whitelist parser, same threat model; one copy across the suite.
+  allowlist parser, same threat model; one copy across the suite.
 - **OOP hooks** under `src/Hook/` using the `#[Hook]` attribute pattern —
   replaces all procedural hooks in `vvja.module`. Constructor-injected via DI;
   no more `\Drupal::service()` calls.
@@ -102,7 +102,7 @@ cache:rebuild` and you're done.
 
 - **Defense-in-depth SVG sanitization** — admin-form validation + render-time
   re-sanitization unchanged from v1, but `SvgSanitizer` PHPDoc + array shapes
-  tightened. Same whitelist parser, same threat model.
+  tightened. Same allowlist parser, same threat model.
 
 ### Drupal core / PHP
 

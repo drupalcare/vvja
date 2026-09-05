@@ -257,8 +257,8 @@ class Accordion extends VvjStylePluginBase {
         <details><summary><strong>Security &amp; Sanitization</strong></summary>
         <p>All SVG input is validated and sanitized before saving. The following protections are applied:</p>
         <ul>
-          <li><strong>Whitelisted elements only:</strong> svg, path, circle, rect, line, polyline, polygon, ellipse, g, defs, use, symbol, clippath, mask, lineargradient, radialgradient, stop, title, desc.</li>
-          <li><strong>Whitelisted attributes only:</strong> Core attributes (id, class, xmlns), dimensions (viewBox, width, height, x, y, r, cx, cy, etc.), path data (d, points), presentation (fill, stroke, opacity, transform, etc.), and gradient attributes.</li>
+          <li><strong>Allowlisted elements only:</strong> svg, path, circle, rect, line, polyline, polygon, ellipse, g, defs, use, symbol, clippath, mask, lineargradient, radialgradient, stop, title, desc.</li>
+          <li><strong>Allowlisted attributes only:</strong> Core attributes (id, class, xmlns), dimensions (viewBox, width, height, x, y, r, cx, cy, etc.), path data (d, points), presentation (fill, stroke, opacity, transform, etc.), and gradient attributes.</li>
           <li><strong>Blocked content:</strong> &lt;script&gt;, &lt;foreignObject&gt;, &lt;iframe&gt;, &lt;object&gt;, &lt;embed&gt; elements are rejected. All event handlers (onclick, onload, etc.) are stripped. javascript: and data: URIs are removed. External URL references are blocked — only internal fragment references (#id) are allowed.</li>
           <li><strong>XML validation:</strong> Input must be well-formed XML with &lt;svg&gt; as the root element.</li>
         </ul>

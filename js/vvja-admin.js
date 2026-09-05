@@ -16,8 +16,6 @@
 // phpcs:disable Squiz.WhiteSpace.OperatorSpacing
 
 ((Drupal, once) => {
-  'use strict';
-
   /**
    * Track AbortControllers per checkbox.
    *
@@ -34,12 +32,12 @@
       );
 
       checkboxes.forEach((checkbox) => {
-        const wrapper = (context.querySelector
-          ? context
-          : document
+        const wrapper = (
+          context.querySelector ? context : document
         ).querySelector('[data-vvja-deeplink-field="true"]');
 
-        if (!wrapper) { return;
+        if (!wrapper) {
+          return;
         }
 
         const controller = new AbortController();
@@ -70,7 +68,8 @@
     },
 
     detach(context, settings, trigger) {
-      if (trigger !== 'unload') { return;
+      if (trigger !== 'unload') {
+        return;
       }
 
       const checkboxes = context.querySelectorAll

@@ -28,14 +28,13 @@
 // phpcs:disable Squiz.WhiteSpace.OperatorSpacing
 
 ((Drupal) => {
-  'use strict';
-
-  const { ElementBase, handleArrowKeyNav, wireDeeplink, writeDeeplinkHash } = Drupal.Vvj;
+  const { ElementBase, handleArrowKeyNav, wireDeeplink, writeDeeplinkHash } =
+    Drupal.Vvj;
 
   class VvjaAccordionElement extends ElementBase {
-
     static get patternSlug() {
- return 'vvja'; }
+      return 'vvja';
+    }
 
     // ---------------------------------------------------------------
     // Hydration — runs once when the element first becomes visible.
@@ -44,7 +43,8 @@
     onHydrate() {
       /** @type {HTMLElement | null} */
       this._inner = this.querySelector(':scope > .vvja-inner');
-      if (!this._inner) { return;
+      if (!this._inner) {
+        return;
       }
 
       /** @type {NodeListOf<HTMLElement>} */
@@ -67,16 +67,19 @@
 
     /**
      * @param {number} panelIndex 1-based.
-     * @returns {boolean}
+     * @return {boolean}
      */
     openPanel(panelIndex) {
       const button = this._getButton(panelIndex);
-      if (!button) { return false;
+      if (!button) {
+        return false;
       }
       const pane = button.nextElementSibling;
-      if (!pane) { return false;
+      if (!pane) {
+        return false;
       }
-      if (pane.getAttribute('aria-hidden') === 'false') { return true;
+      if (pane.getAttribute('aria-hidden') === 'false') {
+        return true;
       }
       button.click();
       return true;
@@ -84,16 +87,19 @@
 
     /**
      * @param {number} panelIndex 1-based.
-     * @returns {boolean}
+     * @return {boolean}
      */
     closePanel(panelIndex) {
       const button = this._getButton(panelIndex);
-      if (!button) { return false;
+      if (!button) {
+        return false;
       }
       const pane = button.nextElementSibling;
-      if (!pane) { return false;
+      if (!pane) {
+        return false;
       }
-      if (pane.getAttribute('aria-hidden') === 'true') { return true;
+      if (pane.getAttribute('aria-hidden') === 'true') {
+        return true;
       }
       button.click();
       return true;
@@ -101,21 +107,23 @@
 
     /**
      * @param {number} panelIndex 1-based.
-     * @returns {boolean}
+     * @return {boolean}
      */
     togglePanel(panelIndex) {
       const button = this._getButton(panelIndex);
-      if (!button) { return false;
+      if (!button) {
+        return false;
       }
       button.click();
       return true;
     }
 
     /**
-     * @returns {number[]} 1-based indices of currently-open panels.
+     * @return {number[]} 1-based indices of currently-open panels.
      */
     getOpenPanels() {
-      if (!this._inner) { return [];
+      if (!this._inner) {
+        return [];
       }
       const panes = this._inner.querySelectorAll('.vvja-pane');
       /** @type {number[]} */
@@ -129,7 +137,7 @@
     }
 
     /**
-     * @returns {number}
+     * @return {number}
      */
     getTotalPanels() {
       return this._buttons?.length ?? 0;
@@ -140,34 +148,50 @@
     // ---------------------------------------------------------------
 
     _wireTriggerButtons() {
-      if (!this._buttons) { return;
+      if (!this._buttons) {
+        return;
       }
       this._buttons.forEach((button, index) => {
         if (!button.classList.contains('active')) {
           button.setAttribute('tabindex', '-1');
         }
-        button.addEventListener('click', this._handleAccordionClick, { signal: this.signal });
-        button.addEventListener('keydown', (event) => {
-          handleArrowKeyNav(event, this._buttons, index);
-        }, { signal: this.signal });
+        button.addEventListener('click', this._handleAccordionClick, {
+          signal: this.signal,
+        });
+        button.addEventListener(
+          'keydown',
+          (event) => {
+            handleArrowKeyNav(event, this._buttons, index);
+          },
+          { signal: this.signal },
+        );
       });
     }
 
     _wireGlobalToggle() {
       /** @type {HTMLButtonElement | null} */
-      const globalToggleButton = this._inner?.querySelector('.global-toggle .button.group-toggle');
-      if (!globalToggleButton) { return;
+      const globalToggleButton = this._inner?.querySelector(
+        '.global-toggle .button.group-toggle',
+      );
+      if (!globalToggleButton) {
+        return;
       }
       this._globalToggleButton = globalToggleButton;
-      globalToggleButton.addEventListener('click', () => {
-        const isExpanded = globalToggleButton.getAttribute('aria-expanded') === 'true';
-        this._handleGlobalToggle(isExpanded ? 'collapse' : 'expand');
-        this._updateGlobalToggleState();
-      }, { signal: this.signal });
+      globalToggleButton.addEventListener(
+        'click',
+        () => {
+          const isExpanded =
+            globalToggleButton.getAttribute('aria-expanded') === 'true';
+          this._handleGlobalToggle(isExpanded ? 'collapse' : 'expand');
+          this._updateGlobalToggleState();
+        },
+        { signal: this.signal },
+      );
     }
 
     _applyExpandDefault() {
-      if (!this._inner || !this._buttons) { return;
+      if (!this._inner || !this._buttons) {
+        return;
       }
       const expandDefault = this._inner.dataset.expandDefault || 'none';
       if (expandDefault === 'first' && this._buttons.length > 0) {
@@ -188,23 +212,29 @@
 
     /** @param {Element} pane */
     _openPane(pane) {
-      if (!pane) { return;
+      if (!pane) {
+        return;
       }
       /** @type {HTMLElement} */
       const p = /** @type {HTMLElement} */ (pane);
       p.style.maxHeight = `${p.scrollHeight}px`;
       p.setAttribute('aria-hidden', 'false');
       this._toggleFocusableElements(p, false);
-      p.addEventListener('transitionend', () => {
-        if (p.getAttribute('aria-hidden') === 'false') {
-          p.style.maxHeight = 'none';
-        }
-      }, { once: true });
+      p.addEventListener(
+        'transitionend',
+        () => {
+          if (p.getAttribute('aria-hidden') === 'false') {
+            p.style.maxHeight = 'none';
+          }
+        },
+        { once: true },
+      );
     }
 
     /** @param {Element} pane */
     _closePane(pane) {
-      if (!pane) { return;
+      if (!pane) {
+        return;
       }
       /** @type {HTMLElement} */
       const p = /** @type {HTMLElement} */ (pane);
@@ -242,7 +272,8 @@
      */
     _updateToggleIndicator(button, isOpen) {
       const toggle = button.querySelector('.single-toggle');
-      if (!toggle) { return;
+      if (!toggle) {
+        return;
       }
       this._toggleAriaHidden(toggle.querySelector('.b-plus'), isOpen);
       this._toggleAriaHidden(toggle.querySelector('.b-minus'), !isOpen);
@@ -253,7 +284,8 @@
      * @param {boolean} isHidden
      */
     _toggleAriaHidden(element, isHidden) {
-      if (!element) { return;
+      if (!element) {
+        return;
       }
       element.setAttribute('aria-hidden', isHidden ? 'true' : 'false');
       element.classList.toggle('vvja-icon-hidden', isHidden);
@@ -264,7 +296,9 @@
      * @param {boolean} shouldDisable
      */
     _toggleFocusableElements(pane, shouldDisable) {
-      const focusables = pane.querySelectorAll('a, button, input, select, textarea, [tabindex]');
+      const focusables = pane.querySelectorAll(
+        'a, button, input, select, textarea, [tabindex]',
+      );
       focusables.forEach((/** @type {HTMLElement} */ element) => {
         if (shouldDisable) {
           element.setAttribute('tabindex', '-1');
@@ -290,7 +324,8 @@
       /** @type {HTMLElement} */
       const button = /** @type {HTMLElement} */ (event.currentTarget);
       const pane = button.nextElementSibling;
-      if (!pane || !this._inner) { return;
+      if (!pane || !this._inner) {
+        return;
       }
       const allButtons = this._inner.querySelectorAll('.vvja-button');
 
@@ -303,7 +338,8 @@
           allButtons.forEach((other) => {
             if (other !== button) {
               const otherPane = other.nextElementSibling;
-              if (otherPane) { this._closePane(otherPane);
+              if (otherPane) {
+                this._closePane(otherPane);
               }
               this._deactivateButton(/** @type {HTMLElement} */ (other));
             }
@@ -332,7 +368,8 @@
 
     /** @param {'expand' | 'collapse'} action */
     _handleGlobalToggle(action) {
-      if (!this._inner) { return;
+      if (!this._inner) {
+        return;
       }
       const buttons = this._inner.querySelectorAll('.vvja-button');
       if (action === 'expand') {
@@ -346,17 +383,24 @@
       } else {
         const panes = this._inner.querySelectorAll('.vvja-pane');
         panes.forEach((pane) => this._closePane(pane));
-        buttons.forEach((/** @type {HTMLElement} */ button) => this._deactivateButton(button));
+        buttons.forEach((/** @type {HTMLElement} */ button) =>
+          this._deactivateButton(button),
+        );
       }
     }
 
     _updateGlobalToggleState() {
       const toggle = this._globalToggleButton;
-      if (!toggle || !this._inner) { return;
+      if (!toggle || !this._inner) {
+        return;
       }
       const panes = Array.from(this._inner.querySelectorAll('.vvja-pane'));
-      const allOpen = panes.length > 0 && panes.every((p) => p.getAttribute('aria-hidden') === 'false');
-      const allClosed = panes.length > 0 && panes.every((p) => p.getAttribute('aria-hidden') === 'true');
+      const allOpen =
+        panes.length > 0 &&
+        panes.every((p) => p.getAttribute('aria-hidden') === 'false');
+      const allClosed =
+        panes.length > 0 &&
+        panes.every((p) => p.getAttribute('aria-hidden') === 'true');
       if (allOpen) {
         toggle.setAttribute('aria-expanded', 'true');
         this._toggleAriaHidden(toggle.querySelector('.b-plus'), true);
@@ -383,7 +427,8 @@
           button.setAttribute('aria-label', img.alt);
           return;
         }
-        if (button.hasAttribute('aria-label')) { return;
+        if (button.hasAttribute('aria-label')) {
+          return;
         }
         const labelElement = button.querySelector('.button-label');
         button.setAttribute(
@@ -397,24 +442,35 @@
       this._buttons?.forEach((button) => {
         const links = button.querySelectorAll('a');
         links.forEach((link) => {
-          link.setAttribute('data-original-href', link.getAttribute('href') ?? '');
+          link.setAttribute(
+            'data-original-href',
+            link.getAttribute('href') ?? '',
+          );
           link.removeAttribute('href');
           link.style.cursor = 'pointer';
-          link.addEventListener('click', (event) => {
-            event.preventDefault();
-            event.stopPropagation();
-          }, { signal: this.signal });
+          link.addEventListener(
+            'click',
+            (event) => {
+              event.preventDefault();
+              event.stopPropagation();
+            },
+            { signal: this.signal },
+          );
         });
       });
     }
 
     _initFocusableElements() {
-      if (!this._inner) { return;
+      if (!this._inner) {
+        return;
       }
       const panes = this._inner.querySelectorAll('.vvja-pane');
       panes.forEach((pane) => {
         const isHidden = pane.getAttribute('aria-hidden') === 'true';
-        this._toggleFocusableElements(/** @type {HTMLElement} */ (pane), isHidden);
+        this._toggleFocusableElements(
+          /** @type {HTMLElement} */ (pane),
+          isHidden,
+        );
       });
     }
 
@@ -428,10 +484,16 @@
       const onResize = () => {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
-          if (window.innerWidth > 768 && Math.abs(lastResizeWidth - window.innerWidth) > 30) {
-            if (!this._inner) { return;
+          if (
+            window.innerWidth > 768 &&
+            Math.abs(lastResizeWidth - window.innerWidth) > 30
+          ) {
+            if (!this._inner) {
+              return;
             }
-            const openPanes = this._inner.querySelectorAll('.vvja-pane[aria-hidden="false"]');
+            const openPanes = this._inner.querySelectorAll(
+              '.vvja-pane[aria-hidden="false"]',
+            );
             openPanes.forEach((/** @type {HTMLElement} */ pane) => {
               pane.style.maxHeight = `${pane.scrollHeight}px`;
             });
@@ -447,11 +509,13 @@
     // ---------------------------------------------------------------
 
     _wireDeeplink() {
-      if (!this._inner) { return;
+      if (!this._inner) {
+        return;
       }
       const enabled = this._inner.dataset.deeplinkEnabled === 'true';
       const id = this._inner.dataset.deeplinkId;
-      if (!enabled || !id) { return;
+      if (!enabled || !id) {
+        return;
       }
       wireDeeplink(this, 'accordion', id, this.signal, (panelIndex) => {
         // Defer one tick so post-hydration state has settled.
@@ -461,14 +525,17 @@
 
     /** @param {HTMLElement} pane */
     _updateDeepLinkHash(pane) {
-      if (!this._inner) { return;
+      if (!this._inner) {
+        return;
       }
       const enabled = this._inner.dataset.deeplinkEnabled === 'true';
       const id = this._inner.dataset.deeplinkId;
-      if (!enabled || !id) { return;
+      if (!enabled || !id) {
+        return;
       }
       const panelIndex = pane.dataset.index;
-      if (!panelIndex) { return;
+      if (!panelIndex) {
+        return;
       }
       if (pane.getAttribute('aria-hidden') === 'false') {
         writeDeeplinkHash('accordion', id, Number.parseInt(panelIndex, 10));
@@ -481,19 +548,21 @@
 
     /**
      * @param {number} panelIndex 1-based.
-     * @returns {HTMLElement | null}
+     * @return {HTMLElement | null}
      */
     _getButton(panelIndex) {
-      if (!this._buttons || panelIndex < 1 || panelIndex > this._buttons.length) {
+      if (
+        !this._buttons ||
+        panelIndex < 1 ||
+        panelIndex > this._buttons.length
+      ) {
         return null;
       }
       return this._buttons[panelIndex - 1];
     }
-
   }
 
   if (!customElements.get('vvja-accordion')) {
     customElements.define('vvja-accordion', VvjaAccordionElement);
   }
-
 })(Drupal);

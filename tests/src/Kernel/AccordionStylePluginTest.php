@@ -50,7 +50,13 @@ final class AccordionStylePluginTest extends KernelTestBase {
     FieldStorageConfig::create([
       'entity_type' => 'node',
       'field_name' => 'body',
-      'type' => 'text_with_summary',
+      // `text_long`, NOT `text_with_summary`. The type is incidental
+      // here — this storage exists only so the example view's
+      // `field.storage.node.body` dependency resolves — and
+      // `text_with_summary` was REMOVED from core's text module on
+      // Drupal 12. Measured on dev-main 2026-09-05:
+      // TextWithSummaryItem.php is gone, TextLongItem.php remains.
+      'type' => 'text_long',
     ])->save();
 
     $this->installConfig(['vvja']);

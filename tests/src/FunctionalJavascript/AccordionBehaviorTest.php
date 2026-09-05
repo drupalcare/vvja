@@ -62,27 +62,37 @@ final class AccordionBehaviorTest extends WebDriverTestBase {
 
   /**
    * Clicking an accordion trigger toggles aria-expanded on the button.
+   *
+   * THE FIRST PANEL STARTS OPEN, and this test used to assert it starts
+   * closed — which is why it failed on a module that was behaving correctly.
+   * The shipped example view sets `expand_default: first`, and the template
+   * computes `is_expanded = all_expanded or (expand_default == 'first' and
+   * key == 0)`. So the first button renders `aria-expanded="true"` by design.
+   * The toggle is still exercised in both directions; it just starts from the
+   * state the fixture actually produces.
    */
   public function testTriggerOpensAndClosesPanel(): void {
     $this->drupalGet('<front>');
     $session = $this->assertSession();
 
     $session->elementExists('css', '.vvja .vvja-button');
-    $session->elementAttributeContains('css', '.vvja .vvja-button', 'aria-expanded', 'false');
+    $session->elementAttributeContains('css', '.vvja .vvja-button', 'aria-expanded', 'true');
 
     $page = $this->getSession()->getPage();
     $first = $page->find('css', '.vvja .vvja-button');
     $this->assertNotNull($first);
     $first->click();
 
+    // Open -> closed.
     $this->assertJsCondition(
-      "document.querySelector('.vvja .vvja-button').getAttribute('aria-expanded') === 'true'",
+      "document.querySelector('.vvja .vvja-button').getAttribute('aria-expanded') === 'false'",
     );
 
     $first->click();
 
+    // Closed -> open again.
     $this->assertJsCondition(
-      "document.querySelector('.vvja .vvja-button').getAttribute('aria-expanded') === 'false'",
+      "document.querySelector('.vvja .vvja-button').getAttribute('aria-expanded') === 'true'",
     );
   }
 

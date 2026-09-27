@@ -35,6 +35,25 @@ class Accordion extends VvjStylePluginBase {
 
   /**
    * {@inheritdoc}
+   *
+   * `first_toggle` ("First panel open by default", boolean) was replaced in
+   * late 1.x by `expand_default` (none | first | all), with no conversion, so
+   * a view that had the first panel open lost it on upgrade. A newer
+   * `expand_default` already stored wins; otherwise a TRUE `first_toggle`
+   * becomes 'first'. The old key is removed either way.
+   */
+  public static function upgradeLegacyOptions(array $options): array {
+    if (array_key_exists('first_toggle', $options)) {
+      if (!array_key_exists('expand_default', $options) && !empty($options['first_toggle'])) {
+        $options['expand_default'] = VvjaConstants::EXPAND_FIRST;
+      }
+      unset($options['first_toggle']);
+    }
+    return $options;
+  }
+
+  /**
+   * {@inheritdoc}
    */
   public function getModuleSlug(): string {
     return 'vvja';

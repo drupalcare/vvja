@@ -12,10 +12,16 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 **Drop-in upgrade for 1.x sites.** v2 modernizes internals — OOP hooks,
 AbortController-tracked listeners, PHP 8.3 typed constants, **`vvj_core`
-foundation extraction** — while preserving every CSS rule, every option key,
-every plugin ID, every theme hook, every Twig template name, and every JS
-feature from 1.x verbatim. Run `composer update drupal/vvja` + `drush
-cache:rebuild` and you're done.
+foundation extraction** — while preserving every CSS rule, every plugin ID,
+every theme hook, every Twig template name, and every JS feature from 1.x.
+Stored option values are converted to the v2 shape by update 10002. Run
+`composer update drupal/vvja`, `drush updb` and `drush cache:rebuild`.
+
+### Fixed
+
+- Update 10002 converts v1 views to the v2 option shape. The 1.x option
+  `first_toggle` (first panel open) becomes `expand_default: first`; before this,
+  upgraded accordions silently stopped opening their first panel.
 
 ### Added
 

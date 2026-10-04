@@ -339,10 +339,13 @@ class Accordion extends VvjStylePluginBase {
       return;
     }
 
+    $title_raw = $element['#title'] ?? '';
+    $title = is_scalar($title_raw) || $title_raw instanceof \Stringable ? (string) $title_raw : '';
+
     $errors = $this->svgSanitizer->validate($value);
     if (!empty($errors)) {
       $form_state->setError($element, $this->t('@title: @errors', [
-        '@title' => $element['#title'],
+        '@title' => $title,
         '@errors' => implode(' ', $errors),
       ]));
       return;
@@ -351,7 +354,7 @@ class Accordion extends VvjStylePluginBase {
     $sanitized = $this->svgSanitizer->sanitize($value);
     if ($sanitized === '') {
       $form_state->setError($element, $this->t('@title: The SVG could not be processed.', [
-        '@title' => $element['#title'],
+        '@title' => $title,
       ]));
       return;
     }

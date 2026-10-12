@@ -8,11 +8,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
-## [2.0.0] — UNRELEASED
+## [2.0.0] (UNRELEASED)
 
-**Drop-in upgrade for 1.x sites.** v2 modernizes internals — OOP hooks,
+**Drop-in upgrade for 1.x sites.** v2 modernizes internals: OOP hooks,
 AbortController-tracked listeners, PHP 8.3 typed constants, **`vvj_core`
-foundation extraction** — while preserving every CSS rule, every plugin ID,
+foundation extraction**, while preserving every CSS rule, every plugin ID,
 every theme hook, every Twig template name, and every JS feature from 1.x.
 Stored option values are converted to the v2 shape by update 10002. Run
 `composer update drupal/vvja`, `drush updb` and `drush cache:rebuild`.
@@ -46,34 +46,34 @@ Stored option values are converted to the v2 shape by update 10002. Run
 - **OOP hooks** under `src/Hook/` using the `#[Hook]` attribute pattern —
   replaces all procedural hooks in `vvja.module`. Constructor-injected via DI;
   no more `\Drupal::service()` calls.
-- **APEX design-token consumption** — every CSS color / dimension / typography
+- **APEX design-token consumption**: every CSS color / dimension / typography
   reads `var(--apex-token, fallback)` with system-color-keyword fallbacks
   (`Canvas`, `CanvasText`, `Highlight`). Looks beautiful in APEX themes;
   respectable in any other theme; Forced-Colors-mode compatible.
-- **Cascade-layer self-declaration** — every component CSS file declares `@layer
+- **Cascade-layer self-declaration**: every component CSS file declares `@layer
   apex.foundation, apex.tokens, apex.layout, apex.components, apex.utilities;`
   at the top so layer order is predictable on non-APEX sites (idempotent on APEX
   sites).
-- **All four mandatory media queries** — `prefers-reduced-motion`, `prefers-
-  contrast: high`, `forced-colors: active`, `print` — present in every CSS file.
-- **AbortController-tracked listeners** in JS — `detach('unload')` aborts every
+- **All four mandatory media queries**: `prefers-reduced-motion`, `prefers-
+  contrast: high`, `forced-colors: active`, `print`, present in every CSS file.
+- **AbortController-tracked listeners** in JS: `detach('unload')` aborts every
   event listener for every accordion in the unload context, preventing memory
   leaks across AJAX page swaps.
 - **Arrow-key navigation** between accordion triggers (Up / Down / Home / End)
   per W3C ARIA Authoring Practices Guide accordion pattern.
-- **Drupal 11.3+ + PHP 8.3+ requirement** — typed class constants, readonly
+- **Drupal 11.3+ + PHP 8.3+ requirement**: typed class constants, readonly
   properties, first-class callable syntax, `string`/`int`/`array` constant
   types.
 - **PHPStan-strict array shapes** (`list<T>`, `array<K, V>`, `array{key: type}`)
   on every method signature; zero `iterableValue` violations.
 - **CustomEvent dispatching** on `document` with `vvja:` prefix (`vvja:ready`)
-  for cross-behavior coordination — replaces global registry patterns.
+  for cross-behavior coordination, replaces global registry patterns.
 
 ### Changed
 
 - **`vvja.module` is now a stub.** Hooks live in `src/Hook/*.php` classes with
   `#[Hook('hook_name')]` attributes. Procedural `function vvja_*()` hooks are
-  removed. *No backwards-compat impact* — module-handler discovery resolves the
+  removed. *No backwards-compat impact*. Module-handler discovery resolves the
   new pattern transparently.
 - **Internal class renames.** PHP classes adopt PSR-12 conventions:
   `ViewsVanillaJavascriptAccordion` → `Accordion`; `VVJATwigExtension` →
@@ -85,7 +85,7 @@ Stored option values are converted to the v2 shape by update 10002. Run
   (`vvja/vvja` always attached, `vvja/vvja-style` opt-in via the "Enable CSS
   Library" checkbox), same rules byte-for-byte. The earlier v2 attempt to split
   structural-vs-visual into a Single Directory Component was reverted after
-  surfacing prop-validation errors in the Views UI on every form change — v1
+  surfacing prop-validation errors in the Views UI on every form change: v1
   used a plain Twig template, v2 does the same.
 - **JavaScript modernization.** Same behavior, ES2022 idioms, `let`/`const`,
   arrow functions, optional chaining, `???` nullish coalescing. AbortController
@@ -94,19 +94,19 @@ Stored option values are converted to the v2 shape by update 10002. Run
 
 ### Removed
 
-- `src/SvgSanitizer.php` — moved to `drupal/vvj_core` as
+- `src/SvgSanitizer.php`: moved to `drupal/vvj_core` as
   `vvj_core.svg_sanitizer` service. Code lifted verbatim; no behavior change.
-- `src/Twig/VvjaTwigExtension.php` — `safe_html` filter moved to
+- `src/Twig/VvjaTwigExtension.php`: `safe_html` filter moved to
   `drupal/vvj_core` as `vvj_core.twig_extension`. Same filter name, same
   behavior.
 - Cross-cutting constants (TOKEN_PATTERN, DEEPLINK_*, transition-speed bounds,
-  unique-ID range) — moved to `Drupal\vvj_core\Constants\ValidationBounds`.
+  unique-ID range), moved to `Drupal\vvj_core\Constants\ValidationBounds`.
   Pattern-specific accordion constants stay in `Drupal\vvja\VvjaConstants`.
 - Procedural hooks in `vvja.module` (moved to OOP `#[Hook]` classes).
 
 ### Security
 
-- **Defense-in-depth SVG sanitization** — admin-form validation + render-time
+- **Defense-in-depth SVG sanitization**: admin-form validation + render-time
   re-sanitization unchanged from v1, but `SvgSanitizer` PHPDoc + array shapes
   tightened. Same allowlist parser, same threat model.
 
@@ -125,8 +125,8 @@ sufficient. Specifically:
 | Existing views using "Views Vanilla JavaSc… | Continue working |
 | Theme overrides of `views-view-vvja.html.twig` | Continue working |
 | Custom SVG icons in any view | Re-validated on next save; no manual actio… |
-| Deep-link slugs in any view | Continue working — same URL fragment shape |
-| `[vvja:field]` token usage in Views text a… | Continue working — token system 
+| Deep-link slugs in any view | Continue working: same URL fragment shape |
+| `[vvja:field]` token usage in Views text a… | Continue working: token system 
 
 | What changed | Action you might take |
 |---|---|

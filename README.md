@@ -4,7 +4,7 @@
 
 The **Views Vanilla JavaScript Accordion** module (machine name: `vvja`) is a
 versatile and lightweight Views style plugin designed to render items in an
-accordion format using vanilla JavaScript. This module enhances the user
+accordion format using vanilla JavaScript. This module improves the user
 experience by providing smooth, collapsible navigation for content displayed
 through Drupal Views, eliminating the need for external JavaScript libraries
 like jQuery UI or Bootstrap.
@@ -51,7 +51,7 @@ like jQuery UI or Bootstrap.
 - **CSS Customization**: Easily customize the appearance of the accordion with
   optional CSS inclusion to match your site's design.
 
-- **Drupal admin help** — full module documentation is embedded at
+- **Drupal admin help**: full module documentation is embedded at
   `/admin/help/vvja` (reads this README via the help system).
 
 ## Accessibility
@@ -142,7 +142,7 @@ To strip any HTML from the output, you can append `:plain` to the token:
 - `[vvja:title:plain]`
 
 These tokens pull data from the **first row** of the View result and are
-designed to work seamlessly with the VVJA rendering system.
+designed to work with the VVJA rendering system.
 
 v2 resolves tokens through the shared `vvj_core.token_resolver` service; the
 `[vvja:field]` / `[vvja:field:plain]` syntax is unchanged from v1.
@@ -228,7 +228,7 @@ Drupal.behaviors.myCustomAccordion = {
 4. Save the view and see the accordion navigation in action on the front end.
 
 **Sample view:** Optional config `views.view.vvja_example` (`config/optional/`)
-installs when there is no ID conflict — useful as a working reference.
+installs when there is no ID conflict. Useful as a working reference.
 
 ## Additional Information
 
@@ -277,10 +277,10 @@ export SIMPLETEST_DB="mysql://user:pass@localhost/dbname"
 ../vendor/bin/phpunit -c core modules/contrib/vvja/tests/src/Kernel
 ```
 
-The **Functional** and **FunctionalJavascript** suites additionally need
+The **Functional** and **FunctionalJavascript** suites also need
 `SIMPLETEST_BASE_URL` pointing at a running web server, and the JavaScript ones
 need chromedriver. Without those they error rather than fail, and the errors
-name missing infrastructure rather than anything about this module — so don't
+name missing infrastructure rather than anything about this module, so don't
 read them as test failures. The drupal.org pipeline provides both.
 
 ## License
@@ -293,23 +293,23 @@ later](http://www.gnu.org/licenses/gpl-2.0.html).
 
 ## v2.0 architecture notes (for contributors)
 
-v2.0 is a drop-in upgrade from 1.x — every CSS rule, option key, plugin ID,
+v2.0 is a drop-in upgrade from 1.x. Every CSS rule, option key, plugin ID,
 theme hook, Twig template name, JS behavior key, and `Drupal.vvja.*` public API
 is preserved byte-identical to v1. v2 modernizes internals only:
 
 - **OOP `#[Hook]` classes** under `src/Hook/` replace the procedural hooks in
   `vvja.module` (now a stub). Hook discovery is automatic via Drupal 11.3+
   attribute scanning.
-- **Dependency injection** throughout — every service consumed via constructor
+- **Dependency injection** throughout. Every service consumed via constructor
   injection. Zero `\Drupal::service()` calls inside service code.
-- **AbortController-tracked listeners** — `detach('unload')` aborts every event
+- **AbortController-tracked listeners**: `detach('unload')` aborts every event
   listener for an accordion instance, preventing leaks across AJAX page swaps.
 - **PHP 8.3 typed constants** in `src/VvjaConstants.php` for compile-time type
   safety.
 - **Strict types** (`declare(strict_types=1);`) on every PHP file.
 - **Test suite** under
   `tests/src/{Unit,Kernel,Functional,FunctionalJavascript}/`.
-- **Drupal 11.3+ / PHP 8.3+ requirement** — uses `ViewsThemeHooks` for row/field
+- **Drupal 11.3+ / PHP 8.3+ requirement**: uses `ViewsThemeHooks` for row/field
   preprocess (removed procedural `template_preprocess_*` in Drupal 12); declare
   `core_version_requirement: ^11.3 || ^12` in the module info file.
 

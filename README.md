@@ -1,7 +1,5 @@
 # Views Vanilla JavaScript Accordion
 
-## Overview
-
 The **Views Vanilla JavaScript Accordion** module (machine name: `vvja`) is a
 versatile and lightweight Views style plugin designed to render items in an
 accordion format using vanilla JavaScript. This module improves the user
@@ -9,7 +7,21 @@ experience by providing smooth, collapsible navigation for content displayed
 through Drupal Views, eliminating the need for external JavaScript libraries
 like jQuery UI or Bootstrap.
 
-## Features
+## Table of contents
+
+- Overview
+- Requirements
+- Installation
+- Configuration
+- Usage
+- Patterns
+- Upgrading from 1.x
+- Troubleshooting
+- Changelog
+- Maintainers
+- License
+
+## Overview
 
 - **Pure JavaScript**: Utilizes vanilla JavaScript for efficient performance
   and reduced dependencies, offering a modern approach to creating interactive
@@ -38,8 +50,7 @@ like jQuery UI or Bootstrap.
 - **CSS Custom Properties**: Theme via CSS variables (`--vvja-grid-gap`,
   `--vvja-pane-padding`, `--vvja-transition-speed`, `--vvja-box-width`) for
   easy customization without overriding selectors.
-- **Expandable Cards**: Set a fixed width per accordion item to create card-
-  style
+- **Expandable Cards**: Set a fixed width per accordion item to create card-style
   layouts, or use `0` for full-width traditional accordion.
 - **Unique ID Generation**: Automatically generates a unique numeric ID for
   each view display to ensure consistency and prevent conflicts.
@@ -50,11 +61,10 @@ like jQuery UI or Bootstrap.
   for consistent behavior across devices.
 - **CSS Customization**: Easily customize the appearance of the accordion with
   optional CSS inclusion to match your site's design.
-
 - **Drupal admin help**: full module documentation is embedded at
   `/admin/help/vvja` (reads this README via the help system).
 
-## Accessibility
+### Accessibility
 
 The **VVJA** module includes several accessibility features to ensure that your
 accordion is usable by all visitors, including those using screen readers:
@@ -74,10 +84,22 @@ accordion is usable by all visitors, including those using screen readers:
 - **Auto ARIA Labels**: Button labels are automatically generated from button
   content or image alt text for screen reader context.
 
+## Requirements
+
+- Drupal core `^11.3 || ^12`.
+- PHP 8.3 or later.
+- Drupal core modules Views and Filter.
+- [VVJ Core](https://www.drupal.org/project/vvj_core) (`vvj_core`), installed automatically by Composer.
+
+## Installation
+
+1. Install with Composer: `composer require drupal/vvja:^2.0` (it pulls `drupal/vvj_core`), or download the module and `vvj_core` from [Drupal.org](https://www.drupal.org/project/vvja).
+2. Enable it in the admin interface or with Drush: `drush en vvja`.
+3. Clear caches so the new plugin is available: `drush cr`.
+
 ## Configuration
 
-After installing and enabling the module, you can configure it through the
-Views UI. Settings are organized into the following sections:
+After installing and enabling the module, configure it in the Views UI. Settings are organized into the following sections:
 
 ### Behavior Settings
 
@@ -122,7 +144,11 @@ Views UI. Settings are organized into the following sections:
 1. **Enable CSS**: Include the default VVJA stylesheet. Disable to use your
    own CSS exclusively.
 
-## Token Support in Views Text Areas
+For a ready-made starting point, choose a Pattern (see Patterns below).
+
+## Usage
+
+### Token support in Views text areas
 
 In Views headers, footers, or empty text areas—when using *Global: Text area* or
 *Global: Unfiltered text*—there is an option called **"Use replacement tokens
@@ -147,7 +173,7 @@ designed to work with the VVJA rendering system.
 v2 resolves tokens through the shared `vvj_core.token_resolver` service; the
 `[vvja:field]` / `[vvja:field:plain]` syntax is unchanged from v1.
 
-## Deep Linking
+### Deep linking
 
 Enable deep linking in your accordion's Format Settings to create shareable URLs
 for specific panels.
@@ -160,11 +186,11 @@ for specific panels.
 **Note:** Deep linking works with all accordion configurations (exclusive and
 multi-panel modes).
 
-## JavaScript API
+### JavaScript API
 
 Control accordions from your own JavaScript code:
 
-### Available Methods
+#### Available Methods
 
 **Open specific panel:**
 ```javascript
@@ -198,7 +224,7 @@ panels
 const instance = Drupal.vvja.getInstance('#vvja-12345');  // → <vvja-accordion>
 ```
 
-### Complete Example: Custom Panel Control
+#### Complete Example: Custom Panel Control
 
 ```javascript
 // Wait for Drupal behaviors to attach
@@ -219,7 +245,7 @@ Drupal.behaviors.myCustomAccordion = {
 };
 ```
 
-## Example Usage
+### Example usage
 
 1. Create a new view or edit an existing view.
 2. Under the "Format" section, select "Views Vanilla JavaScript Accordion" as
@@ -230,96 +256,64 @@ Drupal.behaviors.myCustomAccordion = {
 **Sample view:** Optional config `views.view.vvja_example` (`config/optional/`)
 installs when there is no ID conflict. Useful as a working reference.
 
-## Additional Information
+## Patterns
 
-- **Dependencies**: Requires **Drupal core** (`views`, `filter`) and the
-  **`vvj_core`** companion module (installed automatically via Composer when you
-  require `drupal/vvja`). No other contributed projects are required.
-- **Compatibility**: Targets **Drupal 11.3+** and **Drupal 12** with **PHP
-  8.3+**, following Drupal security and modern OOP hook patterns.
+A Pattern is a ready-made design for this format. One choice in the format settings sets the layout, animation,
+styling and deep linking together. Views Vanilla JavaScript Accordion ships 5 Patterns:
 
-## Installation
+| Pattern | What it looks like | Demo page path |
+|---|---|---|
+| Spotlight | Photo panels side by side; the open one widens, with a bottom bar of segments and previous and next. | `vvj/vvja/spotlight` |
+| Stage | Big numbered steps on the left and one photo stage on the right; it plays through the steps with a visible Pause. | `vvj/vvja/stage` |
+| Answers | Text only: big questions on hairlines, a square chevron button, a bar on the open answer and Expand all. | `vvj/vvja/faq` |
+| Cards | Portrait photo cards; the open card moves to the top, spans the row and has previous and next inside. | `vvj/vvja/cards` |
+| Agenda | A numbered rail with a line and a dot per item, a copy-link button in each and a sticky dock of numbers. | `vvj/vvja/agenda` |
 
-1. Download and install the module from
-   [Drupal.org](https://www.drupal.org/project/vvja).
-2. Enable the module through the Drupal admin interface or using Drush: 
-   `drush en vvja`
-3. Clear caches to ensure the new plugin is available: `drush cr`
+The demo pages exist only while the optional `vvj_patterns_demo` module is enabled (see "Example views" below).
+
+### Choosing a Pattern
+
+1. Enable the shared Patterns base, which ships inside `vvj_core`: `drush en vvj_patterns`. The "Pattern" select
+   appears in the format settings only while `vvj_patterns` is enabled.
+2. Edit the view and open the format settings.
+3. In the "Patterns" section, pick a Pattern in the "Pattern" select and save.
+4. The Pattern's settings replace the layout, animation, styling and deep linking settings of the view. You can
+   change them afterwards. Pick "None" to keep your own settings.
+5. A list titled "To finish the <name> Pattern" shows what the view must supply: which fields, which markup
+   classes and how many items. Follow it; a Pattern shows its finished design only when the view matches.
+
+### Example views
+
+Enable the optional `vvj_patterns_demo` module (`drush en vvj_patterns_demo`) to see every Pattern with content.
+It creates a "VVJ Slide" content type with five demo slides and pictures, plus example views titled
+"VVJ demo: <format>" for the VVJ format modules that are enabled, one page per Pattern at the paths in the table
+above. Uninstalling the demo module removes the slides and pictures it created.
+
+## Upgrading from 1.x
+
+v2.0 is a drop-in upgrade from 1.x. Every CSS rule, option key, plugin ID, theme hook, Twig template name, JS behavior key and `Drupal.vvja.*` public API is preserved. Stored option values are converted to the v2 shape by update 10002 (see [CHANGELOG.md](./CHANGELOG.md)).
+
+For 1.x sites: `composer update drupal/vvja && drush updb && drush cache:rebuild`. Existing views, options, theme overrides, custom CSS and JS API consumers continue working unchanged.
 
 ## Troubleshooting
 
-If you encounter any issues or have suggestions for improvements, please open
-an issue in the module's issue queue on Drupal.org.
+| Symptom | Fix |
+|---|---|
+| The format is missing from the Views "Format" list | Enable `vvj_core` and `vvja`, then `drush cr`. |
+| `Class "Drupal\vvja\..." not found` after deploying v2 code | Stale container cache: `drush cr`. If Drush will not bootstrap, clear `cache_container` in the database and retry. |
+| `drush updb` errors before `vvj_core` is enabled | Run `drush en vvj_core -y`, then `drush updb -y && drush cr`. |
+| No "Patterns" section in the format settings | Enable `vvj_patterns`: `drush en vvj_patterns`. |
+
+Report bugs and request features in the [issue queue](https://www.drupal.org/project/issues/vvja).
+
+## Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md).
 
 ## Maintainers
 
-- [Alaa Haddad](https://www.drupal.org/u/flashwebcenter)
-
-## Support
-
-For issues, feature requests, and general support, please use the 
-[issue queue](https://www.drupal.org/project/issues/vvja).
-
-## Running the tests
-
-This module ships no `phpunit.xml` of its own, deliberately: its suites are
-Kernel, Functional and FunctionalJavascript, which need a real Drupal, so a
-module-local config would have to hard-code a relative path to `core` and would
-break the moment the module is not physically inside a docroot (a symlinked
-checkout, for instance). Drupal core's runner already does the job.
-
-Run the fast suites from the docroot:
-
-```bash
-cd /path/to/drupal/web
-export SIMPLETEST_DB="mysql://user:pass@localhost/dbname"
-../vendor/bin/phpunit -c core modules/contrib/vvja/tests/src/Unit
-../vendor/bin/phpunit -c core modules/contrib/vvja/tests/src/Kernel
-```
-
-The **Functional** and **FunctionalJavascript** suites also need
-`SIMPLETEST_BASE_URL` pointing at a running web server, and the JavaScript ones
-need chromedriver. Without those they error rather than fail, and the errors
-name missing infrastructure rather than anything about this module, so don't
-read them as test failures. The drupal.org pipeline provides both.
+- Alaa Haddad - [flashwebcenter](https://www.drupal.org/u/flashwebcenter)
 
 ## License
 
-This project is licensed under the 
-[GNU General Public License, version 2 or
-later](http://www.gnu.org/licenses/gpl-2.0.html).
-
----
-
-## v2.0 architecture notes (for contributors)
-
-v2.0 is a drop-in upgrade from 1.x. Every CSS rule, option key, plugin ID,
-theme hook, Twig template name, JS behavior key, and `Drupal.vvja.*` public API
-is preserved byte-identical to v1. v2 modernizes internals only:
-
-- **OOP `#[Hook]` classes** under `src/Hook/` replace the procedural hooks in
-  `vvja.module` (now a stub). Hook discovery is automatic via Drupal 11.3+
-  attribute scanning.
-- **Dependency injection** throughout. Every service consumed via constructor
-  injection. Zero `\Drupal::service()` calls inside service code.
-- **AbortController-tracked listeners**: `detach('unload')` aborts every event
-  listener for an accordion instance, preventing leaks across AJAX page swaps.
-- **PHP 8.3 typed constants** in `src/VvjaConstants.php` for compile-time type
-  safety.
-- **Strict types** (`declare(strict_types=1);`) on every PHP file.
-- **Test suite** under
-  `tests/src/{Unit,Kernel,Functional,FunctionalJavascript}/`.
-- **Drupal 11.3+ / PHP 8.3+ requirement**: uses `ViewsThemeHooks` for row/field
-  preprocess (removed procedural `template_preprocess_*` in Drupal 12); declare
-  `core_version_requirement: ^11.3 || ^12` in the module info file.
-
-For 1.x sites: `composer update drupal/vvja && drush cache:rebuild`. Existing
-views, options, theme overrides, custom CSS, and JS API consumers continue
-working unchanged.
-
----
-
-This documentation adheres to Drupal best practices, providing a clear and
-comprehensive guide for users to understand the module's functionality,
-features, and setup. Users are encouraged to refer to the issue queue for
-support and contributions.
+GPL-2.0-or-later. See the [GNU General Public License, version 2 or later](https://www.gnu.org/licenses/gpl-2.0.html).

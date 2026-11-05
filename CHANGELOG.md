@@ -25,6 +25,7 @@ Stored option values are converted to the v2 shape by update 10002. Run
 
 ### Added
 
+- **Patterns**: 5 ready-made designs for this format (Spotlight, Stage, Answers, Cards, Agenda). Pick one in the "Patterns" section of the format settings and its layout, animation, styling and deep linking settings are applied to the view. Needs the `vvj_patterns` module from `vvj_core`; the optional `vvj_patterns_demo` module adds example views.
 - **`drupal/vvj_core` dependency.** Composer pulls it automatically. Provides
   the `VvjStylePluginBase` abstract class, shared services
   (`vvj_core.svg_sanitizer`, `vvj_core.token_resolver`,

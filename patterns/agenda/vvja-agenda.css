@@ -6,13 +6,13 @@
  * selector starts at the view's own element.
  */
 
-.vvj-pattern.vvja.vvj-pattern--vvja-agenda { position: relative; padding: clamp(20px, 4vw, 64px) clamp(16px, 6vw, 112px) 16px; background: var(--vvj-surface); }
-.vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-inner { position: relative; }
+.vvj-pattern--vvja-agenda { position: relative; padding: clamp(20px, 4vw, 64px) clamp(16px, 6vw, 112px) 16px; background: var(--vvj-surface); }
+:where(.vvj-pattern--vvja-agenda) .vvja-inner { position: relative; }
 .vvj-pattern.vvja.vvj-pattern--vvja-agenda .global-toggle { display: flex; justify-content: flex-end; margin: 0 0 0.5rem; }
 .vvj-pattern.vvja.vvj-pattern--vvja-agenda button.group-toggle { display: inline-grid; place-items: center; text-align: center; width: var(--vvja-target); height: var(--vvja-target); border-radius: 12px; transition: background-color 0.2s; }
 .vvj-pattern.vvja.vvj-pattern--vvja-agenda button.group-toggle:hover { background: var(--vvj-raised); }
 .vvj-pattern.vvja.vvj-pattern--vvja-agenda .group-toggle svg { width: 0.6rem; height: 1rem; }
-.vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-item { --vvja-rail: 7.5rem; position: relative; padding: 0 0 0 calc(var(--vvja-rail) + 2.5rem); }
+.vvj-pattern--vvja-agenda .vvja-item { --vvja-rail: 7.5rem; position: relative; padding: 0 0 0 calc(var(--vvja-rail) + 2.5rem); }
 .vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-item::before { content: ""; position: absolute; inset: 0 auto 0 calc(var(--vvja-rail) + 0.6875rem); width: 2px; background: var(--vvj-line); }
 .vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-item::after { content: ""; position: absolute; inset: 1.6rem auto auto calc(var(--vvja-rail) + 0.25rem); width: 1rem; height: 1rem; box-sizing: border-box; border: 2px solid var(--vvj-muted); border-radius: 50%; background: var(--vvj-surface); transition: background-color 0.3s, border-color 0.3s, transform 0.4s var(--vvj-ease-out); }
 .vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-item.opened::after { border-color: var(--vvj-ink); background: var(--vvj-ink); transform: scale(1.25); }
@@ -28,9 +28,9 @@
 .vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvj-kicker { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--vvj-muted); }
 .vvj-pattern.vvja.vvj-pattern--vvja-agenda .single-toggle { display: grid; place-items: center; text-align: center; width: var(--vvja-target); height: var(--vvja-target); border-radius: 50%; transition: background-color 0.2s, transform 0.2s; }
 .vvj-pattern.vvja.vvj-pattern--vvja-agenda .single-toggle svg { width: 0.75rem; height: 0.75rem; transition: transform 0.45s var(--vvj-ease-out); }
-.vvj-pattern.vvja.vvj-pattern--vvja-agenda .opened .single-toggle svg { transform: rotate(180deg); }
+:where(.vvj-pattern--vvja-agenda) :where(.opened) :where(.single-toggle) svg { transform: rotate(180deg); }
 .vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-button:hover .single-toggle { background: var(--vvj-raised); }
-.vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-button:hover .vvj-title { text-decoration: underline 2px; text-underline-offset: 0.2em; }
+:where(.vvj-pattern--vvja-agenda) :where(.vvja-button:hover) .vvj-title { text-decoration: underline 2px; text-underline-offset: 0.2em; }
 .vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-button:active .single-toggle { transform: scale(0.9); }
 .vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-button:focus-visible { outline-offset: 4px; border-radius: 4px; }
 .vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-pane-inner { display: grid; grid-template-columns: 5rem minmax(0, 1fr); gap: 1.25rem; padding: 1.25rem 0 1.75rem; border: solid var(--vvj-line); border-width: 0 0 1px; }
@@ -38,24 +38,24 @@
 .vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvj-summary { max-width: 60ch; margin: 0 0 0.9rem; font-size: 1.0625rem; line-height: 1.6; color: var(--vvj-muted); }
 .vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-copy { display: inline-flex; align-items: center; gap: 0.5rem; min-height: var(--vvja-target); padding: 0 1rem; border: 1.5px solid var(--vvj-line); border-radius: 999px; font-size: 0.9375rem; font-weight: 600; transition: background-color 0.2s, color 0.2s, border-color 0.2s, transform 0.15s; }
 .vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-copy .vvja-i { width: 1.1rem; height: 1.1rem; }
-.vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-copy .vvja-i--done, .vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-copy.is-done .vvja-i--link { display: none; }
-.vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-copy.is-done .vvja-i--done { display: block; animation: vvja-agenda-pop 0.4s var(--vvj-ease-out); }
+:where(.vvj-pattern--vvja-agenda) :where(.vvja-copy) .vvja-i--done, :where(.vvj-pattern--vvja-agenda) :where(.vvja-copy.is-done) .vvja-i--link { display: none; }
+:where(.vvj-pattern--vvja-agenda) :where(.vvja-copy.is-done) .vvja-i--done { display: block; animation: vvja-agenda-pop 0.4s var(--vvj-ease-out); }
 .vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-copy.is-done { border-color: var(--vvj-ink); background: var(--vvj-ink); color: var(--vvj-surface); }
 .vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-copy:hover { border-color: var(--vvj-ink); }
 .vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-copy:active { transform: scale(0.96); }
 @keyframes vvja-agenda-pop { from { opacity: 0; transform: scale(0.4); } }
-.vvj-pattern.vvja.vvj-pattern--vvja-agenda .opened :is(.vvj-body, .vvj-media) { animation: vvja-agenda-rise 0.55s var(--vvj-ease-out) 0.1s both; }
+:where(.vvj-pattern--vvja-agenda) :where(.opened) :is(.vvj-body, .vvj-media) { animation: vvja-agenda-rise 0.55s var(--vvj-ease-out) 0.1s both; }
 @keyframes vvja-agenda-rise { from { opacity: 0; transform: translateY(0.6rem); } }
 /* The dock of numbers: sticky at the bottom while the list is on screen. */
-.vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-dock { position: sticky; inset: auto auto 12px auto; z-index: 3; display: flex; justify-content: center; margin: 1.5rem 0 0; pointer-events: none; }
+:where(.vvj-pattern--vvja-agenda) .vvja-dock { position: sticky; inset: auto auto 12px auto; z-index: 3; display: flex; justify-content: center; margin: 1.5rem 0 0; pointer-events: none; }
 .vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-dock-track { display: flex; gap: 4px; max-width: 100%; padding: 5px; overflow-x: auto; scrollbar-width: none; border-radius: 999px; background: var(--vvj-surface); box-shadow: inset 0 0 0 1px var(--vvj-line), 0 12px 32px rgb(0 0 0 / 0.14); pointer-events: auto; }
 /* The dock is opaque: it floats over photos and text, so a see-through track could drop the numbers below 4.5:1. */
-.vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-chip { flex: none; display: inline-grid; place-items: center; min-width: var(--vvja-target); min-height: var(--vvja-target); padding: 0 0.85rem; border-radius: 999px; font-weight: 650; font-variant-numeric: tabular-nums; text-align: center; transition: background-color 0.25s, color 0.25s; }
-.vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-chip:hover { background: var(--vvj-raised); }
-.vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-chip[aria-current="true"], .vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-chip[aria-current="true"]:is(:hover, :focus) { background: var(--vvj-ink); color: var(--vvj-surface); }
-.vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-chip:focus-visible { outline-offset: -3px; }
+:where(.vvj-pattern--vvja-agenda) .vvja-chip { flex: none; display: inline-grid; place-items: center; min-width: var(--vvja-target); min-height: var(--vvja-target); padding: 0 0.85rem; border-radius: 999px; font-weight: 650; font-variant-numeric: tabular-nums; text-align: center; transition: background-color 0.25s, color 0.25s; }
+:where(.vvj-pattern--vvja-agenda) .vvja-chip:hover { background: var(--vvj-raised); }
+:where(.vvj-pattern--vvja-agenda) .vvja-chip[aria-current="true"], .vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-chip[aria-current="true"]:is(:hover, :focus) { background: var(--vvj-ink); color: var(--vvj-surface); }
+:where(.vvj-pattern--vvja-agenda) .vvja-chip:focus-visible { outline-offset: -3px; }
 @media (max-width: 40rem) {
-  .vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-item { --vvja-rail: 0rem; padding: 0 0 0 2rem; }
+  .vvj-pattern--vvja-agenda .vvja-item { --vvja-rail: 0rem; padding: 0 0 0 2rem; }
   .vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvj-time { position: static; order: -1; width: auto; font-size: 1rem; }
   .vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvja-pane-inner { grid-template-columns: 3.5rem minmax(0, 1fr); }
   .vvj-pattern.vvja.vvj-pattern--vvja-agenda .vvj-media { width: 3.5rem; height: 3.5rem; }

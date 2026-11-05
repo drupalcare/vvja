@@ -6,28 +6,28 @@
  * selector starts at the view's own element.
  */
 
-.vvj-pattern.vvja.vvj-pattern--vvja-spotlight { --vvja-motion: css; padding: clamp(12px, 2.5vw, 32px); background: var(--vvj-surface); }
+.vvj-pattern--vvja-spotlight { --vvja-motion: css; padding: clamp(12px, 2.5vw, 32px); background: var(--vvj-surface); }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-inner { display: flex; gap: var(--vvja-grid-gap, 8px); height: clamp(26rem, 74vh, 44rem); }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-item { position: relative; flex: 1 1 0; min-width: 4.5rem; overflow: hidden; isolation: isolate; border-radius: 24px; background: var(--vvj-stage-bg); color: var(--vvj-stage-color); transition: flex-grow 0.45s var(--vvj-ease-io); }
 /* Panel sizes change in under 0.5s: the browser counts no layout shift that ends inside the 500ms after a click. */
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-item.opened { flex-grow: 6.5; }
 /* The photo lives in the pane and stays painted when closed (the pane is aria-hidden). */
-.vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-pane, .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .closed > .vvja-pane { position: absolute; inset: 0; z-index: 0; max-height: none; overflow: hidden; }
-.vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-pane-inner { height: 100%; padding: 0; }
+:where(.vvj-pattern--vvja-spotlight) .vvja-pane, :where(.vvj-pattern--vvja-spotlight) :where(.closed) > .vvja-pane { position: absolute; inset: 0; z-index: 0; max-height: none; overflow: hidden; }
+.vvj-pattern--vvja-spotlight .vvja-pane-inner { height: 100%; padding: 0; }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvj-media { position: absolute; inset: 0; }
-.vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvj-media img { transform: scale(1.14); filter: grayscale(1) brightness(0.62); transition: transform 1.4s var(--vvj-ease-out), filter 0.8s; }
-.vvj-pattern.vvja.vvj-pattern--vvja-spotlight .opened .vvj-media img { transform: none; filter: grayscale(1); }
-.vvj-pattern.vvja.vvj-pattern--vvja-spotlight .closed:hover .vvj-media img { transform: scale(1.08); filter: grayscale(1) brightness(0.74); }
-.vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvj-copy { position: absolute; inset: auto 0 0 0; padding: 5rem clamp(20px, 3.5vw, 48px) clamp(20px, 3vw, 40px); background: var(--vvj-stage-scrim); }
-.vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvj-copy > * { opacity: 0; transform: translateY(1.25rem); clip-path: inset(0 0 100% 0); transition: opacity 0.5s, transform 0.7s var(--vvj-ease-out), clip-path 0.7s var(--vvj-ease-out); }
-.vvj-pattern.vvja.vvj-pattern--vvja-spotlight .opened .vvj-copy > * { opacity: 1; transform: none; clip-path: inset(0 0 -0.5rem 0); }
+:where(.vvj-pattern--vvja-spotlight) :where(.vvj-media) img { transform: scale(1.14); filter: grayscale(1) brightness(0.62); transition: transform 1.4s var(--vvj-ease-out), filter 0.8s; }
+:where(.vvj-pattern--vvja-spotlight) :where(.opened) :where(.vvj-media) img { transform: none; filter: grayscale(1); }
+:where(.vvj-pattern--vvja-spotlight) :where(.closed:hover) :where(.vvj-media) img { transform: scale(1.08); filter: grayscale(1) brightness(0.74); }
+.vvj-pattern--vvja-spotlight .vvj-copy { position: absolute; inset: auto 0 0 0; padding: 5rem clamp(20px, 3.5vw, 48px) clamp(20px, 3vw, 40px); background: var(--vvj-stage-scrim); }
+.vvj-pattern--vvja-spotlight :where(.vvj-copy) > * { opacity: 0; transform: translateY(1.25rem); clip-path: inset(0 0 100% 0); transition: opacity 0.5s, transform 0.7s var(--vvj-ease-out), clip-path 0.7s var(--vvj-ease-out); }
+.vvj-pattern--vvja-spotlight :where(.opened) :where(.vvj-copy) > * { opacity: 1; transform: none; clip-path: inset(0 0 -0.5rem 0); }
 /* A closed panel's copy is not painted and not clickable: hidden once its fade-out ends, shown at once on open. */
-.vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvj-copy { transition: visibility 0s 0.7s; }
-.vvj-pattern.vvja.vvj-pattern--vvja-spotlight :not(.opened) > .vvja-pane .vvj-copy { visibility: hidden; }
-.vvj-pattern.vvja.vvj-pattern--vvja-spotlight .opened .vvj-copy { visibility: visible; transition-delay: 0s; }
-.vvj-pattern.vvja.vvj-pattern--vvja-spotlight .opened .vvj-copy > :nth-child(1) { transition-delay: 0.35s; }
-.vvj-pattern.vvja.vvj-pattern--vvja-spotlight .opened .vvj-copy > :nth-child(2) { transition-delay: 0.45s; }
-.vvj-pattern.vvja.vvj-pattern--vvja-spotlight .opened .vvj-copy > :nth-child(3) { transition-delay: 0.58s; }
+:where(.vvj-pattern--vvja-spotlight) .vvj-copy { transition: visibility 0s 0.7s; }
+.vvj-pattern--vvja-spotlight :where(.opened) .vvj-copy { visibility: visible; transition-delay: 0s; }
+.vvj-pattern--vvja-spotlight :where(:not(.opened)) > :where(.vvja-pane) .vvj-copy { visibility: hidden; }
+:where(.vvj-pattern--vvja-spotlight) :where(.opened) :where(.vvj-copy) > :nth-child(1) { transition-delay: 0.35s; }
+:where(.vvj-pattern--vvja-spotlight) :where(.opened) :where(.vvj-copy) > :nth-child(2) { transition-delay: 0.45s; }
+:where(.vvj-pattern--vvja-spotlight) :where(.opened) :where(.vvj-copy) > :nth-child(3) { transition-delay: 0.58s; }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvj-kicker { font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvj-summary { max-width: 30ch; margin: 0.6rem 0 1.25rem; font: 600 clamp(1.35rem, 2.6vw, 2.25rem)/1.15 var(--vvj-font-display); letter-spacing: -0.015em; }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvj-link a { display: inline-flex; align-items: center; min-height: var(--vvja-target); padding: 0 1.25rem; border-radius: 999px; background: var(--vvj-stage-color); color: var(--vvj-stage-bg); font-weight: 600; text-decoration: none; transition: transform 0.15s; }
@@ -44,11 +44,11 @@
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvj-title { writing-mode: vertical-rl; transform: rotate(180deg); font: 600 1.125rem/1.2 var(--vvj-font-display); letter-spacing: 0.02em; white-space: nowrap; }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .single-toggle { display: grid; place-items: center; text-align: center; width: var(--vvja-target); height: var(--vvja-target); border: 1.5px solid var(--vvj-stage-line); border-radius: 50%; transition: background-color 0.25s, color 0.25s, transform 0.35s var(--vvj-ease-out); }
 /* Centre the round toggle in the strip; vvja.css pushes it to the inline end for the plain accordion. */
-.vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-button > .single-toggle { align-self: center; margin-inline-start: 0; }
+.vvj-pattern--vvja-spotlight :where(.vvja-button) > .single-toggle { align-self: center; margin-inline-start: 0; }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-button:hover .single-toggle { background: var(--vvj-stage-color); color: var(--vvj-stage-bg); transform: rotate(90deg); }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-button:active .single-toggle { transform: scale(0.9); }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-button:focus-visible { outline: none; }
-.vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-button:focus-visible .single-toggle { outline: 3px solid var(--vvj-stage-color); outline-offset: 2px; }
+:where(.vvj-pattern--vvja-spotlight) :where(.vvja-button:focus-visible) .single-toggle { outline: 3px solid var(--vvj-stage-color); outline-offset: 2px; }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .opened > .vvja-button { inset: 1rem auto auto 1rem; flex-direction: row; gap: 0.75rem; padding: 0.3rem 0.3rem 0.3rem 1rem; border-radius: 999px; background: var(--vvj-glass-bg); box-shadow: inset 0 0 0 1px var(--vvj-glass-line); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); animation: vvja-spotlight-pill 0.5s var(--vvj-ease-out) both; }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .opened .btn-inner { flex-direction: row; gap: 0.6rem; }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .opened .vvj-title { writing-mode: horizontal-tb; transform: none; }
@@ -58,7 +58,7 @@
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-nav { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: clamp(12px, 2vw, 24px); padding: 1rem 0 0; }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-count-now { font-size: 1.5rem; }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-bars { display: flex; gap: 6px; }
-.vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-bar { position: relative; flex: 1; height: var(--vvja-target); }
+.vvj-pattern--vvja-spotlight .vvja-bar { position: relative; flex: 1; height: var(--vvja-target); }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-bar::before { content: ""; position: absolute; inset: 0; height: 4px; margin: auto 0; border-radius: 4px; background: var(--vvj-line); transition: background-color 0.3s, height 0.3s; }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-bar[aria-current="true"]::before { height: 6px; background: var(--vvj-ink); }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-bar:hover::before { background: var(--vvj-muted); }
@@ -72,5 +72,5 @@
   .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvj-title { writing-mode: horizontal-tb; transform: none; }
   .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-nav { grid-template-columns: auto 1fr; }
   .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-bars { display: none; }
-  .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-arrows { justify-self: end; }
+  :where(.vvj-pattern--vvja-spotlight) .vvja-arrows { justify-self: end; }
 }

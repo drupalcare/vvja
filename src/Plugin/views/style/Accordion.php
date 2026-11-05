@@ -67,6 +67,15 @@ class Accordion extends VvjStylePluginBase {
   }
 
   /**
+   * {@inheritdoc}
+   *
+   * The Patterns select appears only while vvj_patterns is enabled.
+   */
+  protected function supportsPatterns(): bool {
+    return TRUE;
+  }
+
+  /**
    * The "Enable CSS Library" checkbox description (v1 accordion wording).
    *
    * @return \Drupal\Core\StringTranslation\TranslatableMarkup
@@ -491,6 +500,9 @@ class Accordion extends VvjStylePluginBase {
     }
 
     $flattened['unique_id'] = $this->options['unique_id'] ?? $this->generateUniqueId();
+
+    // Patterns: the shared logic lives in vvj_patterns.
+    $this->flattenPatternChoice($values, $flattened);
 
     return $flattened;
   }

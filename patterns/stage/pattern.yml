@@ -1,0 +1,25 @@
+label: 'Stage'
+description: 'Big numbered steps on the left and one photo stage on the right; it plays through the steps with a visible Pause.'
+weight: 1
+options:
+  single_toggle: false
+  global_toggle: false
+  exclusive_panel: true
+  expand_default: 'first'
+  transition_speed: 0.4
+  animation: 'none'
+  accordion_item_width: 0
+  pane_padding: 0
+  panel_gap: 0
+  svg_expand_content: ''
+  svg_collapse_content: ''
+  svg_expand_all: ''
+  svg_collapse_all: ''
+  enable_css: false
+  enable_deeplink: false
+  deeplink_identifier: ''
+features: []
+needs:
+  - 'Row style Fields. Every field excluded except two Custom text fields: the first is the header, the second the panel.'
+  - 'Header: span.vvj-num + span.vvj-title. Panel: div.vvj-media (image, style vvj_landscape_1200) + p.vvj-summary + p.vvj-kicker.'
+  - '3 to 5 items. Autoplay runs every 7 seconds and stops for good when the visitor picks a step.'

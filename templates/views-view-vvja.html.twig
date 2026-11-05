@@ -48,6 +48,9 @@
 {% set icon_expand_all = options.svg_expand_all|default('') %}
 {% set icon_collapse_all = options.svg_collapse_all|default('') %}
 
+{# A Pattern chosen in the style settings (vvj_patterns enabled). #}
+{% set vvj_pattern = options.vvj_pattern_active|default('') %}
+
 {% set deeplink_config = {
   enabled: deeplink_enabled|default(false),
   identifier: deeplink_identifier|default(''),
@@ -60,6 +63,8 @@
   single_toggle ? 'single-toggle-on' : '',
   expand_default != 'none' ? 'expand-' ~ expand_default : '',
   options.accordion_item_width != 0 ? 'max-w' : '',
+  vvj_pattern ? 'vvj-pattern',
+  vvj_pattern ? vvj_pattern,
 ] %}
 
 <vvja-accordion {{ attributes.addClass(classes).setAttribute('id', vvja_id) }}{% if deeplink_config.enabled and deeplink_config.identifier %} data-deeplink-id="{{ deeplink_config.identifier }}"{% endif %}>

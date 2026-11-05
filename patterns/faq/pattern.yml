@@ -1,0 +1,25 @@
+label: 'Answers'
+description: 'Text only: big questions on hairlines, a square chevron button, a bar on the open answer and Expand all.'
+weight: 2
+options:
+  single_toggle: true
+  global_toggle: true
+  exclusive_panel: false
+  expand_default: 'none'
+  transition_speed: 0.4
+  animation: 'none'
+  accordion_item_width: 0
+  pane_padding: 0
+  panel_gap: 0
+  svg_expand_content: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="6 8.59 12 7.41" fill="currentColor" aria-hidden="true"><path d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>'
+  svg_collapse_content: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="6 8.59 12 7.41" fill="currentColor" aria-hidden="true"><path d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>'
+  svg_expand_all: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="7.41 3 9.17 18" fill="currentColor" aria-hidden="true"><path d="M12 5.83 15.17 9l1.41-1.41L12 3 7.41 7.59 8.83 9 12 5.83zm0 12.34L8.83 15l-1.41 1.41L12 21l4.59-4.59L15.17 15 12 18.17z"/></svg>'
+  svg_collapse_all: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="7.41 4 9.17 16" fill="currentColor" aria-hidden="true"><path d="M7.41 18.59 8.83 20 12 16.83 15.17 20l1.41-1.41L12 14l-4.59 4.59zm9.18-13.18L15.17 4 12 7.17 8.83 4 7.41 5.41 12 10l4.59-4.59z"/></svg>'
+  enable_css: false
+  enable_deeplink: true
+  deeplink_identifier: 'faq'
+features: []
+needs:
+  - 'Row style Fields. Every field excluded except two Custom text fields: the first is the header, the second the panel.'
+  - 'Header: span.vvj-num + span.vvj-title (the question). Panel: p.vvj-summary (the answer) + p.vvj-kicker (a short label).'
+  - 'All items, no pager. Every answer has its own address, #accordion-faq-N.'

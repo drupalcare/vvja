@@ -73,3 +73,6 @@ views.style.views_vvja:
     svg_collapse_all:
       type: string
       label: 'Custom collapse all SVG icon'
+    vvj_pattern:
+      type: string
+      label: 'VVJ Pattern'

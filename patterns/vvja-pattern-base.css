@@ -1,0 +1,61 @@
+/**
+ * @file
+ * Shared by every vvja Pattern: reset of the theme button look, words, icons, round buttons.
+ *
+ * Colours come only from the --vvj-* tokens (vvj_patterns/base); every
+ * selector starts at the view's own element.
+ */
+
+.vvj-pattern.vvja {
+  --vvja-target: 44px;
+  --vvja-icon-prev: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='160 -800 640 640'%3E%3Cpath d='M313-440l224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z'/%3E%3C/svg%3E");
+  --vvja-icon-next: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='160 -800 640 640'%3E%3Cpath d='M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z'/%3E%3C/svg%3E");
+  --vvja-icon-pause: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='200 -760 560 560'%3E%3Cpath d='M520-200v-560h240v560H520Zm-320 0v-560h240v560H200Z'/%3E%3C/svg%3E");
+  --vvja-icon-play: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='320 -760 440 560'%3E%3Cpath d='M320-200v-560l440 280-440 280Z'/%3E%3C/svg%3E");
+  --vvja-icon-link: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='80 -680 800 400'%3E%3Cpath d='M440-280H280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h160v80H280q-50 0-85 35t-35 85q0 50 35 85t85 35h160v80ZM320-440v-80h320v80H320Zm200 160v-80h160q50 0 85-35t35-85q0-50-35-85t-85-35H520v-80h160q83 0 141.5 58.5T880-480q0 83-58.5 141.5T680-280H520Z'/%3E%3C/svg%3E");
+  --vvja-icon-done: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='154 -664 652 424'%3E%3Cpath d='M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z'/%3E%3C/svg%3E");
+  display: block;
+  color: var(--vvj-ink);
+  font-family: var(--vvj-font-ui);
+}
+.vvj-pattern.vvja,
+.vvj-pattern.vvja *,
+.vvj-pattern.vvja *::before,
+.vvj-pattern.vvja *::after { box-sizing: border-box; }
+/* Theme resets: headings, paragraphs, lists, figures, images, links. */
+.vvj-pattern.vvja :is(h1, h2, h3, h4, h5, h6, p) { margin: 0; padding: 0; font-size: inherit; line-height: inherit; color: inherit; hyphens: manual; overflow-wrap: normal; word-break: normal; }
+.vvj-pattern.vvja :is(ul, ol, li) { list-style: none; margin: 0; padding: 0; }
+.vvj-pattern.vvja figure { margin: 0; padding: 0; }
+.vvj-pattern.vvja :is(img, svg) { display: block; max-width: 100%; height: auto; }
+/* The module prints class "button"; themes style it. Patterns start from nothing. */
+.vvj-pattern.vvja :is(.vvja-button, .group-toggle, button) { box-sizing: border-box; appearance: none; width: auto; height: auto; min-height: 0; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; color: inherit; font: inherit; letter-spacing: inherit; line-height: inherit; text-align: start; text-decoration: none; text-transform: none; min-width: 0; vertical-align: middle; outline: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.vvj-pattern.vvja :is(.vvja-button, .group-toggle, button):is(:hover, :focus) { background: none; color: inherit; box-shadow: none; text-decoration: none; }
+.vvj-pattern.vvja :is(.vvja-button, .group-toggle, button):focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
+.vvj-pattern.vvja span.group-toggle { display: contents; }
+/* vvja.css pads the toggle 12px at the inline start; Patterns draw it as a sized round control, so the icon would sit off-centre. */
+.vvj-pattern.vvja .vvja-button > .single-toggle { padding: 0; }
+.vvj-pattern.vvja .vvja-icon-hidden { display: none; }
+.vvj-pattern.vvja :is(.single-toggle, .group-toggle) svg { display: block; width: 0.875rem; height: 0.875rem; fill: currentColor; }
+.vvj-pattern.vvja .vvj-title { color: inherit; hyphens: manual; overflow-wrap: normal; word-break: normal; }
+.vvj-pattern.vvja .vvj-media img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.vvj-pattern.vvja .vvj-link a { appearance: none; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; color: inherit; font: inherit; line-height: inherit; letter-spacing: normal; text-transform: none; text-decoration: none; text-align: start; width: auto; height: auto; min-width: 0; min-height: 0; vertical-align: middle; outline: 0; cursor: pointer; }
+.vvj-pattern.vvja .vvja-i { display: block; width: 1em; height: 1em; background: currentColor; -webkit-mask: var(--vvja-icon) center / contain no-repeat; mask: var(--vvja-icon) center / contain no-repeat; }
+.vvj-pattern.vvja .vvja-i--prev { --vvja-icon: var(--vvja-icon-prev); }
+.vvj-pattern.vvja .vvja-i--next { --vvja-icon: var(--vvja-icon-next); }
+.vvj-pattern.vvja .vvja-i--pause { --vvja-icon: var(--vvja-icon-pause); }
+.vvj-pattern.vvja .vvja-i--play { --vvja-icon: var(--vvja-icon-play); }
+.vvj-pattern.vvja .vvja-i--link { --vvja-icon: var(--vvja-icon-link); }
+.vvj-pattern.vvja .vvja-i--done { --vvja-icon: var(--vvja-icon-done); }
+
+/* Round icon buttons the Pattern scripts add (previous, next). */
+.vvj-pattern.vvja .vvja-btn { display: inline-grid; place-items: center; width: var(--vvja-target); height: var(--vvja-target); border: 1.5px solid var(--vvj-line); border-radius: 50%; font-size: 1rem; transition: background-color 0.2s, color 0.2s, border-color 0.2s, transform 0.2s; }
+.vvj-pattern.vvja .vvja-btn:hover { background: var(--vvj-ink); border-color: var(--vvj-ink); color: var(--vvj-surface); }
+.vvj-pattern.vvja .vvja-btn:active { transform: scale(0.92); }
+.vvj-pattern.vvja .vvja-count { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--vvj-muted); }
+.vvj-pattern.vvja .vvja-count-now { color: var(--vvj-ink); }
+
+@media (prefers-reduced-motion: reduce) {
+  .vvj-pattern.vvja *,
+  .vvj-pattern.vvja *::before,
+  .vvj-pattern.vvja *::after { transition-duration: 0.01ms !important; transition-delay: 0s !important; animation: none !important; }
+}

@@ -1,0 +1,55 @@
+/**
+ * @file
+ * Pattern Stage: numbered steps left, the open step photo on a stage right, with autoplay.
+ *
+ * Colours come only from the --vvj-* tokens (vvj_patterns/base); every
+ * selector starts at the view's own element.
+ */
+
+.vvj-pattern.vvja.vvj-pattern--vvja-stage { display: grid; gap: 24px; padding: clamp(20px, 4vw, 64px) clamp(16px, 4vw, 64px); background: var(--vvj-surface); }
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-item { border: solid var(--vvj-line); border-width: 1px 0 0; }
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-item:last-child { border-width: 1px 0; }
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-button { position: relative; display: flex; width: 100%; min-height: 4.5rem; padding: 1.1rem 0; }
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .btn-inner { display: flex; align-items: baseline; gap: 1.25rem; }
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvj-num { font-size: 0.875rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--vvj-muted); transition: color 0.3s; }
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvj-title { font: 650 clamp(1.75rem, 4.2vw, 3.25rem)/1 var(--vvj-font-display); letter-spacing: -0.03em; color: var(--vvj-muted); transition: color 0.3s, transform 0.5s var(--vvj-ease-out); }
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-button:hover .vvj-title { color: var(--vvj-ink); transform: translateX(0.35rem); }
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .active .vvj-title, .vvj-pattern.vvja.vvj-pattern--vvja-stage .active .vvj-num { color: var(--vvj-ink); }
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-button:focus-visible { outline-offset: 4px; }
+/* The progress line under the open step is the autoplay timer. */
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-button::after { content: ""; position: absolute; inset: auto 0 -1px 0; height: 3px; background: var(--vvj-ink); transform: scaleX(0); transform-origin: left; }
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-button.active::after { transform: scaleX(1); transition: transform 0.4s var(--vvj-ease-out); }
+.vvj-pattern.vvja.vvj-pattern--vvja-stage.vvj-autoplay--playing .vvja-button.active::after { transition: none; animation: vvja-stage-fill var(--vvj-autoplay-duration, 7s) linear both; }
+.vvj-pattern.vvja.vvj-pattern--vvja-stage.vvj-autoplay--held .vvja-button.active::after { animation-play-state: paused; }
+@keyframes vvja-stage-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-pane-inner { padding: var(--vvja-pane-padding, 16px) var(--vvja-pane-padding, 16px) 1.5rem; }
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvj-summary { max-width: 34rem; margin: 0 0 1rem; font-size: 1.0625rem; line-height: 1.6; color: var(--vvj-muted); }
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvj-kicker { display: inline-block; padding: 0.3rem 0.8rem; border: 1px solid var(--vvj-line); border-radius: 999px; background: var(--vvj-raised); font-size: 0.875rem; font-weight: 600; }
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .opened :is(.vvj-summary, .vvj-kicker) { animation: vvja-stage-rise 0.6s var(--vvj-ease-out) 0.15s both; }
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .opened .vvj-kicker { animation-delay: 0.25s; }
+@keyframes vvja-stage-rise { from { opacity: 0; transform: translateY(0.75rem); } }
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvj-media { aspect-ratio: 4 / 3; margin: 0 0 1.25rem; overflow: hidden; border-radius: 20px; background: var(--vvj-stage-bg); }
+/* Pause / Play and the counter. */
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-controls { display: flex; align-items: center; gap: 1rem; }
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-play { display: inline-flex; align-items: center; gap: 0.6rem; min-height: var(--vvja-target); padding: 0 1.1rem 0 0.9rem; border: 1.5px solid var(--vvj-line); border-radius: 12px; font-weight: 600; transition: background-color 0.2s, color 0.2s, border-color 0.2s, transform 0.15s; }
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-play .vvja-i { width: 0.85rem; height: 0.85rem; }
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-play .vvja-i--play, .vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-play[aria-pressed="true"] .vvja-i--pause { display: none; }
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-play[aria-pressed="true"] .vvja-i--play { display: block; }
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-play:hover { background: var(--vvj-ink); border-color: var(--vvj-ink); color: var(--vvj-surface); }
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-play:active { transform: scale(0.96); }
+@media (min-width: 60rem) {
+  .vvj-pattern.vvja.vvj-pattern--vvja-stage { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: clamp(32px, 5vw, 80px); align-items: start; }
+  .vvj-pattern.vvja.vvj-pattern--vvja-stage::before { content: ""; grid-column: 2; grid-row: 1 / span 2; min-height: 34rem; }
+  .vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-inner { position: relative; grid-column: 1; grid-row: 1; min-height: 34rem; }
+  .vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-controls { grid-column: 1; grid-row: 2; }
+  .vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-pane-inner { padding: var(--vvja-pane-padding, 16px) var(--vvja-pane-padding, 16px) 1.5rem 2.35rem; }
+  /* The open step's photo is placed in the right column; closed ones are clipped away under it. */
+  .vvj-pattern.vvja.vvj-pattern--vvja-stage .vvj-media { position: absolute; inset: 0 auto 0 calc(100% + clamp(32px, 5vw, 80px)); z-index: 0; width: 140%; margin: 0; aspect-ratio: auto; clip-path: inset(0 0 0 100% round 20px); transition: clip-path 0.9s var(--vvj-ease-io) 0.9s; }
+  .vvj-pattern.vvja.vvj-pattern--vvja-stage .opened .vvj-media { z-index: 1; clip-path: inset(0 round 20px); transition-delay: 0s; }
+  .vvj-pattern.vvja.vvj-pattern--vvja-stage .vvj-media img { transform: scale(1.1); transition: transform 1.6s var(--vvj-ease-out); }
+  .vvj-pattern.vvja.vvj-pattern--vvja-stage .opened .vvj-media img { transform: none; }
+  /* The pane keeps its photo painted while closed; only the text collapses. */
+  .vvj-pattern.vvja.vvj-pattern--vvja-stage :is(.vvja-item, .vvja-pane, .vvja-pane-inner) { position: static; }
+  .vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-pane { overflow: visible; }
+  .vvj-pattern.vvja.vvj-pattern--vvja-stage .closed .vvja-pane-inner > :not(.vvj-media) { visibility: hidden; }
+}

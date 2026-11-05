@@ -50,6 +50,14 @@
       /** @type {NodeListOf<HTMLElement>} */
       this._buttons = this._inner.querySelectorAll('.vvja-button');
       this._isExclusive = this._inner.dataset.exclusive === 'true';
+      // Patterns only (class `vvj-pattern`): a Pattern whose CSS sets
+      // `--vvja-motion: css` sizes the panels itself (side by side, a card
+      // spanning a row), so no max-height is written. A view without a
+      // Pattern never reads it.
+      this._cssMotion =
+        this.classList.contains('vvj-pattern') &&
+        getComputedStyle(this).getPropertyValue('--vvja-motion').trim() ===
+          'css';
 
       this._wireTriggerButtons();
       this._wireGlobalToggle();
@@ -217,6 +225,11 @@
       }
       /** @type {HTMLElement} */
       const p = /** @type {HTMLElement} */ (pane);
+      if (this._cssMotion) {
+        p.setAttribute('aria-hidden', 'false');
+        this._toggleFocusableElements(p, false);
+        return;
+      }
       p.style.maxHeight = `${p.scrollHeight}px`;
       p.setAttribute('aria-hidden', 'false');
       this._toggleFocusableElements(p, false);
@@ -238,6 +251,11 @@
       }
       /** @type {HTMLElement} */
       const p = /** @type {HTMLElement} */ (pane);
+      if (this._cssMotion) {
+        p.setAttribute('aria-hidden', 'true');
+        this._toggleFocusableElements(p, true);
+        return;
+      }
       p.style.maxHeight = `${p.scrollHeight}px`;
       requestAnimationFrame(() => {
         p.style.maxHeight = '0';
@@ -254,6 +272,15 @@
       this._updateToggleIndicator(button, true);
       button.parentElement?.classList.remove('closed');
       button.parentElement?.classList.add('opened');
+      // Shared state for Pattern scripts; returns at once without a Pattern.
+      if (this._buttons) {
+        const all = Array.from(this._buttons);
+        this.writeState({
+          index: all.indexOf(button),
+          total: all.length,
+          items: all.map((b) => /** @type {HTMLElement} */ (b.parentElement)),
+        });
+      }
     }
 
     /** @param {HTMLElement} button */
@@ -331,7 +358,9 @@
 
       /** @type {HTMLElement} */
       const p = /** @type {HTMLElement} */ (pane);
-      const isOpen = !!p.style.maxHeight && p.style.maxHeight !== '0px';
+      const isOpen = this._cssMotion
+        ? p.getAttribute('aria-hidden') === 'false'
+        : !!p.style.maxHeight && p.style.maxHeight !== '0px';
 
       this.withTransition(() => {
         if (this._isExclusive) {
@@ -479,6 +508,9 @@
     // ---------------------------------------------------------------
 
     _wireResize() {
+      if (this._cssMotion) {
+        return;
+      }
       let resizeTimeout;
       let lastResizeWidth = window.innerWidth;
       const onResize = () => {

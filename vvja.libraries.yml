@@ -33,3 +33,71 @@ vvja-admin:
     - core/drupal.ajax
     - core/drupalSettings
     - core/once
+
+# Patterns. Each depends on vvja/vvja so its CSS loads after the module CSS.
+vvja-pattern-base:
+  css:
+    theme:
+      patterns/vvja-pattern-base.css: { weight: 205 }
+  js:
+    patterns/vvja-pattern.js: {}
+  dependencies:
+    - vvja/vvja
+    - vvj_patterns/base
+    - vvj_core/element-base
+    - core/drupal
+    - core/once
+
+pattern.spotlight:
+  css:
+    theme:
+      patterns/spotlight/vvja-spotlight.css: { weight: 210 }
+  js:
+    patterns/spotlight/vvja-spotlight.js: {}
+  dependencies:
+    - vvja/vvja-pattern-base
+    - core/drupal
+    - core/once
+    - vvj_patterns/state
+
+pattern.stage:
+  css:
+    theme:
+      patterns/stage/vvja-stage.css: { weight: 210 }
+  js:
+    patterns/stage/vvja-stage.js: {}
+  dependencies:
+    - vvja/vvja-pattern-base
+    - core/drupal
+    - core/once
+    - vvj_patterns/autoplay
+
+pattern.faq:
+  css:
+    theme:
+      patterns/faq/vvja-faq.css: { weight: 210 }
+  dependencies:
+    - vvja/vvja-pattern-base
+
+pattern.cards:
+  css:
+    theme:
+      patterns/cards/vvja-cards.css: { weight: 210 }
+  js:
+    patterns/cards/vvja-cards.js: {}
+  dependencies:
+    - vvja/vvja-pattern-base
+    - core/drupal
+    - core/once
+
+pattern.agenda:
+  css:
+    theme:
+      patterns/agenda/vvja-agenda.css: { weight: 210 }
+  js:
+    patterns/agenda/vvja-agenda.js: {}
+  dependencies:
+    - vvja/vvja-pattern-base
+    - core/drupal
+    - core/once
+    - core/drupal.announce

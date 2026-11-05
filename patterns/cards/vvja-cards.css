@@ -1,0 +1,62 @@
+/**
+ * @file
+ * Pattern Cards: portrait photo cards; the open card moves to the top and spans the row.
+ *
+ * Colours come only from the --vvj-* tokens (vvj_patterns/base); every
+ * selector starts at the view's own element.
+ */
+
+.vvj-pattern.vvja.vvj-pattern--vvja-cards { --vvja-motion: css; padding: clamp(12px, 3vw, 40px); background: var(--vvj-surface); }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .vvja-inner { display: flex; flex-wrap: wrap; gap: var(--vvja-grid-gap, 16px); }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .vvja-item { position: relative; flex: 1 1 calc(var(--vvja-box-width, 240) * 1px); min-width: 0; overflow: hidden; border-radius: 24px; background: var(--vvj-raised); }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .vvja-item.opened { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); flex-basis: 100%; box-shadow: inset 0 0 0 1px var(--vvj-line); }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .vvja-pane { max-height: none; }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .closed > .vvja-pane { display: none; }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .vvja-button { position: relative; display: block; width: 100%; background: var(--vvj-stage-bg); color: var(--vvj-stage-color); }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .btn-inner { position: relative; display: block; aspect-ratio: 4 / 5; overflow: hidden; }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .opened .btn-inner { height: 100%; min-height: 26rem; aspect-ratio: auto; }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .vvj-media img { position: absolute; inset: 0; filter: grayscale(1); transition: transform 0.9s var(--vvj-ease-out); }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .closed .vvja-button:hover img { transform: scale(1.06); }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .btn-inner::after { content: ""; position: absolute; inset: 40% 0 0 0; background: var(--vvj-stage-scrim); }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .vvj-title { position: absolute; z-index: 1; inset: auto 4.5rem 1.25rem 1.25rem; font: 650 clamp(1.25rem, 2vw, 1.6rem)/1.1 var(--vvj-font-display); letter-spacing: -0.015em; }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .opened .vvj-title { inset: auto 1.5rem 1.5rem; font-size: clamp(1.75rem, 4vw, 3rem); }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .single-toggle { position: absolute; z-index: 1; inset: auto 1rem 1rem auto; display: grid; place-items: center; text-align: center; width: var(--vvja-target); height: var(--vvja-target); border-radius: 50%; background: var(--vvj-stage-color); color: var(--vvj-stage-bg); transition: transform 0.45s var(--vvj-ease-out); }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .opened .single-toggle { inset: 1rem 1rem auto auto; }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .vvja-button:hover .single-toggle { transform: rotate(90deg) scale(1.06); }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .vvja-button:active .single-toggle { transform: scale(0.9); }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .vvja-button:focus-visible { outline: none; }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .vvja-button:focus-visible .single-toggle { outline: 3px solid var(--vvj-stage-color); outline-offset: 2px; }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .vvja-button:focus-visible .btn-inner { box-shadow: inset 0 0 0 4px var(--vvj-stage-color); }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .vvja-pane-inner { display: flex; flex-direction: column; justify-content: center; gap: 1.25rem; height: 100%; box-sizing: border-box; padding: clamp(24px, 4vw, 56px); }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .vvj-kicker { font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--vvj-muted); }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .vvj-summary { font-size: clamp(1.0625rem, 1.6vw, 1.3rem); line-height: 1.55; }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .vvj-link a { display: inline-flex; align-items: center; gap: 0.75rem; min-height: var(--vvja-target); padding: 0 1.25rem; border-radius: 14px; background: var(--vvj-ink); color: var(--vvj-surface); font-weight: 650; text-decoration: none; transition: transform 0.15s, box-shadow 0.25s; }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .vvj-link a::after { content: ""; width: 1rem; height: 1rem; background: currentColor; -webkit-mask: var(--vvja-icon-next) center / contain no-repeat; mask: var(--vvja-icon-next) center / contain no-repeat; transition: transform 0.3s var(--vvj-ease-out); }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .vvj-link a:hover { box-shadow: 0 0 0 4px var(--vvj-line); }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .vvj-link a:hover::after { transform: translateX(0.3rem); }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .vvj-link a:active { transform: scale(0.97); }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .vvj-link a:focus-visible { outline: 3px solid var(--vvj-ink); outline-offset: 3px; }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .opened .vvja-pane-inner > * { animation: vvja-cards-rise 0.6s var(--vvj-ease-out) both; }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .opened .vvja-pane-inner > :nth-child(2) { animation-delay: 0.08s; }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .opened .vvja-pane-inner > :nth-child(3) { animation-delay: 0.16s; }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .opened .vvja-pane-inner > :nth-child(4) { animation-delay: 0.24s; }
+@keyframes vvja-cards-rise { from { opacity: 0; transform: translateY(0.75rem); } }
+/* 2 / 4 with previous and next inside the open card. */
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .vvja-step { display: flex; align-items: center; gap: 8px; padding: 1rem 0 0; border: solid var(--vvj-line); border-width: 1px 0 0; }
+.vvj-pattern.vvja.vvj-pattern--vvja-cards .vvja-step .vvja-count { margin: 0 auto 0 0; }
+@media (max-width: 47.99rem) {
+  .vvj-pattern.vvja.vvj-pattern--vvja-cards .vvja-item { flex-basis: 100%; }
+  .vvj-pattern.vvja.vvj-pattern--vvja-cards .btn-inner { aspect-ratio: 16 / 10; }
+  .vvj-pattern.vvja.vvj-pattern--vvja-cards .vvja-item.opened { display: block; }
+  .vvj-pattern.vvja.vvj-pattern--vvja-cards .opened .btn-inner { min-height: 0; aspect-ratio: 4 / 3; }
+}
+@media (min-width: 48rem) and (max-width: 63.99rem) {
+  .vvj-pattern.vvja.vvj-pattern--vvja-cards .vvja-item { flex-basis: calc(50% - var(--vvja-grid-gap, 16px)); }
+}
+/* The open card leads the grid where cards sit side by side. Opening in place was tried 2026-11-04: in a wrapping row the cards before it stretch to full width. */
+@media (min-width: 48rem) {
+  .vvj-pattern.vvja.vvj-pattern--vvja-cards .vvja-item.opened { order: -1; }
+  /* The closed cards share one row under the open card, so none is left alone and stretched to full width. */
+  .vvj-pattern.vvja.vvj-pattern--vvja-cards .vvja-inner:has(.opened) > .closed { flex: 1 1 0; min-width: min(100%, 10rem); }
+  .vvj-pattern.vvja.vvj-pattern--vvja-cards .vvja-inner:has(.opened) > .closed .btn-inner { aspect-ratio: 3 / 2; }
+}

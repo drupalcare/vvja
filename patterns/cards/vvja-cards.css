@@ -1,6 +1,6 @@
 /**
  * @file
- * Pattern Cards: portrait photo cards; the open card moves to the top and spans the row.
+ * Pattern Cards: portrait photo cards; the open card opens in place and spans the row.
  *
  * Colors come only from the --vvj-* tokens (vvj_patterns/base); every
  * selector starts at the view's own element.
@@ -52,7 +52,8 @@
   .vvj-pattern.vvja.vvj-pattern--vvja-cards .vvja-item.opened { display: block; }
   .vvj-pattern.vvja.vvj-pattern--vvja-cards .opened .btn-inner { min-height: 0; aspect-ratio: 4 / 3; }
 }
-/* The open card leads the grid where cards sit side by side. */
+/* The open card opens in place: it takes the next full row and the cards
+   after it fill the gap it leaves (dense), so nothing before it moves. */
 @container vvj-region (min-width: 44rem) {
-  :where(.vvj-pattern--vvja-cards) .vvja-item.opened { order: -1; }
+  .vvj-pattern.vvja.vvj-pattern--vvja-cards .vvja-inner { grid-auto-flow: row dense; }
 }

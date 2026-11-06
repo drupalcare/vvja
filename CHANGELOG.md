@@ -22,6 +22,7 @@ Stored option values are converted to the v2 shape by update 10002. Run
 
 ### Fixed
 
+- Pattern Cards: an opened card stays on the row it was clicked in and spans it; the other cards flow around it. It no longer jumps to the top of the grid, and previous and next keep the open card on the same row.
 - Accessibility: the header button name is the row text as written; it is no longer passed through `t()`, so site content no longer fills the interface translation table.
 - Accessibility: every accordion header is a `<button>` (deep-link mode rendered a link that Space did not open) and stays in the Tab order; header names read with spaces between fields; items no longer carry an unnamed `role="region"`; the Agenda dock chip name starts with its visible text.
 

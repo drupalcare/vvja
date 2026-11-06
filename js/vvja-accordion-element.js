@@ -159,10 +159,10 @@
       if (!this._buttons) {
         return;
       }
+      // Every header stays in the Tab order (WAI-ARIA accordion pattern).
+      // A roving tabindex left no Tab stop when every panel was closed.
+      // Arrow, Home and End still move between headers.
       this._buttons.forEach((button, index) => {
-        if (!button.classList.contains('active')) {
-          button.setAttribute('tabindex', '-1');
-        }
         button.addEventListener('click', this._handleAccordionClick, {
           signal: this.signal,
         });
@@ -230,7 +230,9 @@
         this._toggleFocusableElements(p, false);
         return;
       }
-      p.style.maxHeight = `${p.scrollHeight}px`;
+      // Read before the write (JS-RULES.md rule 3).
+      const height = p.scrollHeight;
+      p.style.maxHeight = `${height}px`;
       p.setAttribute('aria-hidden', 'false');
       this._toggleFocusableElements(p, false);
       p.addEventListener(
@@ -256,7 +258,9 @@
         this._toggleFocusableElements(p, true);
         return;
       }
-      p.style.maxHeight = `${p.scrollHeight}px`;
+      // Read before the write (JS-RULES.md rule 3).
+      const height = p.scrollHeight;
+      p.style.maxHeight = `${height}px`;
       requestAnimationFrame(() => {
         p.style.maxHeight = '0';
       });
@@ -286,7 +290,6 @@
     /** @param {HTMLElement} button */
     _deactivateButton(button) {
       button.classList.remove('active');
-      button.setAttribute('tabindex', '-1');
       button.setAttribute('aria-expanded', 'false');
       this._updateToggleIndicator(button, false);
       button.parentElement?.classList.remove('opened');
@@ -526,8 +529,14 @@
             const openPanes = this._inner.querySelectorAll(
               '.vvja-pane[aria-hidden="false"]',
             );
-            openPanes.forEach((/** @type {HTMLElement} */ pane) => {
-              pane.style.maxHeight = `${pane.scrollHeight}px`;
+            // Read every height first, then write: a read after a write
+            // forces a layout per pane (JS-RULES.md rule 3).
+            const heights = Array.from(
+              openPanes,
+              (/** @type {HTMLElement} */ pane) => pane.scrollHeight,
+            );
+            openPanes.forEach((/** @type {HTMLElement} */ pane, i) => {
+              pane.style.maxHeight = `${heights[i]}px`;
             });
             lastResizeWidth = window.innerWidth;
           }

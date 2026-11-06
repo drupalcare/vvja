@@ -38,20 +38,23 @@
             'click',
             () => {
               const base = window.location.href.split('#')[0];
-              navigator.clipboard.writeText(`${base}#accordion-${id}-${i + 1}`).then(
-                () => {
-                  copy.classList.add('is-done');
-                  text.textContent = Drupal.t('Link copied');
-                  Drupal.announce(Drupal.t('Link copied'));
-                  const t = setTimeout(() => {
-                    timers.delete(t);
-                    copy.classList.remove('is-done');
-                    text.textContent = Drupal.t('Copy link');
-                  }, 2000);
-                  timers.add(t);
-                },
-                () => Drupal.announce(Drupal.t('The link could not be copied')),
-              );
+              navigator.clipboard
+                .writeText(`${base}#accordion-${id}-${i + 1}`)
+                .then(
+                  () => {
+                    copy.classList.add('is-done');
+                    text.textContent = Drupal.t('Link copied');
+                    Drupal.announce(Drupal.t('Link copied'));
+                    const t = setTimeout(() => {
+                      timers.delete(t);
+                      copy.classList.remove('is-done');
+                      text.textContent = Drupal.t('Copy link');
+                    }, 2000);
+                    timers.add(t);
+                  },
+                  () =>
+                    Drupal.announce(Drupal.t('The link could not be copied')),
+                );
             },
             { signal },
           );
@@ -69,8 +72,13 @@
       const chips = items.map((item, i) => {
         const label =
           item.querySelector('.vvj-time')?.textContent.trim() || String(i + 1);
-        const title = item.querySelector('.vvj-title')?.textContent.trim() || label;
-        const chip = P.button('vvja-chip', title);
+        const title =
+          item.querySelector('.vvj-title')?.textContent.trim() || label;
+        // The name starts with the visible text so voice control can use it.
+        const chip = P.button(
+          'vvja-chip',
+          title === label ? label : `${label}, ${title}`,
+        );
         chip.textContent = label;
         chip.addEventListener(
           'click',

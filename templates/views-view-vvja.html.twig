@@ -88,31 +88,23 @@
     {% set split_content = row_content|split('<div class="vvja-separator"></div>') %}
     {% set button_content = split_content[0] %}
     {% set pane_content = split_content[1]|default('') %}
-    <div id="vvja-item-{{ unique_id }}-{{ key + 1 }}" role="region" class="vvja-item {{ is_expanded ? 'opened' : 'closed' }}">
+    {# Fields are joined with a space so the accessible name reads as words.
+       Site content: printed as is, never passed through t(). #}
+    {% set button_label = button_content|replace({'</div>': ' </div>', '</p>': ' </p>', '</h2>': ' </h2>', '</h3>': ' </h3>', '</h4>': ' </h4>', '<br': ' <br'})|striptags|trim %}
+    <div id="vvja-item-{{ unique_id }}-{{ key + 1 }}" class="vvja-item {{ is_expanded ? 'opened' : 'closed' }}">
 
-      {% if deeplink_config.enabled and deeplink_config.identifier %}
-        <a id="{{ acc_id_btn }}-{{ key + 1 }}" href="#accordion-{{ deeplink_config.identifier }}-{{ key + 1 }}" class="button vvja-button{{ is_expanded ? ' active' : '' }}" aria-label="{{ button_content|striptags|trim|t }}" aria-expanded="{{ is_expanded ? 'true' : 'false' }}" aria-controls="{{ acc_id_pan }}-{{ key + 1 }}-pane">
-          <span class="btn-inner">{{ button_content|safe_html }}</span>
-          {% if single_toggle %}
-            <span class="single-toggle">
-              <span aria-hidden="{{ is_expanded ? 'false' : 'true' }}" class="single-toggle-inner b-minus {{ not is_expanded ? 'vvja-icon-hidden' : '' }}">{% if icon_collapse_content %}{{ icon_collapse_content }}{% else %}{{ include('@vvja/svg/collapse-content.svg') }}{% endif %}</span>
-              <span aria-hidden="{{ is_expanded ? 'true' : 'false' }}" class="single-toggle-inner b-plus {{ is_expanded ? 'vvja-icon-hidden' : '' }}">{% if icon_expand_content %}{{ icon_expand_content }}{% else %}{{ include('@vvja/svg/expand-content.svg') }}{% endif %}</span>
-              <span class="visually-hidden">{{ 'Close or Open tab @id-pane'|t({'@id': acc_id_pan ~ '-' ~ (key + 1)}) }}</span>
-            </span>
-          {% endif %}
-        </a>
-      {% else %}
-        <button id="{{ acc_id_btn }}-{{ key + 1 }}" class="button vvja-button{{ is_expanded ? ' active' : '' }}" aria-label="{{ button_content|striptags|trim|t }}" aria-expanded="{{ is_expanded ? 'true' : 'false' }}" aria-controls="{{ acc_id_pan }}-{{ key + 1 }}-pane" type="button">
-          <span class="btn-inner">{{ button_content|safe_html }}</span>
-          {% if single_toggle %}
-            <span class="single-toggle">
-              <span aria-hidden="{{ is_expanded ? 'false' : 'true' }}" class="single-toggle-inner b-minus {{ not is_expanded ? 'vvja-icon-hidden' : '' }}">{% if icon_collapse_content %}{{ icon_collapse_content }}{% else %}{{ include('@vvja/svg/collapse-content.svg') }}{% endif %}</span>
-              <span aria-hidden="{{ is_expanded ? 'true' : 'false' }}" class="single-toggle-inner b-plus {{ is_expanded ? 'vvja-icon-hidden' : '' }}">{% if icon_expand_content %}{{ icon_expand_content }}{% else %}{{ include('@vvja/svg/expand-content.svg') }}{% endif %}</span>
-              <span class="visually-hidden">{{ 'Close or Open tab @id-pane'|t({'@id': acc_id_pan ~ '-' ~ (key + 1)}) }}</span>
-            </span>
-          {% endif %}
-        </button>
-      {% endif %}
+      {# Always a button: Space and Enter both work and it is announced as a
+         button. With deep links on, the JS writes the #accordion-ID-N hash. #}
+      <button id="{{ acc_id_btn }}-{{ key + 1 }}" class="button vvja-button{{ is_expanded ? ' active' : '' }}" aria-label="{{ button_label }}" aria-expanded="{{ is_expanded ? 'true' : 'false' }}" aria-controls="{{ acc_id_pan }}-{{ key + 1 }}-pane" type="button">
+        <span class="btn-inner">{{ button_content|safe_html }}</span>
+        {% if single_toggle %}
+          <span class="single-toggle">
+            <span aria-hidden="{{ is_expanded ? 'false' : 'true' }}" class="single-toggle-inner b-minus {{ not is_expanded ? 'vvja-icon-hidden' : '' }}">{% if icon_collapse_content %}{{ icon_collapse_content }}{% else %}{{ include('@vvja/svg/collapse-content.svg') }}{% endif %}</span>
+            <span aria-hidden="{{ is_expanded ? 'true' : 'false' }}" class="single-toggle-inner b-plus {{ is_expanded ? 'vvja-icon-hidden' : '' }}">{% if icon_expand_content %}{{ icon_expand_content }}{% else %}{{ include('@vvja/svg/expand-content.svg') }}{% endif %}</span>
+            <span class="visually-hidden">{{ 'Close or Open tab @id-pane'|t({'@id': acc_id_pan ~ '-' ~ (key + 1)}) }}</span>
+          </span>
+        {% endif %}
+      </button>
 
       <div id="{{ acc_id_pan }}-{{ key + 1 }}-pane" class="vvja-pane{{ vvja_animation != 'none' ? ' ' ~ vvja_animation : '' }}" aria-labelledby="{{ acc_id_btn }}-{{ key + 1 }}" aria-hidden="{{ is_expanded ? 'false' : 'true' }}" data-index="{{ key + 1 }}" style="--vvja-transition-speed: {{ transition_speed }};">
         <div class="vvja-pane-inner">

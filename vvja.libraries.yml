@@ -48,6 +48,18 @@ vvja-pattern-base:
     - core/drupal
     - core/once
 
+# Theme bridge (solo): token mapping only. Added to vvja-pattern-base by vvj_patterns when the solo theme is active.
+pattern-bridge-solo:
+  css:
+    theme:
+      patterns/bridge/vvja-bridge-solo.css: { weight: 206 }
+
+# Theme bridge (apex): token mapping only. Added to vvja-pattern-base by vvj_patterns when the apex theme is active.
+pattern-bridge-apex:
+  css:
+    theme:
+      patterns/bridge/vvja-bridge-apex.css: { weight: 206 }
+
 pattern.spotlight:
   css:
     theme:

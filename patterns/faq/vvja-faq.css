@@ -10,7 +10,7 @@
 .vvj-pattern.vvja.vvj-pattern--vvja-faq .global-toggle { display: flex; justify-content: flex-end; margin: 0 0 1.5rem; }
 .vvj-pattern.vvja.vvj-pattern--vvja-faq .vvja-inner { display: grid; }
 .vvj-pattern.vvja.vvj-pattern--vvja-faq button.group-toggle { display: inline-grid; place-items: center; text-align: center; width: var(--vvja-target); height: var(--vvja-target); border: 1.5px solid var(--vvj-line); border-radius: 999px; transition: background-color 0.2s, color 0.2s, border-color 0.2s, transform 0.15s; }
-.vvj-pattern.vvja.vvj-pattern--vvja-faq button.group-toggle:hover { background: var(--vvj-ink); border-color: var(--vvj-ink); color: var(--vvj-surface); }
+.vvj-pattern.vvja.vvj-pattern--vvja-faq button.group-toggle:hover { background: var(--vvja-btn-bg); border-color: var(--vvja-btn-bg); color: var(--vvja-btn-color); }
 .vvj-pattern.vvja.vvj-pattern--vvja-faq button.group-toggle:active { transform: scale(0.96); }
 .vvj-pattern.vvja.vvj-pattern--vvja-faq .group-toggle svg { width: 0.6rem; height: 1rem; }
 .vvj-pattern--vvja-faq .vvja-item { position: relative; border: solid var(--vvj-line); border-width: 1px 0 0; }
@@ -24,7 +24,7 @@
 .vvj-pattern.vvja.vvj-pattern--vvja-faq .single-toggle { display: grid; place-items: center; text-align: center; width: var(--vvja-target); height: var(--vvja-target); border: 1.5px solid var(--vvj-line); border-radius: 12px; transition: background-color 0.25s, color 0.25s, border-color 0.25s, transform 0.2s; }
 .vvj-pattern.vvja.vvj-pattern--vvja-faq .single-toggle svg { width: 0.75rem; height: 0.75rem; transition: transform 0.45s var(--vvj-ease-out); }
 :where(.vvj-pattern--vvja-faq) :where(.opened) :where(.single-toggle) svg { transform: rotate(180deg); }
-.vvj-pattern.vvja.vvj-pattern--vvja-faq .vvja-button:hover .single-toggle, .vvj-pattern.vvja.vvj-pattern--vvja-faq .opened .single-toggle { background: var(--vvj-ink); border-color: var(--vvj-ink); color: var(--vvj-surface); }
+.vvj-pattern.vvja.vvj-pattern--vvja-faq .vvja-button:hover .single-toggle, .vvj-pattern.vvja.vvj-pattern--vvja-faq .opened .single-toggle { background: var(--vvja-btn-bg); border-color: var(--vvja-btn-bg); color: var(--vvja-btn-color); }
 .vvj-pattern.vvja.vvj-pattern--vvja-faq .vvja-button:active .single-toggle { transform: scale(0.9); }
 .vvj-pattern.vvja.vvj-pattern--vvja-faq .vvja-button:focus-visible { outline-offset: 4px; border-radius: 4px; }
 .vvj-pattern--vvja-faq .vvja-pane-inner { padding: 0 calc(var(--vvja-target) + 1rem) 1.5rem 2.75rem; }
@@ -33,7 +33,7 @@
 :where(.vvj-pattern--vvja-faq) :where(.opened) .vvj-summary { animation: vvja-faq-rise 0.55s var(--vvj-ease-out) 0.08s both; }
 :where(.vvj-pattern--vvja-faq) :where(.opened) .vvj-kicker { animation: vvja-faq-rise 0.55s var(--vvj-ease-out) 0.18s both; }
 @keyframes vvja-faq-rise { from { opacity: 0; transform: translateY(0.6rem); } }
-@media (max-width: 40rem) {
+@container vvj-region (max-width: 36rem) {
   .vvj-pattern.vvja.vvj-pattern--vvja-faq .btn-inner { grid-template-columns: 2.25rem minmax(0, 1fr); }
   .vvj-pattern--vvja-faq .vvja-pane-inner { padding: 0 0 1.25rem 2.25rem; }
   .vvj-pattern.vvja.vvj-pattern--vvja-faq .vvja-item::before { inset: 1.35rem auto 1.35rem -0.6rem; }

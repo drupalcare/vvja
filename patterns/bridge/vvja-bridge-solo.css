@@ -1,0 +1,34 @@
+/**
+ * @file
+ * vvja theme bridge - Solo: maps the vvja colour tokens to the theme's region colours.
+ *
+ * Tokens only, no element painting. Zero specificity (:where), loaded after
+ * vvja-pattern-base so it restates the tokens that file declares. Every value
+ * keeps the black-and-white token as its fallback, so a region that leaves a
+ * colour unset still renders. Contrast of each mapped pair depends on the
+ * region's colours: needs checking.
+ *
+ * Not mapped on purpose: the dock shadow stays derived from --vvj-stage-bg.
+ */
+
+/* Colours come from the shared --vvj-theme-* roles (vvj_patterns bridge), so the
+   theme's own colour spelling lives once, there. Each role keeps its black-and-white fallback. */
+/* Stage buttons (--vvja-stage-btn-*) are not mapped: they sit on the dark stage, where a
+   theme fill could vanish (1.4.11), so they keep the stage tokens. */
+:where(.vvj-pattern.vvja) {
+  --vvja-btn-bg: var(--vvj-theme-button-bg, var(--vvj-ink));
+  --vvja-btn-color: var(--vvj-theme-button-text, var(--vvj-surface));
+  --vvja-chip-bg: var(--vvj-theme-active-bg, var(--vvj-ink));
+  --vvja-chip-color: var(--vvj-theme-active-text, var(--vvj-surface));
+}
+
+@media (forced-colors: active) {
+  :where(.vvj-pattern.vvja) {
+    --vvja-btn-bg: ButtonText;
+    --vvja-btn-color: ButtonFace;
+    --vvja-chip-bg: Highlight;
+    --vvja-chip-color: HighlightText;
+    --vvja-stage-btn-bg: ButtonText;
+    --vvja-stage-btn-color: ButtonFace;
+  }
+}

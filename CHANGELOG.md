@@ -10,6 +10,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [2.0.0] (UNRELEASED)
 
+- Patterns: the bridge reads the shared `--vvj-theme-*` roles; the stage buttons keep the stage tokens.
+- Patterns: every hard-coded colour is now a vvja token, and Solo and APEX get a theme bridge (`pattern-bridge-solo`, `pattern-bridge-apex`) that maps the vvja controls to the theme colours; the black-and-white look is unchanged.
+
 **Drop-in upgrade for 1.x sites.** v2 modernizes internals: OOP hooks,
 AbortController-tracked listeners, PHP 8.3 typed constants, **`vvj_core`
 foundation extraction**, while preserving every CSS rule, every plugin ID,
@@ -19,9 +22,14 @@ Stored option values are converted to the v2 shape by update 10002. Run
 
 ### Fixed
 
+- Accessibility: the header button name is the row text as written; it is no longer passed through `t()`, so site content no longer fills the interface translation table.
+- Accessibility: every accordion header is a `<button>` (deep-link mode rendered a link that Space did not open) and stays in the Tab order; header names read with spaces between fields; items no longer carry an unnamed `role="region"`; the Agenda dock chip name starts with its visible text.
+
+- Pane open and close read the pane height before writing max-height (JS-RULES.md rule 3); behavior unchanged.
 - Update 10002 converts v1 views to the v2 option shape. The 1.x option
   `first_toggle` (first panel open) becomes `expand_default: first`; before this,
   upgraded accordions silently stopped opening their first panel.
+- The accordion reads every panel height before it writes any, so opening a panel no longer forces extra layout passes.
 
 ### Added
 
@@ -92,6 +100,11 @@ Stored option values are converted to the v2 shape by update 10002. Run
   arrow functions, optional chaining, `???` nullish coalescing. AbortController
   + once() + native button keyboard handling.
 - **Transliteration injected via DI** instead of `\Drupal::transliteration()`.
+- Code style: JavaScript and CSS follow Drupal core's ESLint, Stylelint and Prettier rules, and the spell-check job passes with a project word file. Rendering and behavior are unchanged.
+- Pattern Agenda: the expand/collapse-all button is a 44px square with its icon centered again; a theme `.button` rule (Olivero) padded it 27px on each side.
+- Layout: Pattern layout now follows the width the Pattern itself gets (container queries on `vvj-region`) instead of the screen width, so Patterns lay out correctly in a narrow content column; overlays and the Pattern root keep screen-width queries.
+- Layout: Pattern Stage now also follows its own width: the steps and the controls take the left column of the Pattern's own box, so the photo stage no longer depends on the screen width.
+- Pattern Cards: the cards sit in a fixed-column grid and keep their size when one opens, so the page no longer jumps; the open card scrolls into view (instantly when reduced motion is set). Pattern Spotlight: the round toggle keeps its 44px size beside a long title, and the title is clipped visually only (its full text stays in the accessible name).
 
 ### Removed
 

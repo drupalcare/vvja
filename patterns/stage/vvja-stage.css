@@ -33,15 +33,19 @@
 .vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-controls { display: flex; align-items: center; gap: 1rem; }
 .vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-play { display: inline-flex; align-items: center; gap: 0.6rem; min-height: var(--vvja-target); padding: 0 1.1rem 0 0.9rem; border: 1.5px solid var(--vvj-line); border-radius: 12px; font-weight: 600; transition: background-color 0.2s, color 0.2s, border-color 0.2s, transform 0.15s; }
 .vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-play .vvja-i { width: 0.85rem; height: 0.85rem; }
-:where(.vvj-pattern--vvja-stage) :where(.vvja-play) .vvja-i--play, :where(.vvj-pattern--vvja-stage) :where(.vvja-play[aria-pressed="true"]) .vvja-i--pause { display: none; }
-:where(.vvj-pattern--vvja-stage) :where(.vvja-play[aria-pressed="true"]) .vvja-i--play { display: block; }
+:where(.vvj-pattern--vvja-stage) :where(.vvja-play) .vvja-i--play, :where(.vvj-pattern--vvja-stage) :where(.vvja-play.vvj-autoplay--stopped) .vvja-i--pause { display: none; }
+:where(.vvj-pattern--vvja-stage) :where(.vvja-play.vvj-autoplay--stopped) .vvja-i--play { display: block; }
 .vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-play:hover { background: var(--vvj-ink); border-color: var(--vvj-ink); color: var(--vvj-surface); }
 .vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-play:active { transform: scale(0.96); }
-@media (min-width: 60rem) {
-  .vvj-pattern.vvja.vvj-pattern--vvja-stage { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: clamp(32px, 5vw, 80px); align-items: start; }
-  .vvj-pattern--vvja-stage::before { content: ""; grid-column: 2; grid-row: 1 / span 2; min-height: 34rem; }
-  :where(.vvj-pattern--vvja-stage) .vvja-inner { position: relative; grid-column: 1; grid-row: 1; min-height: 34rem; }
-  :where(.vvj-pattern--vvja-stage) .vvja-controls { grid-column: 1; grid-row: 2; }
+/* From 55rem of its own width (vvj-region is the <vvja-accordion> root, set
+   by vvj_core): steps left, photo stage right. The root cannot query itself,
+   so instead of a 5fr / 7fr grid on the root, the steps and the controls take
+   the left column's width, 5/12 of the root's content box (100cqi) after the
+   gap, and the open photo fills the remaining 7/12 to their right. */
+@container vvj-region (min-width: 55rem) {
+  .vvj-pattern--vvja-stage .vvja-inner,
+  .vvj-pattern--vvja-stage .vvja-controls { width: calc((100cqi - clamp(32px, 5vw, 80px)) * 5 / 12); }
+  :where(.vvj-pattern--vvja-stage) .vvja-inner { position: relative; min-height: 34rem; }
   .vvj-pattern--vvja-stage .vvja-pane-inner { padding: var(--vvja-pane-padding, 16px) var(--vvja-pane-padding, 16px) 1.5rem 2.35rem; }
   /* The open step's photo is placed in the right column; closed ones are clipped away under it. */
   .vvj-pattern.vvja.vvj-pattern--vvja-stage .vvj-media { position: absolute; inset: 0 auto 0 calc(100% + clamp(32px, 5vw, 80px)); z-index: 0; width: 140%; margin: 0; aspect-ratio: auto; clip-path: inset(0 0 0 100% round 20px); transition: clip-path 0.9s var(--vvj-ease-io) 0.9s; }

@@ -14,48 +14,210 @@
   --vvja-icon-play: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='320 -760 440 560'%3E%3Cpath d='M320-200v-560l440 280-440 280Z'/%3E%3C/svg%3E");
   --vvja-icon-link: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='80 -680 800 400'%3E%3Cpath d='M440-280H280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h160v80H280q-50 0-85 35t-35 85q0 50 35 85t85 35h160v80ZM320-440v-80h320v80H320Zm200 160v-80h160q50 0 85-35t35-85q0-50-35-85t-85-35H520v-80h160q83 0 141.5 58.5T880-480q0 83-58.5 141.5T680-280H520Z'/%3E%3C/svg%3E");
   --vvja-icon-done: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='154 -664 652 424'%3E%3Cpath d='M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z'/%3E%3C/svg%3E");
+
   display: block;
   color: var(--vvj-ink);
   font-family: var(--vvj-font-ui);
 }
+/* Colour tokens of vvja: the ONE place they are declared. Zero specificity, so
+   a theme bridge (patterns/bridge/) can restate them; values come from --vvj-*. */
+:where(.vvj-pattern.vvja) {
+  --vvja-dock-shadow: color-mix(in sRGB, var(--vvj-stage-bg) 14%, transparent);
+  --vvja-btn-bg: var(--vvj-ink);
+  --vvja-btn-color: var(--vvj-surface);
+  --vvja-chip-bg: var(--vvj-ink);
+  --vvja-chip-color: var(--vvj-surface);
+  --vvja-stage-btn-bg: var(--vvj-stage-color);
+  --vvja-stage-btn-color: var(--vvj-stage-bg);
+}
 .vvj-pattern.vvja,
 :where(.vvj-pattern.vvja) *,
 :where(.vvj-pattern.vvja) *::before,
-:where(.vvj-pattern.vvja) *::after { box-sizing: border-box; }
+:where(.vvj-pattern.vvja) *::after {
+  box-sizing: border-box;
+}
 /* Theme resets: headings, paragraphs, lists, figures, images, links. */
-:where(.vvj-pattern.vvja) :is(h1, h2, h3, h4, h5, h6, p) { margin: 0; padding: 0; font-size: inherit; line-height: inherit; color: inherit; hyphens: manual; overflow-wrap: normal; word-break: normal; }
-:where(.vvj-pattern.vvja) :is(ul, ol, li) { list-style: none; margin: 0; padding: 0; }
-.vvj-pattern.vvja figure { margin: 0; padding: 0; }
-:where(.vvj-pattern.vvja) :is(img, svg) { display: block; max-width: 100%; height: auto; }
+:where(.vvj-pattern.vvja) :is(h1, h2, h3, h4, h5, h6, p) {
+  margin: 0;
+  padding: 0;
+  word-break: normal;
+  hyphens: manual;
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  overflow-wrap: normal;
+}
+:where(.vvj-pattern.vvja) :is(ul, ol, li) {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.vvj-pattern.vvja figure {
+  margin: 0;
+  padding: 0;
+}
+:where(.vvj-pattern.vvja) :is(img, svg) {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
 /* The module prints class "button"; themes style it. Patterns start from nothing. */
-:where(.vvj-pattern.vvja) :is(.vvja-button, .group-toggle, button) { box-sizing: border-box; appearance: none; width: auto; height: auto; min-height: 0; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; color: inherit; font: inherit; letter-spacing: inherit; line-height: inherit; text-align: start; text-decoration: none; text-transform: none; min-width: 0; vertical-align: middle; outline: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-:where(.vvj-pattern.vvja) :is(.vvja-button, .group-toggle, button):is(:hover, :focus) { background: none; color: inherit; box-shadow: none; text-decoration: none; }
-:where(.vvj-pattern.vvja) :is(.vvja-button, .group-toggle, button):focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
-.vvj-pattern.vvja span.group-toggle { display: contents; }
+:where(.vvj-pattern.vvja) :is(.vvja-button, .group-toggle, button) {
+  box-sizing: border-box;
+  width: auto;
+  min-width: 0;
+  height: auto;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: start;
+  vertical-align: middle;
+  text-decoration: none;
+  letter-spacing: inherit;
+  text-transform: none;
+  color: inherit;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+  background: none;
+  box-shadow: none;
+  font: inherit;
+  line-height: inherit;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+:where(.vvj-pattern.vvja) :is(.vvja-button, .group-toggle, button):is(:hover, :focus) {
+  text-decoration: none;
+  color: inherit;
+  background: none;
+  box-shadow: none;
+}
+:where(.vvj-pattern.vvja) :is(.vvja-button, .group-toggle, button):focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 3px;
+}
+.vvj-pattern.vvja span.group-toggle {
+  display: contents;
+}
+/* The expand/collapse-all button: a theme `.button` rule (Olivero) pads it with logical properties at the reset's weight and
+   loads later, pushing the icon off-center. 0,2,0 clears it; every Pattern's own button rule is heavier. */
+.vvj-pattern .group-toggle {
+  padding: 0;
+}
 /* vvja.css pads the toggle 12px at the inline start; Patterns draw it as a sized round control, so the icon would sit off-centre. */
-.vvj-pattern.vvja .vvja-button > .single-toggle { padding: 0; }
-.vvj-pattern.vvja .vvja-icon-hidden { display: none; }
-.vvj-pattern.vvja :is(.single-toggle, .group-toggle) svg { display: block; width: 0.875rem; height: 0.875rem; fill: currentColor; }
-.vvj-pattern.vvja .vvj-title { color: inherit; hyphens: manual; overflow-wrap: normal; word-break: normal; }
-.vvj-pattern.vvja .vvj-media img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.vvj-pattern.vvja .vvj-link a { appearance: none; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; color: inherit; font: inherit; line-height: inherit; letter-spacing: normal; text-transform: none; text-decoration: none; text-align: start; width: auto; height: auto; min-width: 0; min-height: 0; vertical-align: middle; outline: 0; cursor: pointer; }
-.vvj-pattern.vvja .vvja-i { display: block; width: 1em; height: 1em; background: currentColor; -webkit-mask: var(--vvja-icon) center / contain no-repeat; mask: var(--vvja-icon) center / contain no-repeat; }
-:where(.vvj-pattern.vvja) .vvja-i--prev { --vvja-icon: var(--vvja-icon-prev); }
-:where(.vvj-pattern.vvja) .vvja-i--next { --vvja-icon: var(--vvja-icon-next); }
-:where(.vvj-pattern.vvja) .vvja-i--pause { --vvja-icon: var(--vvja-icon-pause); }
-:where(.vvj-pattern.vvja) .vvja-i--play { --vvja-icon: var(--vvja-icon-play); }
-:where(.vvj-pattern.vvja) .vvja-i--link { --vvja-icon: var(--vvja-icon-link); }
-:where(.vvj-pattern.vvja) .vvja-i--done { --vvja-icon: var(--vvja-icon-done); }
+.vvj-pattern.vvja .vvja-button > .single-toggle {
+  padding: 0;
+}
+.vvj-pattern.vvja .vvja-icon-hidden {
+  display: none;
+}
+.vvj-pattern.vvja :is(.single-toggle, .group-toggle) svg {
+  display: block;
+  width: 0.875rem;
+  height: 0.875rem;
+  fill: currentColor;
+}
+.vvj-pattern.vvja .vvj-title {
+  word-break: normal;
+  hyphens: manual;
+  color: inherit;
+  overflow-wrap: normal;
+}
+.vvj-pattern.vvja .vvj-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.vvj-pattern.vvja .vvj-link a {
+  width: auto;
+  min-width: 0;
+  height: auto;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: start;
+  vertical-align: middle;
+  text-decoration: none;
+  letter-spacing: normal;
+  text-transform: none;
+  color: inherit;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+  background: none;
+  box-shadow: none;
+  font: inherit;
+  line-height: inherit;
+  appearance: none;
+}
+.vvj-pattern.vvja .vvja-i {
+  display: block;
+  width: 1em;
+  height: 1em;
+  background: currentColor;
+  -webkit-mask: var(--vvja-icon) center / contain no-repeat;
+  mask: var(--vvja-icon) center / contain no-repeat;
+}
+:where(.vvj-pattern.vvja) .vvja-i--prev {
+  --vvja-icon: var(--vvja-icon-prev);
+}
+:where(.vvj-pattern.vvja) .vvja-i--next {
+  --vvja-icon: var(--vvja-icon-next);
+}
+:where(.vvj-pattern.vvja) .vvja-i--pause {
+  --vvja-icon: var(--vvja-icon-pause);
+}
+:where(.vvj-pattern.vvja) .vvja-i--play {
+  --vvja-icon: var(--vvja-icon-play);
+}
+:where(.vvj-pattern.vvja) .vvja-i--link {
+  --vvja-icon: var(--vvja-icon-link);
+}
+:where(.vvj-pattern.vvja) .vvja-i--done {
+  --vvja-icon: var(--vvja-icon-done);
+}
 
 /* Round icon buttons the Pattern scripts add (previous, next). */
-:where(.vvj-pattern.vvja) .vvja-btn { display: inline-grid; place-items: center; width: var(--vvja-target); height: var(--vvja-target); border: 1.5px solid var(--vvj-line); border-radius: 50%; font-size: 1rem; transition: background-color 0.2s, color 0.2s, border-color 0.2s, transform 0.2s; }
-:where(.vvj-pattern.vvja) .vvja-btn:hover { background: var(--vvj-ink); border-color: var(--vvj-ink); color: var(--vvj-surface); }
-:where(.vvj-pattern.vvja) .vvja-btn:active { transform: scale(0.92); }
-:where(.vvj-pattern.vvja) .vvja-count { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--vvj-muted); }
-:where(.vvj-pattern.vvja) .vvja-count-now { color: var(--vvj-ink); }
+:where(.vvj-pattern.vvja) .vvja-btn {
+  display: inline-grid;
+  place-items: center;
+  width: var(--vvja-target);
+  height: var(--vvja-target);
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    border-color 0.2s,
+    transform 0.2s;
+  border: 1.5px solid var(--vvj-line);
+  border-radius: 50%;
+  font-size: 1rem;
+}
+:where(.vvj-pattern.vvja) .vvja-btn:hover {
+  color: var(--vvja-btn-color);
+  border-color: var(--vvja-btn-bg);
+  background: var(--vvja-btn-bg);
+}
+:where(.vvj-pattern.vvja) .vvja-btn:active {
+  transform: scale(0.92);
+}
+:where(.vvj-pattern.vvja) .vvja-count {
+  color: var(--vvj-muted);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+:where(.vvj-pattern.vvja) .vvja-count-now {
+  color: var(--vvj-ink);
+}
 
 @media (prefers-reduced-motion: reduce) {
   :where(.vvj-pattern.vvja) *,
   :where(.vvj-pattern.vvja) *::before,
-  :where(.vvj-pattern.vvja) *::after { transition-duration: 0.01ms !important; transition-delay: 0s !important; animation: none !important; }
+  :where(.vvj-pattern.vvja) *::after {
+    transition-delay: 0s !important;
+    transition-duration: 0.01ms !important;
+    animation: none !important;
+  }
 }

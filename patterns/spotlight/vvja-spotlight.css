@@ -30,7 +30,7 @@
 :where(.vvj-pattern--vvja-spotlight) :where(.opened) :where(.vvj-copy) > :nth-child(3) { transition-delay: 0.58s; }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvj-kicker { font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvj-summary { max-width: 30ch; margin: 0.6rem 0 1.25rem; font: 600 clamp(1.35rem, 2.6vw, 2.25rem)/1.15 var(--vvj-font-display); letter-spacing: -0.015em; }
-.vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvj-link a { display: inline-flex; align-items: center; min-height: var(--vvja-target); padding: 0 1.25rem; border-radius: 999px; background: var(--vvj-stage-color); color: var(--vvj-stage-bg); font-weight: 600; text-decoration: none; transition: transform 0.15s; }
+.vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvj-link a { display: inline-flex; align-items: center; min-height: var(--vvja-target); padding: 0 1.25rem; border-radius: 999px; background: var(--vvja-stage-btn-bg); color: var(--vvja-stage-btn-color); font-weight: 600; text-decoration: none; transition: transform 0.15s; }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvj-link a::after { content: ""; width: 1rem; height: 1rem; margin: 0 0 0 0.6rem; background: currentColor; -webkit-mask: var(--vvja-icon-next) center / contain no-repeat; mask: var(--vvja-icon-next) center / contain no-repeat; transition: transform 0.35s var(--vvj-ease-out); }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvj-link a:hover::after { transform: translateX(0.25rem) rotate(-45deg); }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvj-link a:active { transform: scale(0.97); }
@@ -45,6 +45,9 @@
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .single-toggle { display: grid; place-items: center; text-align: center; width: var(--vvja-target); height: var(--vvja-target); border: 1.5px solid var(--vvj-stage-line); border-radius: 50%; transition: background-color 0.25s, color 0.25s, transform 0.35s var(--vvj-ease-out); }
 /* Centre the round toggle in the strip; vvja.css pushes it to the inline end for the plain accordion. */
 .vvj-pattern--vvja-spotlight :where(.vvja-button) > .single-toggle { align-self: center; margin-inline-start: 0; }
+/* A long title must not squash the round toggle: the toggle keeps its size and the title is clipped at the strip's end. */
+.vvj-pattern.vvja.vvj-pattern--vvja-spotlight .single-toggle { flex-shrink: 0; }
+.vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvj-title { min-width: 0; min-height: 0; overflow: hidden; text-overflow: ellipsis; }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-button:hover .single-toggle { background: var(--vvj-stage-color); color: var(--vvj-stage-bg); transform: rotate(90deg); }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-button:active .single-toggle { transform: scale(0.9); }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-button:focus-visible { outline: none; }
@@ -63,7 +66,7 @@
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-bar[aria-current="true"]::before { height: 6px; background: var(--vvj-ink); }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-bar:hover::before { background: var(--vvj-muted); }
 .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-arrows { display: flex; gap: 8px; }
-@media (max-width: 47.99rem) {
+@container vvj-region (max-width: 43.99rem) {
   .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-inner { flex-direction: column; height: auto; }
   .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-item { flex: none; height: 4.5rem; min-width: 0; border-radius: 16px; transition: height 0.45s var(--vvj-ease-io); }
   .vvj-pattern.vvja.vvj-pattern--vvja-spotlight .vvja-item.opened { height: min(31rem, 82vh); }

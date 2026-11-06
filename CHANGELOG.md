@@ -11,7 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ## [2.0.0] (UNRELEASED)
 
 - Patterns: the bridge reads the shared `--vvj-theme-*` roles; the stage buttons keep the stage tokens.
-- Patterns: every hard-coded colour is now a vvja token, and Solo and APEX get a theme bridge (`pattern-bridge-solo`, `pattern-bridge-apex`) that maps the vvja controls to the theme colours; the black-and-white look is unchanged.
+- Patterns: every hard-coded color is now a vvja token, and Solo and APEX get a theme bridge (`pattern-bridge-solo`, `pattern-bridge-apex`) that maps the vvja controls to the theme colors; the black-and-white look is unchanged.
 
 **Drop-in upgrade for 1.x sites.** v2 modernizes internals: OOP hooks,
 AbortController-tracked listeners, PHP 8.3 typed constants, **`vvj_core`

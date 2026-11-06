@@ -1,18 +1,18 @@
 /**
  * @file
- * vvja theme bridge - APEX: maps the vvja colour tokens to the theme's region colours.
+ * vvja theme bridge - APEX: maps the vvja color tokens to the theme's region colors.
  *
  * Tokens only, no element painting. Zero specificity (:where), loaded after
  * vvja-pattern-base so it restates the tokens that file declares. Every value
  * keeps the black-and-white token as its fallback, so a region that leaves a
- * colour unset still renders. Contrast of each mapped pair depends on the
- * region's colours: needs checking.
+ * color unset still renders. Contrast of each mapped pair depends on the
+ * region's colors: needs checking.
  *
  * Not mapped on purpose: the dock shadow stays derived from --vvj-stage-bg.
  */
 
-/* Colours come from the shared --vvj-theme-* roles (vvj_patterns bridge), so the
-   theme's own colour spelling lives once, there. Each role keeps its black-and-white fallback. */
+/* Colors come from the shared --vvj-theme-* roles (vvj_patterns bridge), so the
+   theme's own color spelling lives once, there. Each role keeps its black-and-white fallback. */
 /* Stage buttons (--vvja-stage-btn-*) are not mapped: they sit on the dark stage, where a
    theme fill could vanish (1.4.11), so they keep the stage tokens. */
 :where(.vvj-pattern.vvja) {
@@ -23,7 +23,7 @@
 }
 
 /*
- * APEX extra colours: the owner will name the five extra APEX colours; they
+ * APEX extra colors: the owner will name the five extra APEX colors; they
  * are mapped here once named. Nothing is invented in the meantime.
  */
 

@@ -83,7 +83,7 @@
      * @param {string} name
      *   An icon name from vvja-pattern-base.css (prev, next, play...).
      * @return {HTMLSpanElement}
-     *   A hidden icon that takes the text colour.
+     *   A hidden icon that takes the text color.
      */
     icon(name) {
       const span = document.createElement('span');

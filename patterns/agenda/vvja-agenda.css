@@ -2,7 +2,7 @@
  * @file
  * Pattern Agenda: a numbered rail with a line and a dot per item, copy-link buttons and a dock.
  *
- * Colours come only from the --vvj-* tokens (vvj_patterns/base); every
+ * Colors come only from the --vvj-* tokens (vvj_patterns/base); every
  * selector starts at the view's own element.
  */
 

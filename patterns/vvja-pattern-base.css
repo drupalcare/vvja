@@ -2,7 +2,7 @@
  * @file
  * Shared by every vvja Pattern: reset of the theme button look, words, icons, round buttons.
  *
- * Colours come only from the --vvj-* tokens (vvj_patterns/base); every
+ * Colors come only from the --vvj-* tokens (vvj_patterns/base); every
  * selector starts at the view's own element.
  */
 
@@ -19,7 +19,7 @@
   color: var(--vvj-ink);
   font-family: var(--vvj-font-ui);
 }
-/* Colour tokens of vvja: the ONE place they are declared. Zero specificity, so
+/* Color tokens of vvja: the ONE place they are declared. Zero specificity, so
    a theme bridge (patterns/bridge/) can restate them; values come from --vvj-*. */
 :where(.vvj-pattern.vvja) {
   --vvja-dock-shadow: color-mix(in sRGB, var(--vvj-stage-bg) 14%, transparent);

@@ -10,6 +10,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [2.0.0] (UNRELEASED)
 
+- Accessibility: in Windows high contrast (forced colors) the Pattern icons stay visible; they are masks painted with the text color, which the system used to replace.
 - Patterns: the bridge reads the shared `--vvj-theme-*` roles; the stage buttons keep the stage tokens.
 - Patterns: every hard-coded color is now a vvja token, and Solo and APEX get a theme bridge (`pattern-bridge-solo`, `pattern-bridge-apex`) that maps the vvja controls to the theme colors; the black-and-white look is unchanged.
 

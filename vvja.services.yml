@@ -1,15 +1,9 @@
 services:
   # OOP hook classes — Drupal 11.1+ pattern: register FQCN as the
   # primary service ID so the OOP-hook dispatcher can resolve each
-  # class via ClassResolver. Most use autowiring; VvjaHelpHook needs
-  # explicit `plugin.manager.filter` because plugin managers don't
-  # always have FQCN autowire aliases in Drupal 11.1.
+  # class via ClassResolver.
   Drupal\vvja\Hook\VvjaHelpHook:
-    arguments:
-      - '@extension.list.module'
-      - '@module_handler'
-      - '@plugin.manager.filter'
-      - '@config.factory'
+    autowire: true
 
   Drupal\vvja\Hook\VvjaThemeHook:
     autowire: true

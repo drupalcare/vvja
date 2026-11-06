@@ -1,6 +1,6 @@
-name: 'Views Vanilla Javascript Accordion - VVJA'
+name: 'Views Vanilla JavaScript Accordion - VVJA'
 type: module
-description: 'Accessible accordion display format for Views.'
+description: 'Displays Views results as an accessible accordion.'
 core_version_requirement: ^11.3 || ^12
 package: VVJ
 php: 8.3

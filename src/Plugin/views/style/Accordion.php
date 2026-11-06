@@ -144,21 +144,21 @@ class Accordion extends VvjStylePluginBase {
   protected function buildBehaviorSection(array &$form): void {
     $form['behavior_section'] = [
       '#type' => 'details',
-      '#title' => $this->t('Behavior Settings'),
+      '#title' => $this->t('Behavior settings'),
       '#open' => TRUE,
       '#weight' => -40,
     ];
 
     $form['behavior_section']['global_toggle'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Show Collapse or Expand All (Global)'),
+      '#title' => $this->t('Show collapse or expand all (global)'),
       '#default_value' => $this->options['global_toggle'],
       '#description' => $this->t('Check this box to show a button that toggles all the accordions at once.'),
     ];
 
     $form['behavior_section']['exclusive_panel'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Enable Exclusive Mode'),
+      '#title' => $this->t('Enable exclusive mode'),
       '#default_value' => $this->options['exclusive_panel'],
       '#description' => $this->t('Allow only one panel to be open at a time. By default, multiple panels can be open simultaneously. Note: This feature is incompatible with the "Show Collapse or Expand All (Global)" option.'),
       '#states' => [
@@ -170,14 +170,14 @@ class Accordion extends VvjStylePluginBase {
 
     $form['behavior_section']['single_toggle'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Show Collapse or Expand (Single)'),
+      '#title' => $this->t('Show collapse or expand (single)'),
       '#default_value' => $this->options['single_toggle'],
       '#description' => $this->t('Check this box to show a toggle (+/-) button to open and close the accordion sections.'),
     ];
 
     $form['behavior_section']['expand_default'] = [
       '#type' => 'select',
-      '#title' => $this->t('Default Expand Behavior'),
+      '#title' => $this->t('Default expand behavior'),
       '#options' => [
         VvjaConstants::EXPAND_NONE => $this->t('None'),
         VvjaConstants::EXPAND_FIRST => $this->t('Expand First Item'),
@@ -197,7 +197,7 @@ class Accordion extends VvjStylePluginBase {
   protected function buildAnimationSection(array &$form): void {
     $form['animation_section'] = [
       '#type' => 'details',
-      '#title' => $this->t('Animation Settings'),
+      '#title' => $this->t('Animation settings'),
       '#open' => TRUE,
       '#weight' => -30,
     ];
@@ -208,7 +208,7 @@ class Accordion extends VvjStylePluginBase {
 
     $form['animation_section']['transition_speed'] = [
       '#type' => 'number',
-      '#title' => $this->t('Transition Speed'),
+      '#title' => $this->t('Transition speed'),
       '#default_value' => $this->options['transition_speed'],
       '#description' => $this->t('Select the speed for the accordion transition. Enter a value between @min (fast) and @max (slow) to control the animation speed.', [
         '@min' => ValidationBounds::MIN_TRANSITION_SPEED,
@@ -230,14 +230,14 @@ class Accordion extends VvjStylePluginBase {
   protected function buildLayoutSection(array &$form): void {
     $form['layout_section'] = [
       '#type' => 'details',
-      '#title' => $this->t('Layout Settings'),
+      '#title' => $this->t('Layout settings'),
       '#open' => FALSE,
       '#weight' => -20,
     ];
 
     $form['layout_section']['accordion_item_width'] = [
       '#type' => 'number',
-      '#title' => $this->t('Expandable Card Width (px)'),
+      '#title' => $this->t('Expandable card width (px)'),
       '#default_value' => $this->options['accordion_item_width'],
       '#description' => $this->t('Set the width of each Expandable Card in pixels. You can use this setting to display items as Expandable Cards or as a list. If set to zero, each item will expand to the full available width, creating a list layout. Otherwise, specifying a width will display each item as an Expandable Card with the specified width.'),
       '#step' => 1,
@@ -247,7 +247,7 @@ class Accordion extends VvjStylePluginBase {
 
     $form['layout_section']['pane_padding'] = [
       '#type' => 'number',
-      '#title' => $this->t('Content Padding (px)'),
+      '#title' => $this->t('Content padding (px)'),
       '#default_value' => $this->options['pane_padding'],
       '#description' => $this->t('Set the inner padding of each accordion panel content area in pixels.'),
       '#step' => 1,
@@ -257,7 +257,7 @@ class Accordion extends VvjStylePluginBase {
 
     $form['layout_section']['panel_gap'] = [
       '#type' => 'number',
-      '#title' => $this->t('Panel Gap (px)'),
+      '#title' => $this->t('Panel gap (px)'),
       '#default_value' => $this->options['panel_gap'],
       '#description' => $this->t('Set the gap between accordion panels in pixels.'),
       '#step' => 1,
@@ -277,7 +277,7 @@ class Accordion extends VvjStylePluginBase {
 
     $form['icons_section'] = [
       '#type' => 'details',
-      '#title' => $this->t('Custom Icons'),
+      '#title' => $this->t('Custom icons'),
       '#open' => FALSE,
       '#weight' => -15,
       '#description' => $this->t('<p>Replace the default toggle icons with your own SVG markup. Leave empty to use the default icons. You can browse thousands of free SVG icons at <a href="@url" target="_blank">Google Material Symbols</a>.</p>

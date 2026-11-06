@@ -82,6 +82,7 @@ Stored option values are converted to the v2 shape by update 10002. Run
 
 ### Changed
 
+- Text follows the drupal.org standards: the module description begins with a verb, "JavaScript" is spelled as the language spells it, settings titles are in sentence case, and the README has its project and issue queue links.
 - **`vvja.module` is now a stub.** Hooks live in `src/Hook/*.php` classes with
   `#[Hook('hook_name')]` attributes. Procedural `function vvja_*()` hooks are
   removed. *No backwards-compat impact*. Module-handler discovery resolves the

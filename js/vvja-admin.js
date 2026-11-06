@@ -6,7 +6,7 @@
  *   - Drupal.behaviors with attach/detach lifecycle.
  *   - once() for idempotent setup.
  *   - AbortController per checkbox so detach('unload') aborts every
- *     listener — prevents leaks across AJAX form rebuilds.
+ *     listener — prevents leaks across Ajax form rebuilds.
  *
  * @license SPDX-License-Identifier: GPL-2.0-or-later
  */

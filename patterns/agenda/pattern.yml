@@ -1,6 +1,10 @@
 label: 'Agenda'
 description: 'A numbered rail with a line and a dot per item, a copy-link button in each and a sticky dock of numbers.'
 weight: 4
+stage: open
+ground: light
+placement: both
+serves: [events, associations, university]
 options:
   single_toggle: true
   global_toggle: true

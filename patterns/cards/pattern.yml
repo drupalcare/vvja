@@ -1,6 +1,10 @@
 label: 'Cards'
 description: 'Portrait photo cards; the open card moves to the top, spans the row and has previous and next inside.'
 weight: 3
+stage: open
+ground: light
+placement: both
+serves: [university, healthcare, nonprofit]
 options:
   single_toggle: true
   global_toggle: false

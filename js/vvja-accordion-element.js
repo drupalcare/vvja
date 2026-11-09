@@ -232,17 +232,42 @@
       }
       // Read before the write (JS-RULES.md rule 3).
       const height = p.scrollHeight;
+      const wait = this._transitionMs(p);
       p.style.maxHeight = `${height}px`;
       p.setAttribute('aria-hidden', 'false');
       this._toggleFocusableElements(p, false);
-      p.addEventListener(
-        'transitionend',
-        () => {
-          if (p.getAttribute('aria-hidden') === 'false') {
-            p.style.maxHeight = 'none';
-          }
-        },
-        { once: true },
+      const settle = () => {
+        if (p.getAttribute('aria-hidden') === 'false') {
+          p.style.maxHeight = 'none';
+        }
+      };
+      p.addEventListener('transitionend', settle, { once: true });
+      // No transitionend comes when the height does not change (a pane open
+      // on load) or max-height does not transition. The pane then kept the
+      // height measured before its photo and fonts loaded and cut off its
+      // last line (measured: 441px shown of 468px). The timer settles it.
+      setTimeout(settle, wait + 50);
+    }
+
+    /**
+     * The longest transition (duration plus delay) set on an element, in ms.
+     *
+     * @param {HTMLElement} el
+     *   The element.
+     *
+     * @return {number}
+     *   Milliseconds; 0 when nothing transitions.
+     */
+    _transitionMs(el) {
+      const style = getComputedStyle(el);
+      const ms = (v) =>
+        (v.trim().endsWith('ms') ? parseFloat(v) : parseFloat(v) * 1000) || 0;
+      const delays = style.transitionDelay.split(',');
+      return Math.max(
+        0,
+        ...style.transitionDuration
+          .split(',')
+          .map((d, i) => ms(d) + ms(delays[i] || '0s')),
       );
     }
 

@@ -187,13 +187,13 @@
   width: var(--vvja-target);
   height: var(--vvja-target);
   transition:
-    background-color 0.2s,
-    color 0.2s,
-    border-color 0.2s,
-    transform 0.2s;
+    background-color var(--vvj-dur-200, 0.2s),
+    color var(--vvj-dur-200, 0.2s),
+    border-color var(--vvj-dur-200, 0.2s),
+    transform var(--vvj-dur-200, 0.2s);
   border: 1.5px solid var(--vvj-line);
   border-radius: 50%;
-  font-size: 1rem;
+  font-size: var(--vvj-text-16, 1rem);
 }
 :where(.vvj-pattern.vvja) .vvja-btn:hover {
   color: var(--vvja-btn-color);

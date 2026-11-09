@@ -1,6 +1,10 @@
 label: 'Spotlight'
 description: 'Photo panels side by side; the open one widens, with a bottom bar of segments and previous and next.'
 weight: 0
+stage: open
+ground: light
+placement: both
+serves: [cultural, events, creative]
 options:
   single_toggle: true
   global_toggle: false

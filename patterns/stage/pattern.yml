@@ -1,6 +1,10 @@
 label: 'Stage'
 description: 'Big numbered steps on the left and one photo stage on the right; it plays through the steps with a visible Pause.'
 weight: 1
+stage: open
+ground: light
+placement: both
+serves: [saas, corporate, university]
 options:
   single_toggle: false
   global_toggle: false

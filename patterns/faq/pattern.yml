@@ -1,6 +1,10 @@
 label: 'Answers'
 description: 'Text only: big questions on hairlines, a square chevron button, a bar on the open answer and Expand all.'
 weight: 2
+stage: open
+ground: light
+placement: both
+serves: [government, healthcare, saas, associations]
 options:
   single_toggle: true
   global_toggle: true

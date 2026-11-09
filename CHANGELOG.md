@@ -23,6 +23,12 @@ Stored option values are converted to the v2 shape by update 10002. Run
 
 ### Fixed
 
+- Patterns: Spotlight's arrows lead its bar on a wide region, so they no longer sit where another Pattern's do.
+- Patterns: Spotlight and Cards arrows point the reading way on right-to-left pages; the open Spotlight pill keeps its padding on the start side; the Stage summary stays clear of the step's progress line.
+- Patterns: spacing, corner radius, type size, shadow and motion read shared `--vvj-*` variables with fallbacks, so a site or theme can adjust them in one place; a few odd values moved to the nearest step, under 10%.
+- Patterns: each Pattern states its stage, ground, placement and the kinds of site it serves best in `pattern.yml`.
+- Patterns: sizes that followed the screen width (`vw`) now follow the Pattern's own width (`cqi`), so a Pattern in a sidebar or narrow column keeps its proportions.
+- An open panel no longer keeps the height measured before its photo and fonts loaded: when no transition ends (a panel open on load), a timer releases the height, so the last line is not cut off.
 - Help page: follows the drupal.org help text standard (translatable About and Uses sections) instead of printing README.md as raw text.
 - Pattern Cards: an opened card stays on the row it was clicked in and spans it; the other cards flow around it. It no longer jumps to the top of the grid, and previous and next keep the open card on the same row.
 - Accessibility: the header button name is the row text as written; it is no longer passed through `t()`, so site content no longer fills the interface translation table.

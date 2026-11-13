@@ -29,6 +29,10 @@
       play.className = 'vvja-play';
       const label = document.createElement('span');
       label.className = 'vvj-autoplay-label';
+      // Named from the start: the button is in the page before the element
+      // hydrates, and Autoplay's render() only sets the label after that.
+      // "Pause" matches the icon CSS shows until the stopped class is set.
+      label.textContent = Drupal.t('Pause');
       play.append(P.icon('pause'), P.icon('play'), label);
       const count = document.createElement('p');
       count.className = 'vvja-count';

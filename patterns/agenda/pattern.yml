@@ -23,6 +23,10 @@ options:
   enable_deeplink: true
   deeplink_identifier: 'programme'
 features: []
+pictures:
+  vvj_image:
+    style: vvj_thumb_240
+    responsive: false
 needs:
   - 'Row style Fields. Every field excluded except two Custom text fields: the first is the header, the second the panel.'
   - 'Header: span.vvj-time (the number or a start time) + span.vvj-title + span.vvj-kicker. Panel: div.vvj-media (image, style vvj_thumb_240) + div.vvj-body > p.vvj-summary.'

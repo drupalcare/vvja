@@ -47,6 +47,18 @@
         return;
       }
 
+      // Progressive enhancement: the server prints every pane readable (no
+      // aria-hidden, no inert) and the CSS collapses closed panes only under
+      // `.vvja-hydrated`. Write the hidden state first, then add the class in
+      // the same task, so no frame shows a collapsed pane that is still
+      // focusable.
+      this._inner.querySelectorAll('.vvja-pane').forEach((pane) => {
+        const isClosed =
+          pane.parentElement?.classList.contains('closed') ?? false;
+        pane.setAttribute('aria-hidden', isClosed ? 'true' : 'false');
+      });
+      this.classList.add('vvja-hydrated');
+
       /** @type {NodeListOf<HTMLElement>} */
       this._buttons = this._inner.querySelectorAll('.vvja-button');
       this._isExclusive = this._inner.dataset.exclusive === 'true';
@@ -232,7 +244,7 @@
       }
       // Read before the write (JS-RULES.md rule 3).
       const height = p.scrollHeight;
-      const wait = this._transitionMs(p);
+      const wait = this.constructor._transitionMs(p);
       p.style.maxHeight = `${height}px`;
       p.setAttribute('aria-hidden', 'false');
       this._toggleFocusableElements(p, false);
@@ -258,7 +270,7 @@
      * @return {number}
      *   Milliseconds; 0 when nothing transitions.
      */
-    _transitionMs(el) {
+    static _transitionMs(el) {
       const style = getComputedStyle(el);
       const ms = (v) =>
         (v.trim().endsWith('ms') ? parseFloat(v) : parseFloat(v) * 1000) || 0;
@@ -351,24 +363,17 @@
      * @param {boolean} shouldDisable
      */
     _toggleFocusableElements(pane, shouldDisable) {
-      const focusables = pane.querySelectorAll(
-        'a, button, input, select, textarea, [tabindex]',
-      );
-      focusables.forEach((/** @type {HTMLElement} */ element) => {
-        if (shouldDisable) {
-          element.setAttribute('tabindex', '-1');
-          element.setAttribute('aria-disabled', 'true');
-          if ('disabled' in element) {
-            /** @type {HTMLInputElement} */ (element).disabled = true;
-          }
-        } else {
-          element.removeAttribute('tabindex');
-          element.removeAttribute('aria-disabled');
-          if ('disabled' in element) {
-            /** @type {HTMLInputElement} */ (element).disabled = false;
-          }
-        }
-      });
+      // `inert` takes a closed pane's controls out of the Tab order and the
+      // accessibility tree, and leaves each control's own tabindex and
+      // disabled state exactly as authored.
+      if (shouldDisable && pane.contains(document.activeElement)) {
+        // Focus inside a pane that closes would fall to the page body.
+        const trigger = this.querySelector(
+          `[aria-controls="${CSS.escape(pane.id)}"]`,
+        );
+        trigger?.focus({ preventScroll: true });
+      }
+      pane.inert = shouldDisable;
     }
 
     // ---------------------------------------------------------------
@@ -479,18 +484,26 @@
 
     _initAriaLabels() {
       this._buttons?.forEach((/** @type {HTMLElement} */ button) => {
+        // The template builds the name from the trigger's visible text; an
+        // image's alt is added after it, never in place of it, so the name
+        // still starts with what a sighted user reads.
+        const existing = (button.getAttribute('aria-label') ?? '').trim();
         const img = button.querySelector('img');
-        if (img && img.alt) {
-          button.setAttribute('aria-label', img.alt);
+        const alt = img?.alt?.trim() ?? '';
+        if (existing) {
+          if (alt && !existing.includes(alt)) {
+            button.setAttribute('aria-label', `${existing} ${alt}`);
+          }
           return;
         }
-        if (button.hasAttribute('aria-label')) {
+        if (alt) {
+          button.setAttribute('aria-label', alt);
           return;
         }
         const labelElement = button.querySelector('.button-label');
         button.setAttribute(
           'aria-label',
-          labelElement?.textContent?.trim() || 'Accordion Button',
+          labelElement?.textContent?.trim() || Drupal.t('Accordion Button'),
         );
       });
     }

@@ -6,37 +6,164 @@
  * selector starts at the view's own element.
  */
 
-.vvj-pattern.vvja.vvj-pattern--vvja-stage { display: grid; gap: var(--vvj-space-24, 24px); padding: clamp(20px, 4cqi, 64px) clamp(16px, 4cqi, 64px); background: var(--vvj-surface); }
-.vvj-pattern--vvja-stage .vvja-item { border: solid var(--vvj-line); border-width: 1px 0 0; }
-:where(.vvj-pattern--vvja-stage) .vvja-item:last-child { border-width: 1px 0; }
-.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-button { position: relative; display: flex; width: 100%; min-height: 4.5rem; padding: var(--vvj-space-18, 18px) 0; }
-.vvj-pattern.vvja.vvj-pattern--vvja-stage .btn-inner { display: flex; align-items: baseline; gap: var(--vvj-space-20, 20px); }
-.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvj-num { font-size: var(--vvj-text-14, 0.875rem); font-weight: 700; font-variant-numeric: tabular-nums; color: var(--vvj-muted); transition: color var(--vvj-dur-300, 0.3s); }
-.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvj-title { font: 650 clamp(1.75rem, 4.2cqi, 3.25rem)/1 var(--vvj-font-display); letter-spacing: -0.03em; color: var(--vvj-muted); transition: color var(--vvj-dur-300, 0.3s), transform var(--vvj-dur-500, 0.5s) var(--vvj-ease-out); }
-.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-button:hover .vvj-title { color: var(--vvj-ink); transform: translateX(0.35rem); }
-.vvj-pattern.vvja.vvj-pattern--vvja-stage .active .vvj-title, .vvj-pattern.vvja.vvj-pattern--vvja-stage .active .vvj-num { color: var(--vvj-ink); }
-.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-button:focus-visible { outline-offset: 4px; }
+.vvj-pattern.vvja.vvj-pattern--vvja-stage {
+  display: grid;
+  gap: var(--vvj-space-24, 24px);
+  padding: clamp(20px, 4cqi, 64px) clamp(16px, 4cqi, 64px);
+  background: var(--vvj-surface);
+}
+.vvj-pattern--vvja-stage .vvja-item {
+  border: solid var(--vvj-line);
+  border-width: 1px 0 0;
+}
+:where(.vvj-pattern--vvja-stage) .vvja-item:last-child {
+  border-width: 1px 0;
+}
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-button {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-height: 4.5rem;
+  padding: var(--vvj-space-18, 18px) 0;
+}
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .btn-inner {
+  display: flex;
+  align-items: baseline;
+  gap: var(--vvj-space-20, 20px);
+}
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvj-num {
+  transition: color var(--vvj-dur-300, 0.3s);
+  color: var(--vvj-muted);
+  font-size: var(--vvj-text-14, 0.875rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvj-title {
+  transition:
+    color var(--vvj-dur-300, 0.3s),
+    transform var(--vvj-dur-500, 0.5s) var(--vvj-ease-out);
+  letter-spacing: -0.03em;
+  color: var(--vvj-muted);
+  font: 650 clamp(1.75rem, 4.2cqi, 3.25rem) / 1 var(--vvj-font-display);
+}
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-button:hover .vvj-title {
+  transform: translateX(0.35rem);
+  color: var(--vvj-ink);
+}
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .active .vvj-title,
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .active .vvj-num {
+  color: var(--vvj-ink);
+}
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-button:focus-visible {
+  outline-offset: 4px;
+}
 /* The progress line under the open step is the autoplay timer. */
-.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-button::after { content: ""; position: absolute; inset: auto 0 -1px 0; height: 3px; background: var(--vvj-ink); transform: scaleX(0); transform-origin: left; }
-.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-button.active::after { transform: scaleX(1); transition: transform var(--vvj-dur-400, 0.4s) var(--vvj-ease-out); }
-.vvj-pattern.vvja.vvj-pattern--vvja-stage.vvj-autoplay--playing .vvja-button.active::after { transition: none; animation: vvja-stage-fill var(--vvj-autoplay-duration, 7s) linear both; }
-.vvj-pattern.vvja.vvj-pattern--vvja-stage.vvj-autoplay--held .vvja-button.active::after { animation-play-state: paused; }
-@keyframes vvja-stage-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-.vvj-pattern--vvja-stage .vvja-pane-inner { padding: var(--vvja-pane-padding, 16px) var(--vvja-pane-padding, 16px) var(--vvj-space-24, 24px); }
-.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvj-summary { max-width: 34rem; margin: 0 0 var(--vvj-space-16, 16px); font-size: var(--vvj-text-17, 1.0625rem); line-height: 1.6; color: var(--vvj-muted); }
-.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvj-kicker { display: inline-block; padding: var(--vvj-space-5, 5px) var(--vvj-space-12, 12px); border: 1px solid var(--vvj-line); border-radius: var(--vvj-radius-pill, 999px); background: var(--vvj-raised); font-size: var(--vvj-text-14, 0.875rem); font-weight: 600; }
-:where(.vvj-pattern--vvja-stage) :where(.opened) :is(.vvj-summary, .vvj-kicker) { animation: vvja-stage-rise var(--vvj-dur-600, 0.6s) var(--vvj-ease-out) var(--vvj-dur-150, 0.15s) both; }
-:where(.vvj-pattern--vvja-stage) :where(.opened) .vvj-kicker { animation-delay: var(--vvj-dur-250, 0.25s); }
-@keyframes vvja-stage-rise { from { opacity: 0; transform: translateY(0.75rem); } }
-.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvj-media { aspect-ratio: 4 / 3; margin: 0 0 var(--vvj-space-20, 20px); overflow: hidden; border-radius: var(--vvj-radius-20, 20px); background: var(--vvj-stage-bg); }
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-button::after {
+  position: absolute;
+  height: 3px;
+  content: "";
+  transform: scaleX(0);
+  transform-origin: left;
+  background: var(--vvj-ink);
+  inset: auto 0 -1px 0;
+}
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-button.active::after {
+  transition: transform var(--vvj-dur-400, 0.4s) var(--vvj-ease-out);
+  transform: scaleX(1);
+}
+.vvj-pattern.vvja.vvj-pattern--vvja-stage.vvj-autoplay--playing .vvja-button.active::after {
+  transition: none;
+  animation: vvja-stage-fill var(--vvj-autoplay-duration, 7s) linear both;
+}
+.vvj-pattern.vvja.vvj-pattern--vvja-stage.vvj-autoplay--held .vvja-button.active::after {
+  animation-play-state: paused;
+}
+@keyframes vvja-stage-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.vvj-pattern--vvja-stage .vvja-pane-inner {
+  padding: var(--vvja-pane-padding, 16px) var(--vvja-pane-padding, 16px) var(--vvj-space-24, 24px);
+}
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvj-summary {
+  max-width: 34rem;
+  margin: 0 0 var(--vvj-space-16, 16px);
+  color: var(--vvj-muted);
+  font-size: var(--vvj-text-17, 1.0625rem);
+  line-height: 1.6;
+}
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvj-kicker {
+  display: inline-block;
+  padding: var(--vvj-space-5, 5px) var(--vvj-space-12, 12px);
+  border: 1px solid var(--vvj-line);
+  border-radius: var(--vvj-radius-pill, 999px);
+  background: var(--vvj-raised);
+  font-size: var(--vvj-text-14, 0.875rem);
+  font-weight: 600;
+}
+:where(.vvj-pattern--vvja-stage) :where(.opened) :is(.vvj-summary, .vvj-kicker) {
+  animation: vvja-stage-rise var(--vvj-dur-600, 0.6s) var(--vvj-ease-out) var(--vvj-dur-150, 0.15s) both;
+}
+:where(.vvj-pattern--vvja-stage) :where(.opened) .vvj-kicker {
+  animation-delay: var(--vvj-dur-250, 0.25s);
+}
+@keyframes vvja-stage-rise {
+  from {
+    transform: translateY(0.75rem);
+    opacity: 0;
+  }
+}
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvj-media {
+  overflow: hidden;
+  margin: 0 0 var(--vvj-space-20, 20px);
+  border-radius: var(--vvj-radius-20, 20px);
+  background: var(--vvj-stage-bg);
+  aspect-ratio: 4 / 3;
+}
 /* Pause / Play and the counter. */
-.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-controls { display: flex; align-items: center; gap: var(--vvj-space-16, 16px); }
-.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-play { display: inline-flex; align-items: center; gap: var(--vvj-space-10, 10px); min-height: var(--vvja-target); padding: 0 var(--vvj-space-18, 18px) 0 var(--vvj-space-14, 14px); border: 1.5px solid var(--vvj-line); border-radius: var(--vvj-radius-12, 12px); font-weight: 600; transition: background-color var(--vvj-dur-200, 0.2s), color var(--vvj-dur-200, 0.2s), border-color var(--vvj-dur-200, 0.2s), transform var(--vvj-dur-150, 0.15s); }
-.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-play .vvja-i { width: 0.85rem; height: 0.85rem; }
-:where(.vvj-pattern--vvja-stage) :where(.vvja-play) .vvja-i--play, :where(.vvj-pattern--vvja-stage) :where(.vvja-play.vvj-autoplay--stopped) .vvja-i--pause { display: none; }
-:where(.vvj-pattern--vvja-stage) :where(.vvja-play.vvj-autoplay--stopped) .vvja-i--play { display: block; }
-.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-play:hover { background: var(--vvj-ink); border-color: var(--vvj-ink); color: var(--vvj-surface); }
-.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-play:active { transform: scale(0.96); }
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--vvj-space-16, 16px);
+}
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-play {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--vvja-target);
+  padding: 0 var(--vvj-space-18, 18px) 0 var(--vvj-space-14, 14px);
+  transition:
+    background-color var(--vvj-dur-200, 0.2s),
+    color var(--vvj-dur-200, 0.2s),
+    border-color var(--vvj-dur-200, 0.2s),
+    transform var(--vvj-dur-150, 0.15s);
+  border: 1.5px solid var(--vvj-line);
+  border-radius: var(--vvj-radius-12, 12px);
+  font-weight: 600;
+  gap: var(--vvj-space-10, 10px);
+}
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-play .vvja-i {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+:where(.vvj-pattern--vvja-stage) :where(.vvja-play) .vvja-i--play,
+:where(.vvj-pattern--vvja-stage) :where(.vvja-play.vvj-autoplay--stopped) .vvja-i--pause {
+  display: none;
+}
+:where(.vvj-pattern--vvja-stage) :where(.vvja-play.vvj-autoplay--stopped) .vvja-i--play {
+  display: block;
+}
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-play:hover {
+  color: var(--vvj-surface);
+  border-color: var(--vvj-ink);
+  background: var(--vvj-ink);
+}
+.vvj-pattern.vvja.vvj-pattern--vvja-stage .vvja-play:active {
+  transform: scale(0.96);
+}
 /* From 55rem of its own width (vvj-region is the <vvja-accordion> root, set
    by vvj_core): steps left, photo stage right. The root cannot query itself,
    so instead of a 5fr / 7fr grid on the root, the steps and the controls take
@@ -44,18 +171,52 @@
    gap, and the open photo fills the remaining 7/12 to their right. */
 @container vvj-region (min-width: 55rem) {
   .vvj-pattern--vvja-stage .vvja-inner,
-  .vvj-pattern--vvja-stage .vvja-controls { width: calc((100cqi - clamp(32px, 5cqi, 80px)) * 5 / 12); }
-  :where(.vvj-pattern--vvja-stage) .vvja-inner { position: relative; min-height: 34rem; }
-  .vvj-pattern--vvja-stage .vvja-pane-inner { padding: var(--vvja-pane-padding, 16px) var(--vvja-pane-padding, 16px) var(--vvj-space-24, 24px) var(--vvj-space-36, 36px); }
+  .vvj-pattern--vvja-stage .vvja-controls {
+    width: calc((100cqi - clamp(32px, 5cqi, 80px)) * 5 / 12);
+  }
+  :where(.vvj-pattern--vvja-stage) .vvja-inner {
+    position: relative;
+    min-height: 34rem;
+  }
+  .vvj-pattern--vvja-stage .vvja-pane-inner {
+    padding: var(--vvja-pane-padding, 16px) var(--vvja-pane-padding, 16px) var(--vvj-space-24, 24px) var(--vvj-space-36, 36px);
+  }
   /* Clear of the step's progress line, whatever pane padding the editor sets. */
-  .vvj-pattern.vvja.vvj-pattern--vvja-stage .vvj-summary { margin-block-start: var(--vvj-space-14, 14px); }
+  .vvj-pattern.vvja.vvj-pattern--vvja-stage .vvj-summary {
+    margin-block-start: var(--vvj-space-14, 14px);
+  }
   /* The open step's photo is placed in the right column; closed ones are clipped away under it. */
-  .vvj-pattern.vvja.vvj-pattern--vvja-stage .vvj-media { position: absolute; inset: 0 auto 0 calc(100% + clamp(32px, 5cqi, 80px)); z-index: 0; width: 140%; margin: 0; aspect-ratio: auto; clip-path: inset(0 0 0 100% round 20px); transition: clip-path var(--vvj-dur-900, 0.9s) var(--vvj-ease-io) var(--vvj-dur-900, 0.9s); }
-  .vvj-pattern.vvja.vvj-pattern--vvja-stage .opened .vvj-media { z-index: 1; clip-path: inset(0 round 20px); transition-delay: 0s; }
-  :where(.vvj-pattern--vvja-stage) :where(.vvj-media) img { transform: scale(1.1); transition: transform var(--vvj-dur-1600, 1.6s) var(--vvj-ease-out); }
-  :where(.vvj-pattern--vvja-stage) :where(.opened) :where(.vvj-media) img { transform: none; }
+  .vvj-pattern.vvja.vvj-pattern--vvja-stage .vvj-media {
+    position: absolute;
+    inset: 0 auto 0 calc(100% + clamp(32px, 5cqi, 80px));
+    z-index: 0;
+    width: 140%;
+    margin: 0;
+    aspect-ratio: auto;
+    clip-path: inset(0 0 0 100% round 20px);
+    transition: clip-path var(--vvj-dur-900, 0.9s) var(--vvj-ease-io) var(--vvj-dur-900, 0.9s);
+  }
+  .vvj-pattern.vvja.vvj-pattern--vvja-stage .opened .vvj-media {
+    z-index: 1;
+    clip-path: inset(0 round 20px);
+    transition-delay: 0s;
+  }
+  :where(.vvj-pattern--vvja-stage) :where(.vvj-media) img {
+    transition: transform var(--vvj-dur-1600, 1.6s) var(--vvj-ease-out);
+    transform: scale(1.1);
+  }
+  :where(.vvj-pattern--vvja-stage) :where(.opened) :where(.vvj-media) img {
+    transform: none;
+  }
   /* The pane keeps its photo painted while closed; only the text collapses. */
-  :where(.vvj-pattern--vvja-stage) :is(.vvja-item, .vvja-pane, .vvja-pane-inner) { position: static; }
-  :where(.vvj-pattern--vvja-stage) .vvja-pane { overflow: visible; }
-  :where(.vvj-pattern--vvja-stage) :where(.closed) :where(.vvja-pane-inner) > :not(.vvj-media) { visibility: hidden; }
+  :where(.vvj-pattern--vvja-stage) :is(.vvja-item, .vvja-pane, .vvja-pane-inner) {
+    position: static;
+  }
+  :where(.vvj-pattern--vvja-stage) .vvja-pane {
+    overflow: visible;
+  }
+  /* Only once the script has hydrated: with no JS every step's text stays readable. */
+  :where(.vvj-pattern--vvja-stage.vvja-hydrated) :where(.closed) :where(.vvja-pane-inner) > :not(.vvj-media) {
+    visibility: hidden;
+  }
 }

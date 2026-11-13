@@ -101,12 +101,16 @@
           <span class="single-toggle">
             <span aria-hidden="{{ is_expanded ? 'false' : 'true' }}" class="single-toggle-inner b-minus {{ not is_expanded ? 'vvja-icon-hidden' : '' }}">{% if icon_collapse_content %}{{ icon_collapse_content }}{% else %}{{ include('@vvja/svg/collapse-content.svg') }}{% endif %}</span>
             <span aria-hidden="{{ is_expanded ? 'true' : 'false' }}" class="single-toggle-inner b-plus {{ is_expanded ? 'vvja-icon-hidden' : '' }}">{% if icon_expand_content %}{{ icon_expand_content }}{% else %}{{ include('@vvja/svg/expand-content.svg') }}{% endif %}</span>
-            <span class="visually-hidden">{{ 'Close or Open tab @id-pane'|t({'@id': acc_id_pan ~ '-' ~ (key + 1)}) }}</span>
           </span>
         {% endif %}
       </button>
 
-      <div id="{{ acc_id_pan }}-{{ key + 1 }}-pane" class="vvja-pane{{ vvja_animation != 'none' ? ' ' ~ vvja_animation : '' }}" aria-labelledby="{{ acc_id_btn }}-{{ key + 1 }}" aria-hidden="{{ is_expanded ? 'false' : 'true' }}" data-index="{{ key + 1 }}" style="--vvja-transition-speed: {{ transition_speed }};">
+      {# A named region per pane, up to six panes (more would crowd the
+         landmark list). Every pane is printed readable: with no JS the
+         content stays visible. The script writes aria-hidden and inert and
+         adds `.vvja-hydrated`, and only then does the CSS collapse a closed
+         pane. #}
+      <div id="{{ acc_id_pan }}-{{ key + 1 }}-pane" class="vvja-pane{{ vvja_animation != 'none' ? ' ' ~ vvja_animation : '' }}"{% if rows|length <= 6 %} role="region" aria-labelledby="{{ acc_id_btn }}-{{ key + 1 }}"{% endif %} data-index="{{ key + 1 }}" style="--vvja-transition-speed: {{ transition_speed }};">
         <div class="vvja-pane-inner">
           {{ pane_content|safe_html }}
         </div>

@@ -23,6 +23,10 @@ options:
   enable_deeplink: false
   deeplink_identifier: ''
 features: []
+pictures:
+  vvj_image:
+    style: vvj_landscape_1200
+    responsive: false
 needs:
   - 'Row style Fields. Every field excluded except two Custom text fields: the first is the header, the second the panel.'
   - 'Header: span.vvj-num + span.vvj-title. Panel: div.vvj-media (image, style vvj_landscape_1200) + p.vvj-summary + p.vvj-kicker.'

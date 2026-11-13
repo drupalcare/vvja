@@ -10,6 +10,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [2.0.0] (UNRELEASED)
 
+- Accessibility: without JavaScript every pane is shown and readable (the collapse now applies only after the script runs); a closed pane is `inert` instead of having every control's tabindex and disabled state rewritten; focus inside a pane that closes moves to its button; an image's alt is added after the trigger's text in the button name instead of replacing it; the fallback name is translated; panes are named regions when there are six or fewer; the unused "Close or Open tab" text is gone; the Spotlight Pattern keeps a focus ring when its round toggle is off.
 - Accessibility: in Windows high contrast (forced colors) the Pattern icons stay visible; they are masks painted with the text color, which the system used to replace.
 - Patterns: the bridge reads the shared `--vvj-theme-*` roles; the stage buttons keep the stage tokens.
 - Patterns: every hard-coded color is now a vvja token, and Solo and APEX get a theme bridge (`pattern-bridge-solo`, `pattern-bridge-apex`) that maps the vvja controls to the theme colors; the black-and-white look is unchanged.

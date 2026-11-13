@@ -109,12 +109,14 @@
   align-items: center;
 }
 
-/* Accordion pane styles to manage open/close */
+/* Accordion pane styles to manage open/close. A closed pane collapses only
+   after the script has hydrated (it adds .vvja-hydrated), so with no JS
+   every pane stays readable. */
 :where(.vvja) :where(.opened) .vvja-pane {
   max-height: none;
 }
 
-:where(.vvja) :where(.closed) .vvja-pane {
+:where(.vvja.vvja-hydrated) :where(.closed) .vvja-pane {
   max-height: 0;
 }
 

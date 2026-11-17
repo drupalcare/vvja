@@ -395,7 +395,9 @@
         ? p.getAttribute('aria-hidden') === 'false'
         : !!p.style.maxHeight && p.style.maxHeight !== '0px';
 
-      this.withTransition(() => {
+      // No View Transition here: its whole-page snapshot fade flickers on
+      // iOS (vvjb #3638891). The panes animate with their own CSS.
+      const toggle = () => {
         if (this._isExclusive) {
           allButtons.forEach((other) => {
             if (other !== button) {
@@ -423,7 +425,8 @@
           }
           this._updateGlobalToggleState();
         }
-      });
+      };
+      toggle();
 
       this._updateDeepLinkHash(p);
     };

@@ -77,6 +77,10 @@
 .vvja .vvja-button {
   z-index: 1;
   display: flex;
+  box-sizing: border-box;
+  /* iOS WebKit does not stretch a <button> to its grid cell, so a short
+     title left the button only as wide as its text. */
+  width: 100%;
   flex-grow: 1;
   align-items: center;
   justify-content: space-between;

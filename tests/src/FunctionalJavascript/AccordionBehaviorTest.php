@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\vvja\FunctionalJavascript;
 
+use Drupal\Component\Utility\DeprecationHelper;
+use Drupal\user\Entity\Role;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 use Drupal\node\Entity\Node;
 use Drupal\views\Entity\View;
@@ -52,7 +54,7 @@ final class AccordionBehaviorTest extends WebDriverTestBase {
       ])->save();
     }
 
-    user_role_grant_permissions('anonymous', ['access content']);
+    DeprecationHelper::backwardsCompatibleCall(\Drupal::VERSION, '11.5.0', fn() => Role::loadOverrideFree('anonymous')?->grantPermissions(['access content'])?->save(), fn() => user_role_grant_permissions('anonymous', ['access content']));
 
     $this->addBlockDisplayToExampleView();
     $this->drupalPlaceBlock('views_block:vvja_example-block_1', [

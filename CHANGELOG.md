@@ -8,20 +8,21 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
-## [2.0.0] (UNRELEASED)
+## [Unreleased]
+
+### Changed
 
 - iPhone: opening or closing a pane no longer flickers (the whole-page View Transition is gone; the panes animate with their own CSS), and a button with a short title fills the full row.
 - Accessibility: without JavaScript every pane is shown and readable (the collapse now applies only after the script runs); a closed pane is `inert` instead of having every control's tabindex and disabled state rewritten; focus inside a pane that closes moves to its button; an image's alt is added after the trigger's text in the button name instead of replacing it; the fallback name is translated; panes are named regions when there are six or fewer; the unused "Close or Open tab" text is gone; the Spotlight Pattern keeps a focus ring when its round toggle is off.
 - Accessibility: in Windows high contrast (forced colors) the Pattern icons stay visible; they are masks painted with the text color, which the system used to replace.
 - Patterns: the bridge reads the shared `--vvj-theme-*` roles; the stage buttons keep the stage tokens.
 - Patterns: every hard-coded color is now a vvja token, and Solo and APEX get a theme bridge (`pattern-bridge-solo`, `pattern-bridge-apex`) that maps the vvja controls to the theme colors; the black-and-white look is unchanged.
-
-**Drop-in upgrade for 1.x sites.** v2 modernizes internals: OOP hooks,
-AbortController-tracked listeners, PHP 8.3 typed constants, **`vvj_core`
-foundation extraction**, while preserving every CSS rule, every plugin ID,
-every theme hook, every Twig template name, and every JS feature from 1.x.
-Stored option values are converted to the v2 shape by update 10002. Run
-`composer update drupal/vvja`, `drush updb` and `drush cache:rebuild`.
+- Text follows the drupal.org standards: the module description begins with a verb, "JavaScript" is spelled as the language spells it, settings titles are in sentence case, and the README has its project and issue queue links.
+- Code style: JavaScript and CSS follow Drupal core's ESLint, Stylelint and Prettier rules, and the spell-check job passes with a project word file. Rendering and behavior are unchanged.
+- Pattern Agenda: the expand/collapse-all button is a 44px square with its icon centered again; a theme `.button` rule (Olivero) padded it 27px on each side.
+- Layout: Pattern layout now follows the width the Pattern itself gets (container queries on `vvj-region`) instead of the screen width, so Patterns lay out correctly in a narrow content column; overlays and the Pattern root keep screen-width queries.
+- Layout: Pattern Stage now also follows its own width: the steps and the controls take the left column of the Pattern's own box, so the photo stage no longer depends on the screen width.
+- Pattern Cards: the cards sit in a fixed-column grid and keep their size when one opens, so the page no longer jumps; the open card scrolls into view (instantly when reduced motion is set). Pattern Spotlight: the round toggle keeps its 44px size beside a long title, and the title is clipped visually only (its full text stays in the accessible name).
 
 ### Fixed
 
@@ -35,16 +36,62 @@ Stored option values are converted to the v2 shape by update 10002. Run
 - Pattern Cards: an opened card stays on the row it was clicked in and spans it; the other cards flow around it. It no longer jumps to the top of the grid, and previous and next keep the open card on the same row.
 - Accessibility: the header button name is the row text as written; it is no longer passed through `t()`, so site content no longer fills the interface translation table.
 - Accessibility: every accordion header is a `<button>` (deep-link mode rendered a link that Space did not open) and stays in the Tab order; header names read with spaces between fields; items no longer carry an unnamed `role="region"`; the Agenda dock chip name starts with its visible text.
-
 - Pane open and close read the pane height before writing max-height (JS-RULES.md rule 3); behavior unchanged.
-- Update 10002 converts v1 views to the v2 option shape. The 1.x option
-  `first_toggle` (first panel open) becomes `expand_default: first`; before this,
-  upgraded accordions silently stopped opening their first panel.
 - The accordion reads every panel height before it writes any, so opening a panel no longer forces extra layout passes.
 
 ### Added
 
 - **Patterns**: 5 ready-made designs for this format (Spotlight, Stage, Answers, Cards, Agenda). Pick one in the "Patterns" section of the format settings and its layout, animation, styling and deep linking settings are applied to the view. Needs the `vvj_patterns` module from `vvj_core`; the optional `vvj_patterns_demo` module adds example views.
+- **APEX design-token consumption**: every CSS color / dimension / typography
+  reads `var(--apex-token, fallback)` with system-color-keyword fallbacks
+  (`Canvas`, `CanvasText`, `Highlight`). Looks beautiful in APEX themes;
+  respectable in any other theme; Forced-Colors-mode compatible.
+- **Cascade-layer self-declaration**: every component CSS file declares `@layer
+  apex.foundation, apex.tokens, apex.layout, apex.components, apex.utilities;`
+  at the top so layer order is predictable on non-APEX sites (idempotent on APEX
+  sites).
+- **All four mandatory media queries**: `prefers-reduced-motion`, `prefers-
+  contrast: high`, `forced-colors: active`, `print`, present in every CSS file.
+- **AbortController-tracked listeners** in JS: `detach('unload')` aborts every
+  event listener for every accordion in the unload context, preventing memory
+  leaks across AJAX page swaps.
+- **Drupal 11.3+ + PHP 8.3+ requirement**: typed class constants, readonly
+  properties, first-class callable syntax, `string`/`int`/`array` constant
+  types.
+
+### Removed
+
+- `src/SvgSanitizer.php`: moved to `drupal/vvj_core` as
+  `vvj_core.svg_sanitizer` service. Code lifted verbatim; no behavior change.
+- `src/Twig/VvjaTwigExtension.php`: `safe_html` filter moved to
+  `drupal/vvj_core` as `vvj_core.twig_extension`. Same filter name, same
+  behavior.
+
+### Security
+
+- **Defense-in-depth SVG sanitization**: admin-form validation + render-time
+  re-sanitization unchanged from v1, but `SvgSanitizer` PHPDoc + array shapes
+  tightened. Same allowlist parser, same threat model.
+
+## [2.0.0 to 2.0.1] (last release 2026-10-05)
+
+
+**Drop-in upgrade for 1.x sites.** v2 modernizes internals: OOP hooks,
+AbortController-tracked listeners, PHP 8.3 typed constants, **`vvj_core`
+foundation extraction**, while preserving every CSS rule, every plugin ID,
+every theme hook, every Twig template name, and every JS feature from 1.x.
+Stored option values are converted to the v2 shape by update 10002. Run
+`composer update drupal/vvja`, `drush updb` and `drush cache:rebuild`.
+
+### Fixed
+
+
+- Update 10002 converts v1 views to the v2 option shape. The 1.x option
+  `first_toggle` (first panel open) becomes `expand_default: first`; before this,
+  upgraded accordions silently stopped opening their first panel.
+
+### Added
+
 - **`drupal/vvj_core` dependency.** Composer pulls it automatically. Provides
   the `VvjStylePluginBase` abstract class, shared services
   (`vvj_core.svg_sanitizer`, `vvj_core.token_resolver`,
@@ -66,24 +113,8 @@ Stored option values are converted to the v2 shape by update 10002. Run
 - **OOP hooks** under `src/Hook/` using the `#[Hook]` attribute pattern —
   replaces all procedural hooks in `vvja.module`. Constructor-injected via DI;
   no more `\Drupal::service()` calls.
-- **APEX design-token consumption**: every CSS color / dimension / typography
-  reads `var(--apex-token, fallback)` with system-color-keyword fallbacks
-  (`Canvas`, `CanvasText`, `Highlight`). Looks beautiful in APEX themes;
-  respectable in any other theme; Forced-Colors-mode compatible.
-- **Cascade-layer self-declaration**: every component CSS file declares `@layer
-  apex.foundation, apex.tokens, apex.layout, apex.components, apex.utilities;`
-  at the top so layer order is predictable on non-APEX sites (idempotent on APEX
-  sites).
-- **All four mandatory media queries**: `prefers-reduced-motion`, `prefers-
-  contrast: high`, `forced-colors: active`, `print`, present in every CSS file.
-- **AbortController-tracked listeners** in JS: `detach('unload')` aborts every
-  event listener for every accordion in the unload context, preventing memory
-  leaks across AJAX page swaps.
 - **Arrow-key navigation** between accordion triggers (Up / Down / Home / End)
   per W3C ARIA Authoring Practices Guide accordion pattern.
-- **Drupal 11.3+ + PHP 8.3+ requirement**: typed class constants, readonly
-  properties, first-class callable syntax, `string`/`int`/`array` constant
-  types.
 - **PHPStan-strict array shapes** (`list<T>`, `array<K, V>`, `array{key: type}`)
   on every method signature; zero `iterableValue` violations.
 - **CustomEvent dispatching** on `document` with `vvja:` prefix (`vvja:ready`)
@@ -91,7 +122,6 @@ Stored option values are converted to the v2 shape by update 10002. Run
 
 ### Changed
 
-- Text follows the drupal.org standards: the module description begins with a verb, "JavaScript" is spelled as the language spells it, settings titles are in sentence case, and the README has its project and issue queue links.
 - **`vvja.module` is now a stub.** Hooks live in `src/Hook/*.php` classes with
   `#[Hook('hook_name')]` attributes. Procedural `function vvja_*()` hooks are
   removed. *No backwards-compat impact*. Module-handler discovery resolves the
@@ -112,29 +142,15 @@ Stored option values are converted to the v2 shape by update 10002. Run
   arrow functions, optional chaining, `???` nullish coalescing. AbortController
   + once() + native button keyboard handling.
 - **Transliteration injected via DI** instead of `\Drupal::transliteration()`.
-- Code style: JavaScript and CSS follow Drupal core's ESLint, Stylelint and Prettier rules, and the spell-check job passes with a project word file. Rendering and behavior are unchanged.
-- Pattern Agenda: the expand/collapse-all button is a 44px square with its icon centered again; a theme `.button` rule (Olivero) padded it 27px on each side.
-- Layout: Pattern layout now follows the width the Pattern itself gets (container queries on `vvj-region`) instead of the screen width, so Patterns lay out correctly in a narrow content column; overlays and the Pattern root keep screen-width queries.
-- Layout: Pattern Stage now also follows its own width: the steps and the controls take the left column of the Pattern's own box, so the photo stage no longer depends on the screen width.
-- Pattern Cards: the cards sit in a fixed-column grid and keep their size when one opens, so the page no longer jumps; the open card scrolls into view (instantly when reduced motion is set). Pattern Spotlight: the round toggle keeps its 44px size beside a long title, and the title is clipped visually only (its full text stays in the accessible name).
 
 ### Removed
 
-- `src/SvgSanitizer.php`: moved to `drupal/vvj_core` as
-  `vvj_core.svg_sanitizer` service. Code lifted verbatim; no behavior change.
-- `src/Twig/VvjaTwigExtension.php`: `safe_html` filter moved to
-  `drupal/vvj_core` as `vvj_core.twig_extension`. Same filter name, same
-  behavior.
 - Cross-cutting constants (TOKEN_PATTERN, DEEPLINK_*, transition-speed bounds,
   unique-ID range), moved to `Drupal\vvj_core\Constants\ValidationBounds`.
   Pattern-specific accordion constants stay in `Drupal\vvja\VvjaConstants`.
 - Procedural hooks in `vvja.module` (moved to OOP `#[Hook]` classes).
 
-### Security
 
-- **Defense-in-depth SVG sanitization**: admin-form validation + render-time
-  re-sanitization unchanged from v1, but `SvgSanitizer` PHPDoc + array shapes
-  tightened. Same allowlist parser, same threat model.
 
 ### Drupal core / PHP
 

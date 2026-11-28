@@ -10,6 +10,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.1.0] — 2026-11-27
+
+First release from the new `2.1.x` branch. Covers everything since 2.0.1, the last published release.
+
 ### Changed
 
 - iPhone: opening or closing a pane no longer flickers (the whole-page View Transition is gone; the panes animate with their own CSS), and a button with a short title fills the full row.
